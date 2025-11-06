@@ -1,0 +1,92 @@
+/* Playback Speed Control Styles */
+
+.insta-speed-button {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  min-width: 44px;
+  height: 32px;
+  background: rgba(35, 35, 40, 1.0);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 12px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease;
+}
+
+.insta-speed-button:hover {
+  background: rgba(45, 45, 50, 1.0);
+}
+
+/* Reels view variant */
+.insta-speed-button.reels-view {
+  background: rgba(154, 150, 143, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.insta-speed-button.reels-view:hover {
+  background: rgba(154, 150, 143, 0.6);
+}
+
+/* Speed overlay menu */
+.insta-speed-overlay {
+  position: absolute;
+  top: 52px;
+  left: 12px;
+  background: rgba(35, 35, 40, 1.0);
+  border-radius: 12px;
+  padding: 4px 0;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-in-out;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  min-width: 100px;
+}
+
+.insta-speed-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Reels overlay variant */
+.insta-speed-overlay.reels-view {
+  background: rgba(154, 150, 143, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.insta-speed-option {
+  padding: 6px 16px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+
+.insta-speed-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.insta-speed-option.selected {
+  color: #0095f6;
+  font-weight: 700;
+  position: relative;
+}
+
+.insta-speed-option.selected::after {
+  content: '✓';
+  position: absolute;
+  right: 16px;
+  font-weight: 700;
+}

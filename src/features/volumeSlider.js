@@ -82,7 +82,11 @@ class VolumeSlider {
     for (const button of buttons) {
       const ariaLabel = button.getAttribute('aria-label');
       if (ariaLabel && (ariaLabel.includes('audio') || ariaLabel.includes('Audio'))) {
-        return button;
+        // Ensure it's a small button (not a large container)
+        const rect = button.getBoundingClientRect();
+        if (rect.width < 100 && rect.height < 100) {
+          return button;
+        }
       }
     }
 
@@ -93,7 +97,11 @@ class VolumeSlider {
       if (svg) {
         const ariaLabel = svg.getAttribute('aria-label');
         if (ariaLabel && (ariaLabel.includes('audio') || ariaLabel.includes('Audio'))) {
-          return div;
+          // Ensure it's a small button (not a large container)
+          const rect = div.getBoundingClientRect();
+          if (rect.width < 100 && rect.height < 100) {
+            return div;
+          }
         }
       }
     }
