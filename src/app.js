@@ -6,6 +6,7 @@
   // Initialize feature instances
   const videoDuration = new VideoDuration();
   const videoSeekbar = new VideoSeekbar();
+  const volumeSlider = new VolumeSlider();
 
   /**
    * Process all videos on the page
@@ -13,6 +14,7 @@
   function processVideos() {
     videoDuration.processAllVideos();
     videoSeekbar.processAllVideos();
+    volumeSlider.processAllVideos();
   }
 
   /**
