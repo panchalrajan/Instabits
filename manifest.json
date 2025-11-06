@@ -29,6 +29,7 @@
         "src/features/videoSeekbar.js",
         "src/features/volumeSlider.js",
         "src/features/playbackSpeed.js",
+        "src/features/backgroundPlay.js",
         "src/app.js"
       ],
       "run_at": "document_end"
