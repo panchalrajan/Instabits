@@ -1,0 +1,36 @@
+/* Video Seekbar Styles */
+
+.insta-video-seekbar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  z-index: 3;
+  transition: height 0.2s ease;
+}
+
+.insta-video-seekbar-container:hover {
+  height: 6px;
+}
+
+.insta-video-seekbar-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: #0095f6;
+  pointer-events: none;
+}
+
+.insta-video-seekbar-hover {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -8px;
+  bottom: -8px;
+  cursor: pointer;
+}
