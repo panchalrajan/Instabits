@@ -3,6 +3,10 @@ class VideoDuration {
     this.trackedVideos = new WeakMap();
   }
 
+  isReelsFeed() {
+    return window.location.pathname.includes('/reels/');
+  }
+
   formatTime(seconds) {
     if (isNaN(seconds) || seconds === Infinity) {
       return '0:00';
@@ -24,6 +28,11 @@ class VideoDuration {
   create() {
     const timeDisplay = document.createElement('div');
     timeDisplay.className = 'insta-video-duration-overlay';
+
+    if (this.isReelsFeed()) {
+      timeDisplay.classList.add('reels-view');
+    }
+
     timeDisplay.textContent = '0:00 / 0:00';
     return timeDisplay;
   }
