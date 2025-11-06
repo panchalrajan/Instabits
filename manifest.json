@@ -30,6 +30,7 @@
         "src/features/volumeSlider.js",
         "src/features/playbackSpeed.js",
         "src/features/backgroundPlay.js",
+        "src/features/autoScroll.js",
         "src/app.js"
       ],
       "run_at": "document_end"

@@ -9,6 +9,7 @@
   const volumeSlider = new VolumeSlider();
   const playbackSpeed = new PlaybackSpeed();
   const backgroundPlay = new BackgroundPlay();
+  const autoScroll = new AutoScroll();
 
   /**
    * Process all videos on the page
@@ -19,6 +20,7 @@
     volumeSlider.processAllVideos();
     playbackSpeed.processAllVideos();
     backgroundPlay.processAllVideos();
+    autoScroll.processAllVideos();
   }
 
   /**
