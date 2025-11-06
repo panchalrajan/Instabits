@@ -8,6 +8,7 @@
   const videoSeekbar = new VideoSeekbar();
   const volumeSlider = new VolumeSlider();
   const playbackSpeed = new PlaybackSpeed();
+  const backgroundPlay = new BackgroundPlay();
 
   /**
    * Process all videos on the page
@@ -17,6 +18,7 @@
     videoSeekbar.processAllVideos();
     volumeSlider.processAllVideos();
     playbackSpeed.processAllVideos();
+    backgroundPlay.processAllVideos();
   }
 
   /**
