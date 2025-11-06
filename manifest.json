@@ -20,11 +20,13 @@
       ],
       "css": [
         "src/css/videoDuration.css",
-        "src/css/videoSeekbar.css"
+        "src/css/videoSeekbar.css",
+        "src/css/volumeSlider.css"
       ],
       "js": [
         "src/features/videoDuration.js",
         "src/features/videoSeekbar.js",
+        "src/features/volumeSlider.js",
         "src/app.js"
       ],
       "run_at": "document_end"
