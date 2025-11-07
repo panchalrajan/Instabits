@@ -186,9 +186,6 @@ class Dashboard {
             `${this.formatName(page)} settings will open soon`,
             'info'
         );
-
-        // TODO: Navigate to feature configuration page
-        console.log('Navigate to:', page);
     }
 
     handleSearchAndFilter(query) {

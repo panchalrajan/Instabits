@@ -13,13 +13,6 @@ class InstaBitsUtils {
 
       chrome.storage.sync.get([storageKey], (result) => {
         const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
-
-        console.log(`[InstaBits] Feature check: ${featureId}`, {
-          storageKey,
-          savedValue: result[storageKey],
-          isEnabled
-        });
-
         resolve(isEnabled);
       });
     });
@@ -38,7 +31,6 @@ class InstaBitsUtils {
       data[storageKey] = enabled;
 
       chrome.storage.sync.set(data, () => {
-        console.log(`[InstaBits] Feature set: ${featureId} = ${enabled}`);
         resolve();
       });
     });
