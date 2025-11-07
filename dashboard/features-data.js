@@ -3,118 +3,94 @@
 
 const FEATURES_DATA = [
     {
-        id: 'mediaDownloader',
-        name: 'Media Downloader',
-        searchName: 'media downloader',
-        icon: 'download', // Simple format - uses default gradient
-        badge: {
-            text: 'NEW',
-            color: BADGE_COLORS.green
+        id: 'playbackSpeed',
+        name: 'Playback Speed',
+        searchName: 'playback speed video speed control',
+        icon: {
+            name: 'speed',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #6366f1, #4f46e5)'
         },
-        description: 'Download photos and videos directly from posts and stories',
-        configButton: { text: 'Configure', page: 'media-downloader', icon: 'arrow' },
+        badge: null,
+        description: 'Control video playback speed from 0.25x to 3x for reels and posts',
+        configButton: null,
         disabled: false,
         toggleable: true
     },
     {
-        id: 'storyViewer',
-        name: 'Story Viewer',
-        searchName: 'story viewer',
+        id: 'volumeSlider',
+        name: 'Volume Control',
+        searchName: 'volume control audio slider',
         icon: {
-            name: 'story',
+            name: 'volume',
             color: '#ffffff',
-            background: 'linear-gradient(135deg, #f59e0b, #d97706)' // Custom orange gradient
+            background: 'linear-gradient(135deg, #10b981, #059669)'
         },
-        badge: {
-            text: 'BETA',
-            color: BADGE_COLORS.orange
+        badge: null,
+        description: 'Visual volume slider with persistent settings across videos',
+        configButton: null,
+        disabled: false,
+        toggleable: true
+    },
+    {
+        id: 'videoSeekbar',
+        name: 'Video Seekbar',
+        searchName: 'seekbar progress bar scrubber',
+        icon: {
+            name: 'seekbar',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #f59e0b, #d97706)'
         },
-        description: 'View stories anonymously without sending read receipts',
-        configButton: { text: 'Settings', page: 'story-viewer' }, // Custom button text
+        badge: null,
+        description: 'Interactive progress bar to navigate through videos easily',
+        configButton: null,
+        disabled: false,
+        toggleable: true
+    },
+    {
+        id: 'videoDuration',
+        name: 'Video Duration',
+        searchName: 'duration time timestamp',
+        icon: {
+            name: 'duration',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #3b82f6, #2563eb)'
+        },
+        badge: null,
+        description: 'Display current time and total duration overlay on videos',
+        configButton: null,
+        disabled: false,
+        toggleable: true
+    },
+    {
+        id: 'backgroundPlay',
+        name: 'Background Play',
+        searchName: 'background play tab hidden',
+        icon: {
+            name: 'play',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
+        },
+        badge: null,
+        description: 'Keep videos playing when switching tabs or minimizing browser',
+        configButton: null,
         disabled: false,
         toggleable: true
     },
     {
         id: 'autoScroll',
         name: 'Auto Scroll',
-        searchName: 'auto scroll',
+        searchName: 'auto scroll automatic reels',
         icon: {
             name: 'scroll',
             color: '#ffffff',
-            background: '#3b82f6' // Solid blue background
+            background: 'linear-gradient(135deg, #06b6d4, #0891b2)'
         },
         badge: null,
-        description: 'Automatically scroll through your feed at customizable speeds',
-        configButton: null, // Hide configure button completely
-        disabled: false,
-        toggleable: true
-    },
-    {
-        id: 'profileInsights',
-        name: 'Profile Insights',
-        searchName: 'profile insights',
-        icon: 'profile',
-        badge: {
-            text: 'NEW',
-            color: BADGE_COLORS.green
-        },
-        description: 'View detailed analytics and insights for any profile',
-        configButton: { text: 'View Details', page: 'profile-insights' },
-        disabled: false,
-        toggleable: false
-    },
-    {
-        id: 'dmEnhancements',
-        name: 'DM Enhancements',
-        searchName: 'dm enhancements',
-        icon: 'message',
-        badge: {
-            text: 'BETA',
-            color: BADGE_COLORS.orange
-        },
-        description: 'Advanced messaging features with read receipt controls',
-        configButton: { text: 'Configure', page: 'dm-enhancements' },
-        disabled: false,
-        toggleable: true
-    },
-    {
-        id: 'postScheduler',
-        name: 'Post Scheduler',
-        searchName: 'post scheduler',
-        icon: 'clock',
-        badge: {
-            text: 'COMING SOON',
-            color: BADGE_COLORS.purple
-        },
-        description: 'Schedule posts for optimal engagement times',
-        configButton: { text: 'Learn More', page: 'post-scheduler' },
-        disabled: true,
-        toggleable: false
-    },
-    {
-        id: 'bulkActions',
-        name: 'Bulk Actions',
-        searchName: 'bulk actions',
-        icon: 'grid',
-        badge: null,
-        description: 'Perform actions on multiple posts at once',
-        configButton: { text: 'Configure', page: 'bulk-actions' },
-        disabled: false,
-        toggleable: true
-    },
-    {
-        id: 'enhancedInteractions',
-        name: 'Enhanced Interactions',
-        searchName: 'enhanced interactions',
-        icon: 'star',
-        badge: {
-            text: 'DEPRECATED',
-            color: BADGE_COLORS.gray
-        },
-        description: 'Custom animations and interaction effects (deprecated)',
+        description: 'Automatically scroll to the next reel when current video ends',
         configButton: null,
-        disabled: true,
-        toggleable: false
+        disabled: false,
+        toggleable: true
     }
 ];
 
