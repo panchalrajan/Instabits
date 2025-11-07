@@ -6,15 +6,15 @@ class Dashboard {
         this.init();
     }
 
-    init() {
+    async init() {
         // Scroll to top on load
         window.scrollTo(0, 0);
 
         // Render UI components
         this.renderUI();
 
-        // Load feature states from localStorage
-        this.loadFeatures();
+        // Load feature states from chrome storage
+        await this.loadFeatures();
 
         // Attach event listeners
         this.attachListeners();
@@ -92,16 +92,24 @@ class Dashboard {
         });
     }
 
-    loadFeatures() {
+    async loadFeatures() {
         const toggles = document.querySelectorAll('input[data-feature]');
-        toggles.forEach(toggle => {
-            const feature = toggle.dataset.feature;
-            const storageKey = `instabits_feature_${feature}`;
-            const saved = localStorage.getItem(storageKey);
-            // Default to enabled if not set
-            const isEnabled = saved === null ? true : saved === 'true';
-            toggle.checked = isEnabled;
-            this.features.set(feature, isEnabled);
+
+        // Get all storage keys for features
+        const storageKeys = Array.from(toggles).map(t => `instabits_feature_${t.dataset.feature}`);
+
+        return new Promise((resolve) => {
+            chrome.storage.sync.get(storageKeys, (result) => {
+                toggles.forEach(toggle => {
+                    const feature = toggle.dataset.feature;
+                    const storageKey = `instabits_feature_${feature}`;
+                    // Default to enabled if not set
+                    const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
+                    toggle.checked = isEnabled;
+                    this.features.set(feature, isEnabled);
+                });
+                resolve();
+            });
         });
     }
 
@@ -155,14 +163,18 @@ class Dashboard {
         const storageKey = `instabits_feature_${feature}`;
 
         this.features.set(feature, enabled);
-        localStorage.setItem(storageKey, enabled);
 
-        const featureName = this.formatName(feature);
-        const title = enabled ? 'Feature Enabled' : 'Feature Disabled';
-        const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}`;
-        const type = enabled ? 'success' : 'warning';
+        // Save to chrome storage
+        const data = {};
+        data[storageKey] = enabled;
+        chrome.storage.sync.set(data, () => {
+            const featureName = this.formatName(feature);
+            const title = enabled ? 'Feature Enabled' : 'Feature Disabled';
+            const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}. Reload Instagram to apply changes.`;
+            const type = enabled ? 'success' : 'warning';
 
-        this.showToast(title, message, type);
+            this.showToast(title, message, type);
+        });
     }
 
     handleLinkClick(e) {
