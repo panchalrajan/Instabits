@@ -1,94 +1,40 @@
 class BackgroundPlay {
   constructor() {
-    this.trackedVideos = new WeakMap();
-    this.enabled = true; // Always enabled
+    this.enabled = true;
     this.init();
   }
 
   init() {
-    // Override document visibility change behavior
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden && this.enabled) {
-        // Tab is hidden, but we want videos to keep playing
-        this.keepAllVideosPlaying();
-      }
+    Object.defineProperty(document, 'visibilityState', {
+      get: () => 'visible'
     });
 
-    // Monitor for focus changes
-    window.addEventListener('blur', () => {
-      if (this.enabled) {
-        setTimeout(() => this.keepAllVideosPlaying(), 100);
-      }
-    });
-  }
-
-  keepAllVideosPlaying() {
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      if (video.paused && this.trackedVideos.has(video)) {
-        const wasPlaying = this.trackedVideos.get(video);
-        if (wasPlaying) {
-          video.play().catch(() => {
-            // Ignore errors (autoplay policy, etc)
-          });
-        }
-      }
-    });
-  }
-
-  addVideoTracking(video) {
-    if (!video || this.trackedVideos.has(video)) {
-      return;
-    }
-
-    // Track if video is playing
-    let isPlaying = !video.paused;
-
-    video.addEventListener('play', () => {
-      isPlaying = true;
-      this.trackedVideos.set(video, true);
+    Object.defineProperty(document, 'hidden', {
+      get: () => false
     });
 
-    video.addEventListener('pause', () => {
-      // Detect if this is an auto-pause (tab switch) or user-initiated
-      if (document.hidden || !document.hasFocus()) {
-        // Tab is hidden/blurred, this is auto-pause
-        // Try to resume after a short delay
-        if (this.enabled) {
-          setTimeout(() => {
-            video.play().catch(() => {
-              // Silence errors
-            });
-          }, 50);
-        }
-      } else {
-        // User-initiated pause, respect it
-        isPlaying = false;
-        this.trackedVideos.set(video, false);
-      }
-    });
+    document.addEventListener(
+      'visibilitychange',
+      (e) => {
+        e.stopImmediatePropagation();
+      },
+      true
+    );
 
-    // Store initial state
-    this.trackedVideos.set(video, isPlaying);
+    window.addEventListener(
+      'blur',
+      (e) => {
+        e.stopImmediatePropagation();
+      },
+      true
+    );
 
-    // Cleanup on video removal
-    const observer = new MutationObserver(() => {
-      if (!document.contains(video)) {
-        this.trackedVideos.delete(video);
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    setInterval(() => {
+      window.dispatchEvent(new Event('mousemove'));
+    }, 10000);
   }
 
   processAllVideos() {
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      this.addVideoTracking(video);
-    });
+    // No-op: Background play works via property overrides
   }
 }
