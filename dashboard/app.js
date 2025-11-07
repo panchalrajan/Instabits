@@ -26,8 +26,7 @@ class Dashboard {
 
         // Render search bar with filter button and dropdown
         const uniqueLabels = this.getUniqueLabels();
-        document.getElementById('searchBarContainer').innerHTML =
-            UIComponents.searchBar('Search features...', uniqueLabels) + UIComponents.infoBanner();
+        document.getElementById('searchBarContainer').innerHTML = UIComponents.searchBar('Search features...', uniqueLabels);
 
         // Render feature cards
         const featuresHTML = FEATURES_DATA.map(feature =>
@@ -160,7 +159,7 @@ class Dashboard {
 
         const featureName = this.formatName(feature);
         const title = enabled ? 'Feature Enabled' : 'Feature Disabled';
-        const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}. Reload Instagram to apply changes.`;
+        const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}`;
         const type = enabled ? 'success' : 'warning';
 
         this.showToast(title, message, type);
