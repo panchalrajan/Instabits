@@ -6,37 +6,48 @@ const FEATURES_DATA = [
         id: 'mediaDownloader',
         name: 'Media Downloader',
         searchName: 'media downloader',
-        icon: 'download',
+        icon: 'download', // Simple format - uses default gradient
         badge: {
             text: 'NEW',
-            color: BADGE_COLORS.green  // or use hex directly: '#10b981'
+            color: BADGE_COLORS.green
         },
         description: 'Download photos and videos directly from posts and stories',
-        configPage: 'media-downloader',
-        disabled: false
+        configButton: { text: 'Configure', page: 'media-downloader', icon: 'arrow' },
+        disabled: false,
+        toggleable: true
     },
     {
         id: 'storyViewer',
         name: 'Story Viewer',
         searchName: 'story viewer',
-        icon: 'story',
+        icon: {
+            name: 'story',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #f59e0b, #d97706)' // Custom orange gradient
+        },
         badge: {
             text: 'BETA',
-            color: BADGE_COLORS.orange  // or '#f59e0b'
+            color: BADGE_COLORS.orange
         },
         description: 'View stories anonymously without sending read receipts',
-        configPage: 'story-viewer',
-        disabled: false
+        configButton: { text: 'Settings', page: 'story-viewer' }, // Custom button text
+        disabled: false,
+        toggleable: true
     },
     {
         id: 'autoScroll',
         name: 'Auto Scroll',
         searchName: 'auto scroll',
-        icon: 'scroll',
-        badge: null, // No badge for this feature
+        icon: {
+            name: 'scroll',
+            color: '#ffffff',
+            background: '#3b82f6' // Solid blue background
+        },
+        badge: null,
         description: 'Automatically scroll through your feed at customizable speeds',
-        configPage: 'auto-scroll',
-        disabled: false
+        configButton: null, // Hide configure button completely
+        disabled: false,
+        toggleable: true
     },
     {
         id: 'profileInsights',
@@ -48,8 +59,9 @@ const FEATURES_DATA = [
             color: BADGE_COLORS.green
         },
         description: 'View detailed analytics and insights for any profile',
-        configPage: 'profile-insights',
-        disabled: false
+        configButton: { text: 'View Details', page: 'profile-insights' },
+        disabled: false,
+        toggleable: false
     },
     {
         id: 'dmEnhancements',
@@ -61,8 +73,9 @@ const FEATURES_DATA = [
             color: BADGE_COLORS.orange
         },
         description: 'Advanced messaging features with read receipt controls',
-        configPage: 'dm-enhancements',
-        disabled: false
+        configButton: { text: 'Configure', page: 'dm-enhancements' },
+        disabled: false,
+        toggleable: true
     },
     {
         id: 'postScheduler',
@@ -71,21 +84,23 @@ const FEATURES_DATA = [
         icon: 'clock',
         badge: {
             text: 'COMING SOON',
-            color: BADGE_COLORS.purple  // or '#8b5cf6'
+            color: BADGE_COLORS.purple
         },
         description: 'Schedule posts for optimal engagement times',
-        configPage: 'post-scheduler',
-        disabled: true // Feature is disabled (coming soon)
+        configButton: { text: 'Learn More', page: 'post-scheduler' },
+        disabled: true,
+        toggleable: false
     },
     {
         id: 'bulkActions',
         name: 'Bulk Actions',
         searchName: 'bulk actions',
         icon: 'grid',
-        badge: null, // No badge
+        badge: null,
         description: 'Perform actions on multiple posts at once',
-        configPage: 'bulk-actions',
-        disabled: false
+        configButton: { text: 'Configure', page: 'bulk-actions' },
+        disabled: false,
+        toggleable: true
     },
     {
         id: 'enhancedInteractions',
@@ -94,11 +109,12 @@ const FEATURES_DATA = [
         icon: 'star',
         badge: {
             text: 'DEPRECATED',
-            color: BADGE_COLORS.gray  // or '#94a3b8'
+            color: BADGE_COLORS.gray
         },
         description: 'Custom animations and interaction effects (deprecated)',
-        configPage: 'enhanced-interactions',
-        disabled: true // Feature is disabled (deprecated)
+        configButton: null,
+        disabled: true,
+        toggleable: false
     }
 ];
 

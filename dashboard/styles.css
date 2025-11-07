@@ -168,13 +168,12 @@ body {
 .feature-icon {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
     flex-shrink: 0;
+    /* Background and color set via inline styles */
 }
 
 /* Feature Content - Using flexbox for consistent layout */
@@ -190,7 +189,7 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .feature-header h3 {
@@ -250,7 +249,6 @@ body {
 /* Badge - Dynamic colors via inline styles */
 .badge {
     display: inline-flex;
-    align-self: flex-start;
     padding: 2px 8px;
     border-radius: 6px;
     font-size: 10px;
@@ -262,34 +260,33 @@ body {
     /* Background and text color set via inline styles */
 }
 
-/* Badge spacing - ensures consistent spacing whether badge exists or not */
-.feature-header {
-    margin-bottom: 8px;
-}
-
-.feature-header + .badge {
-    margin-bottom: 8px;
-}
-
-/* When badge is missing, add equivalent space before description */
-.feature-header + .feature-description {
-    margin-top: 26px;
-}
-
 /* Feature Description */
 .feature-description {
     font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.5;
     flex-grow: 1;
+    margin-bottom: 12px;
 }
 
-/* When there's a badge before description */
-.badge + .feature-description {
-    margin-top: 0;
+/* Feature Footer - Badge and Configure button */
+.feature-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
 }
 
-/* Feature Link - Anchored to bottom */
+.feature-footer-left {
+    flex-shrink: 0;
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+}
+
+/* Feature Link - Right aligned in footer */
 .feature-link {
     display: inline-flex;
     align-items: center;
@@ -299,8 +296,7 @@ body {
     color: var(--primary);
     text-decoration: none;
     transition: all 0.2s;
-    align-self: flex-start;
-    margin-top: 12px;
+    flex-shrink: 0;
 }
 
 .feature-link:hover {
