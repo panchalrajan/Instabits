@@ -27,8 +27,6 @@
    * Initialize the extension
    */
   function init() {
-    console.log('InstaBits initialized');
-
     // Initial scan
     processVideos();
 
