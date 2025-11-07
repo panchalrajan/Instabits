@@ -342,6 +342,24 @@ class UIComponents {
     }
 
     /**
+     * Create an info banner
+     * @returns {string} HTML string
+     */
+    static infoBanner() {
+        return `
+            <div class="info-banner">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                    <circle cx="10" cy="10" r="8" stroke-width="2"/>
+                    <path d="M10 14V10M10 7h.01" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="info-banner-text">
+                    <strong>Settings apply on reload:</strong> After enabling or disabling features, reload your Instagram tab to see the changes.
+                </div>
+            </div>
+        `;
+    }
+
+    /**
      * Create a no results message
      * @returns {string} HTML string
      */
