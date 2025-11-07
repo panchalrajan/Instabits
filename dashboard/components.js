@@ -90,6 +90,28 @@ class UIComponents {
     }
 
     /**
+     * Create a square icon with customizable colors
+     * @param {Object|string} iconConfig - Icon configuration object or icon name string
+     * @returns {string} HTML string
+     */
+    static squareIcon(iconConfig) {
+        // Support both simple string and object format
+        const config = typeof iconConfig === 'string'
+            ? { name: iconConfig, color: 'white', background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))' }
+            : {
+                name: iconConfig.name,
+                color: iconConfig.color || 'white',
+                background: iconConfig.background || 'linear-gradient(135deg, var(--primary), var(--primary-hover))'
+            };
+
+        return `
+            <div class="feature-icon" style="background: ${config.background}; color: ${config.color};">
+                ${this.icon(config.name)}
+            </div>
+        `;
+    }
+
+    /**
      * Create a feature card component
      * @param {Object} feature - Feature configuration object
      * @returns {string} HTML string
@@ -102,33 +124,56 @@ class UIComponents {
             icon,
             badge,
             description,
-            configPage,
-            disabled = false
+            configButton = null,
+            disabled = false,
+            toggleable = true
         } = feature;
 
+        // Badge HTML
         const badgeHtml = badge ? this.badge(badge.text, badge.color) : '';
-        const disabledAttr = disabled ? 'disabled' : '';
-        const disabledClass = disabled ? 'disabled' : '';
+
+        // Toggle HTML - only show if toggleable is true
+        const toggleHtml = toggleable ? `
+            <label class="toggle">
+                <input type="checkbox" data-feature="${id}" ${disabled ? 'disabled' : ''}>
+                <span class="toggle-slider"></span>
+            </label>
+        ` : '';
+
+        // Configure button
+        let configButtonHtml = '';
+        if (configButton) {
+            const buttonText = configButton.text || 'Configure';
+            const buttonPage = configButton.page;
+            const buttonIcon = configButton.icon || 'arrow';
+            const disabledClass = disabled ? 'disabled' : '';
+
+            configButtonHtml = `
+                <a href="#" class="feature-link ${disabledClass}" data-page="${buttonPage}">
+                    ${buttonText}
+                    ${this.icon(buttonIcon)}
+                </a>
+            `;
+        }
+
+        // Icon HTML using squareIcon
+        const iconHtml = this.squareIcon(icon);
 
         return `
             <div class="feature-card" data-feature-name="${searchName || name.toLowerCase()}">
-                <div class="feature-icon">
-                    ${this.icon(icon)}
-                </div>
+                ${iconHtml}
                 <div class="feature-content">
                     <div class="feature-header">
                         <h3>${name}</h3>
-                        <label class="toggle">
-                            <input type="checkbox" data-feature="${id}" ${disabledAttr}>
-                            <span class="toggle-slider"></span>
-                        </label>
+                        ${toggleHtml}
                     </div>
-                    ${badgeHtml}
                     <p class="feature-description">${description}</p>
-                    <a href="#" class="feature-link ${disabledClass}" data-page="${configPage}">
-                        Configure
-                        ${this.icon('arrow')}
-                    </a>
+                    <div class="feature-footer">
+                        <div class="feature-footer-left">
+                            ${badgeHtml}
+                        </div>
+                        ${configButtonHtml}
+                    </div>
                 </div>
             </div>
         `;
