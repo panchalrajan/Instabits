@@ -24,10 +24,9 @@ class Dashboard {
         // Render header
         document.getElementById('headerContainer').innerHTML = UIComponents.header();
 
-        // Render search bar with filter button
+        // Render search bar with filter button and dropdown
         const uniqueLabels = this.getUniqueLabels();
-        document.getElementById('searchBarContainer').innerHTML =
-            UIComponents.searchBar() + UIComponents.filterDropdown(uniqueLabels);
+        document.getElementById('searchBarContainer').innerHTML = UIComponents.searchBar('Search features...', uniqueLabels);
 
         // Render feature cards
         const featuresHTML = FEATURES_DATA.map(feature =>

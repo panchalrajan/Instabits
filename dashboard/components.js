@@ -264,11 +264,12 @@ class UIComponents {
     }
 
     /**
-     * Create a search input component
+     * Create a search input component with filter button
      * @param {string} placeholder - Placeholder text
+     * @param {Array} labels - Array of unique label objects for filter dropdown
      * @returns {string} HTML string
      */
-    static searchBar(placeholder = 'Search features...') {
+    static searchBar(placeholder = 'Search features...', labels = []) {
         return `
             <div class="search-filter-wrapper">
                 <div class="search-container">
@@ -285,6 +286,7 @@ class UIComponents {
                     <span class="filter-text">Filter</span>
                     <span class="filter-count" id="filterCount" style="display: none;"></span>
                 </button>
+                ${this.filterDropdown(labels)}
             </div>
         `;
     }
