@@ -10,6 +10,21 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon_16.png",
+      "32": "icons/icon_32.png",
+      "48": "icons/icon_48.png",
+      "128": "icons/icon_128.png"
+    },
+    "default_title": "InstaBits Settings"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "https://*.instagram.com/*"
   ],
@@ -25,6 +40,7 @@
         "src/css/playbackSpeed.css"
       ],
       "js": [
+        "src/utils.js",
         "src/features/videoDuration.js",
         "src/features/videoSeekbar.js",
         "src/features/volumeSlider.js",

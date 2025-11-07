@@ -1,32 +1,46 @@
 // InstaBits - Main Application Entry Point
 
-(function() {
+(async function() {
   'use strict';
 
-  // Initialize feature instances
-  const videoDuration = new VideoDuration();
-  const videoSeekbar = new VideoSeekbar();
-  const volumeSlider = new VolumeSlider();
-  const playbackSpeed = new PlaybackSpeed();
-  const backgroundPlay = new BackgroundPlay();
-  const autoScroll = new AutoScroll();
+  // Feature instances (will be initialized based on settings)
+  let videoDuration = null;
+  let videoSeekbar = null;
+  let volumeSlider = null;
+  let playbackSpeed = null;
+  let backgroundPlay = null;
+  let autoScroll = null;
+
+  /**
+   * Initialize feature instances based on user settings
+   */
+  async function initializeFeatures() {
+    videoDuration = await InstaBitsUtils.isFeatureEnabled('videoDuration') ? new VideoDuration() : null;
+    videoSeekbar = await InstaBitsUtils.isFeatureEnabled('videoSeekbar') ? new VideoSeekbar() : null;
+    volumeSlider = await InstaBitsUtils.isFeatureEnabled('volumeSlider') ? new VolumeSlider() : null;
+    playbackSpeed = await InstaBitsUtils.isFeatureEnabled('playbackSpeed') ? new PlaybackSpeed() : null;
+    backgroundPlay = await InstaBitsUtils.isFeatureEnabled('backgroundPlay') ? new BackgroundPlay() : null;
+    autoScroll = await InstaBitsUtils.isFeatureEnabled('autoScroll') ? new AutoScroll() : null;
+  }
 
   /**
    * Process all videos on the page
    */
   function processVideos() {
-    videoDuration.processAllVideos();
-    videoSeekbar.processAllVideos();
-    volumeSlider.processAllVideos();
-    playbackSpeed.processAllVideos();
-    backgroundPlay.processAllVideos();
-    autoScroll.processAllVideos();
+    if (videoDuration) videoDuration.processAllVideos();
+    if (videoSeekbar) videoSeekbar.processAllVideos();
+    if (volumeSlider) volumeSlider.processAllVideos();
+    if (playbackSpeed) playbackSpeed.processAllVideos();
+    if (backgroundPlay) backgroundPlay.processAllVideos();
+    if (autoScroll) autoScroll.processAllVideos();
   }
 
   /**
    * Initialize the extension
    */
-  function init() {
+  async function init() {
+    await initializeFeatures();
+
     // Initial scan
     processVideos();
 
