@@ -2,15 +2,43 @@ class Dashboard {
     constructor() {
         this.features = new Map();
         this.toast = document.getElementById('toast');
-        this.searchInput = document.getElementById('searchInput');
-        this.featuresGrid = document.getElementById('featuresGrid');
-        this.noResults = document.getElementById('noResults');
         this.init();
     }
 
     init() {
+        // Scroll to top on load
+        window.scrollTo(0, 0);
+
+        // Render UI components
+        this.renderUI();
+
+        // Load feature states from localStorage
         this.loadFeatures();
+
+        // Attach event listeners
         this.attachListeners();
+    }
+
+    renderUI() {
+        // Render header
+        document.getElementById('headerContainer').innerHTML = UIComponents.header();
+
+        // Render search bar
+        document.getElementById('searchBarContainer').innerHTML = UIComponents.searchBar();
+
+        // Render feature cards
+        const featuresHTML = FEATURES_DATA.map(feature =>
+            UIComponents.featureCard(feature)
+        ).join('');
+        document.getElementById('featuresGrid').innerHTML = featuresHTML;
+
+        // Render no results message
+        document.getElementById('noResultsContainer').innerHTML = UIComponents.noResults();
+
+        // Cache DOM elements after rendering
+        this.searchInput = document.getElementById('searchInput');
+        this.featuresGrid = document.getElementById('featuresGrid');
+        this.noResults = document.getElementById('noResults');
     }
 
     loadFeatures() {
@@ -35,10 +63,10 @@ class Dashboard {
         });
 
         // Header icon buttons
-        document.querySelectorAll('.icon-btn').forEach(btn => {
+        document.querySelectorAll('.icon-btn[data-action]').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const title = btn.getAttribute('title');
-                this.showToast(`${title} - Coming soon!`);
+                const action = btn.dataset.action;
+                this.handleHeaderAction(action);
             });
         });
 
@@ -53,15 +81,23 @@ class Dashboard {
         this.features.set(feature, enabled);
         localStorage.setItem(feature, enabled);
 
-        this.showToast(`${this.formatName(feature)} ${enabled ? 'enabled' : 'disabled'}`);
+        const featureName = this.formatName(feature);
+        const title = enabled ? 'Feature Enabled' : 'Feature Disabled';
+        const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}`;
+        const type = enabled ? 'success' : 'warning';
+
+        this.showToast(title, message, type);
     }
 
     handleLinkClick(e) {
         e.preventDefault();
         const page = e.currentTarget.dataset.page;
 
-        // For now, just show a toast. Later this will navigate to actual pages
-        this.showToast(`Opening ${this.formatName(page)} configuration...`);
+        this.showToast(
+            'Opening Configuration',
+            `${this.formatName(page)} settings will open soon`,
+            'info'
+        );
 
         // TODO: Navigate to feature configuration page
         console.log('Navigate to:', page);
@@ -99,17 +135,75 @@ class Dashboard {
         }
     }
 
-    showToast(message) {
+    showToast(title, message, type = 'info') {
+        // Clear any existing toast timeout
         if (this.toastTimeout) {
             clearTimeout(this.toastTimeout);
         }
 
-        this.toast.textContent = message;
-        this.toast.classList.add('show');
-
-        this.toastTimeout = setTimeout(() => {
+        // Remove existing toast immediately if showing
+        if (this.toast.classList.contains('show')) {
             this.toast.classList.remove('show');
-        }, 2500);
+
+            // Wait for slide out animation before showing new toast
+            setTimeout(() => {
+                this.displayToast(title, message, type);
+            }, 200);
+        } else {
+            this.displayToast(title, message, type);
+        }
+    }
+
+    displayToast(title, message, type) {
+        // Remove all type classes
+        this.toast.className = 'toast';
+
+        // Add the appropriate type class
+        this.toast.classList.add(`toast-${type}`);
+
+        // Use UIComponents to generate toast HTML
+        this.toast.innerHTML = UIComponents.toast({ title, message, type });
+
+        // Show toast with animation
+        requestAnimationFrame(() => {
+            this.toast.classList.add('show');
+        });
+
+        // Auto hide after 3 seconds
+        this.toastTimeout = setTimeout(() => {
+            this.hideToast();
+        }, 3000);
+    }
+
+    hideToast() {
+        this.toast.classList.remove('show');
+        if (this.toastTimeout) {
+            clearTimeout(this.toastTimeout);
+        }
+    }
+
+    handleHeaderAction(action) {
+        const actionMessages = {
+            favorites: {
+                title: 'Favorites',
+                message: 'Your favorite features will appear here soon'
+            },
+            feedback: {
+                title: 'Feedback',
+                message: 'Share your thoughts and suggestions with us'
+            },
+            settings: {
+                title: 'Settings',
+                message: 'Global settings will be available soon'
+            }
+        };
+
+        const actionData = actionMessages[action] || {
+            title: 'Coming Soon',
+            message: 'This feature will be available soon'
+        };
+
+        this.showToast(actionData.title, actionData.message, 'info');
     }
 
     formatName(str) {
