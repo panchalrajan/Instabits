@@ -83,6 +83,27 @@ class UIComponents {
             settings: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
                 <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M16.5 12.5a1.5 1.5 0 0 0 .3 1.65l.05.05a1.82 1.82 0 0 1 0 2.57 1.82 1.82 0 0 1-2.57 0l-.05-.05a1.5 1.5 0 0 0-1.65-.3 1.5 1.5 0 0 0-.9 1.37v.14a1.82 1.82 0 0 1-3.64 0v-.07a1.5 1.5 0 0 0-.98-1.37 1.5 1.5 0 0 0-1.65.3l-.05.05a1.82 1.82 0 0 1-2.57 0 1.82 1.82 0 0 1 0-2.57l.05-.05a1.5 1.5 0 0 0 .3-1.65 1.5 1.5 0 0 0-1.37-.9h-.14a1.82 1.82 0 0 1 0-3.64h.07a1.5 1.5 0 0 0 1.37-.98 1.5 1.5 0 0 0-.3-1.65l-.05-.05a1.82 1.82 0 0 1 0-2.57 1.82 1.82 0 0 1 2.57 0l.05.05a1.5 1.5 0 0 0 1.65.3h.07a1.5 1.5 0 0 0 .9-1.37v-.14a1.82 1.82 0 0 1 3.64 0v.07a1.5 1.5 0 0 0 .9 1.37 1.5 1.5 0 0 0 1.65-.3l.05-.05a1.82 1.82 0 0 1 2.57 0 1.82 1.82 0 0 1 0 2.57l-.05.05a1.5 1.5 0 0 0-.3 1.65v.07a1.5 1.5 0 0 0 1.37.9h.14a1.82 1.82 0 0 1 0 3.64h-.07a1.5 1.5 0 0 0-1.37.98z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>`,
+            // Feature icons
+            volume: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>`,
+            seekbar: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="2" y="10" width="20" height="4" rx="2" stroke-width="2"/>
+                <circle cx="6" cy="12" r="2" fill="currentColor"/>
+            </svg>`,
+            speed: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="12" r="3" stroke-width="2"/>
+            </svg>`,
+            duration: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                <path d="M12 6v6l4 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M16 2h2v4M8 2H6v4" stroke-width="2" stroke-linecap="round"/>
+            </svg>`,
+            play: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                <path d="M10 8l6 4-6 4V8z" fill="currentColor" stroke-width="2" stroke-linejoin="round"/>
             </svg>`
         };
 

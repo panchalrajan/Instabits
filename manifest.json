@@ -37,6 +37,7 @@
         "src/css/playbackSpeed.css"
       ],
       "js": [
+        "src/utils.js",
         "src/features/videoDuration.js",
         "src/features/videoSeekbar.js",
         "src/features/volumeSlider.js",

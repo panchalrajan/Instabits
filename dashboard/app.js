@@ -96,9 +96,12 @@ class Dashboard {
         const toggles = document.querySelectorAll('input[data-feature]');
         toggles.forEach(toggle => {
             const feature = toggle.dataset.feature;
-            const saved = localStorage.getItem(feature);
-            toggle.checked = saved === 'true';
-            this.features.set(feature, toggle.checked);
+            const storageKey = `instabits_feature_${feature}`;
+            const saved = localStorage.getItem(storageKey);
+            // Default to enabled if not set
+            const isEnabled = saved === null ? true : saved === 'true';
+            toggle.checked = isEnabled;
+            this.features.set(feature, isEnabled);
         });
     }
 
@@ -149,9 +152,10 @@ class Dashboard {
     handleToggle(toggle) {
         const feature = toggle.dataset.feature;
         const enabled = toggle.checked;
+        const storageKey = `instabits_feature_${feature}`;
 
         this.features.set(feature, enabled);
-        localStorage.setItem(feature, enabled);
+        localStorage.setItem(storageKey, enabled);
 
         const featureName = this.formatName(feature);
         const title = enabled ? 'Feature Enabled' : 'Feature Disabled';

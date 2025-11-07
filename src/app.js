@@ -3,24 +3,24 @@
 (function() {
   'use strict';
 
-  // Initialize feature instances
-  const videoDuration = new VideoDuration();
-  const videoSeekbar = new VideoSeekbar();
-  const volumeSlider = new VolumeSlider();
-  const playbackSpeed = new PlaybackSpeed();
-  const backgroundPlay = new BackgroundPlay();
-  const autoScroll = new AutoScroll();
+  // Initialize feature instances only if enabled
+  const videoDuration = InstaBitsUtils.isFeatureEnabled('videoDuration') ? new VideoDuration() : null;
+  const videoSeekbar = InstaBitsUtils.isFeatureEnabled('videoSeekbar') ? new VideoSeekbar() : null;
+  const volumeSlider = InstaBitsUtils.isFeatureEnabled('volumeSlider') ? new VolumeSlider() : null;
+  const playbackSpeed = InstaBitsUtils.isFeatureEnabled('playbackSpeed') ? new PlaybackSpeed() : null;
+  const backgroundPlay = InstaBitsUtils.isFeatureEnabled('backgroundPlay') ? new BackgroundPlay() : null;
+  const autoScroll = InstaBitsUtils.isFeatureEnabled('autoScroll') ? new AutoScroll() : null;
 
   /**
    * Process all videos on the page
    */
   function processVideos() {
-    videoDuration.processAllVideos();
-    videoSeekbar.processAllVideos();
-    volumeSlider.processAllVideos();
-    playbackSpeed.processAllVideos();
-    backgroundPlay.processAllVideos();
-    autoScroll.processAllVideos();
+    if (videoDuration) videoDuration.processAllVideos();
+    if (videoSeekbar) videoSeekbar.processAllVideos();
+    if (volumeSlider) volumeSlider.processAllVideos();
+    if (playbackSpeed) playbackSpeed.processAllVideos();
+    if (backgroundPlay) backgroundPlay.processAllVideos();
+    if (autoScroll) autoScroll.processAllVideos();
   }
 
   /**
