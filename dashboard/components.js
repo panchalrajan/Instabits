@@ -264,18 +264,58 @@ class UIComponents {
     }
 
     /**
-     * Create a search input component
+     * Create a search input component with filter button
      * @param {string} placeholder - Placeholder text
+     * @param {Array} labels - Array of unique label objects for filter dropdown
      * @returns {string} HTML string
      */
-    static searchBar(placeholder = 'Search features...') {
+    static searchBar(placeholder = 'Search features...', labels = []) {
         return `
-            <div class="search-container">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                    <circle cx="8.5" cy="8.5" r="5.5" stroke-width="1.5"/>
-                    <path d="M12.5 12.5L17 17" stroke-width="1.5" stroke-linecap="round"/>
-                </svg>
-                <input type="text" id="searchInput" class="search-input" placeholder="${placeholder}">
+            <div class="search-filter-wrapper">
+                <div class="search-container">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                        <circle cx="8.5" cy="8.5" r="5.5" stroke-width="1.5"/>
+                        <path d="M12.5 12.5L17 17" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <input type="text" id="searchInput" class="search-input" placeholder="${placeholder}">
+                </div>
+                <button class="filter-btn" id="filterBtn" title="Filter by labels">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                        <path d="M2 4h16M5 10h10M8 16h4" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span class="filter-text">Filter</span>
+                    <span class="filter-count" id="filterCount" style="display: none;"></span>
+                </button>
+                ${this.filterDropdown(labels)}
+            </div>
+        `;
+    }
+
+    /**
+     * Create a filter dropdown component
+     * @param {Array} labels - Array of unique label objects with text and color
+     * @returns {string} HTML string
+     */
+    static filterDropdown(labels = []) {
+        const labelCheckboxes = labels.map(label => `
+            <label class="filter-option">
+                <input type="checkbox" class="filter-checkbox" data-label="${label.text}">
+                <span class="filter-option-content">
+                    ${this.badge(label.text, label.color)}
+                    <span class="filter-option-count" data-label-count="${label.text}">0</span>
+                </span>
+            </label>
+        `).join('');
+
+        return `
+            <div class="filter-dropdown" id="filterDropdown" style="display: none;">
+                <div class="filter-dropdown-header">
+                    <h4>Filter by Labels</h4>
+                    <button class="filter-clear" id="filterClear">Clear All</button>
+                </div>
+                <div class="filter-dropdown-content">
+                    ${labelCheckboxes.length > 0 ? labelCheckboxes : '<p class="filter-empty">No labels available</p>'}
+                </div>
             </div>
         `;
     }

@@ -1,6 +1,7 @@
 class Dashboard {
     constructor() {
         this.features = new Map();
+        this.selectedFilters = new Set();
         this.toast = document.getElementById('toast');
         this.init();
     }
@@ -23,8 +24,9 @@ class Dashboard {
         // Render header
         document.getElementById('headerContainer').innerHTML = UIComponents.header();
 
-        // Render search bar
-        document.getElementById('searchBarContainer').innerHTML = UIComponents.searchBar();
+        // Render search bar with filter button and dropdown
+        const uniqueLabels = this.getUniqueLabels();
+        document.getElementById('searchBarContainer').innerHTML = UIComponents.searchBar('Search features...', uniqueLabels);
 
         // Render feature cards
         const featuresHTML = FEATURES_DATA.map(feature =>
@@ -39,6 +41,55 @@ class Dashboard {
         this.searchInput = document.getElementById('searchInput');
         this.featuresGrid = document.getElementById('featuresGrid');
         this.noResults = document.getElementById('noResults');
+        this.filterBtn = document.getElementById('filterBtn');
+        this.filterDropdown = document.getElementById('filterDropdown');
+        this.filterCount = document.getElementById('filterCount');
+        this.filterClear = document.getElementById('filterClear');
+
+        // Update label counts
+        this.updateLabelCounts();
+    }
+
+    /**
+     * Extract unique labels from FEATURES_DATA
+     * @returns {Array} Array of unique label objects with text and color
+     */
+    getUniqueLabels() {
+        const labelsMap = new Map();
+
+        FEATURES_DATA.forEach(feature => {
+            if (feature.badge && feature.badge.text) {
+                labelsMap.set(feature.badge.text, {
+                    text: feature.badge.text,
+                    color: feature.badge.color
+                });
+            }
+        });
+
+        return Array.from(labelsMap.values());
+    }
+
+    /**
+     * Update the count of features for each label
+     */
+    updateLabelCounts() {
+        const labelCounts = new Map();
+
+        // Count features for each label
+        FEATURES_DATA.forEach(feature => {
+            if (feature.badge && feature.badge.text) {
+                const count = labelCounts.get(feature.badge.text) || 0;
+                labelCounts.set(feature.badge.text, count + 1);
+            }
+        });
+
+        // Update count displays
+        labelCounts.forEach((count, label) => {
+            const countElement = document.querySelector(`[data-label-count="${label}"]`);
+            if (countElement) {
+                countElement.textContent = count;
+            }
+        });
     }
 
     loadFeatures() {
@@ -71,7 +122,28 @@ class Dashboard {
         });
 
         // Search input
-        this.searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+        this.searchInput.addEventListener('input', (e) => this.handleSearchAndFilter(e.target.value));
+
+        // Filter button
+        this.filterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleFilterDropdown();
+        });
+
+        // Filter checkboxes
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => this.handleFilterChange(e));
+        });
+
+        // Clear filters button
+        this.filterClear.addEventListener('click', () => this.clearAllFilters());
+
+        // Close filter dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.filterBtn.contains(e.target) && !this.filterDropdown.contains(e.target)) {
+                this.filterDropdown.style.display = 'none';
+            }
+        });
     }
 
     handleToggle(toggle) {
@@ -103,7 +175,7 @@ class Dashboard {
         console.log('Navigate to:', page);
     }
 
-    handleSearch(query) {
+    handleSearchAndFilter(query) {
         const searchTerm = query.toLowerCase().trim();
         const cards = document.querySelectorAll('.feature-card');
         let visibleCount = 0;
@@ -113,11 +185,21 @@ class Dashboard {
             const featureTitle = card.querySelector('h3').textContent.toLowerCase();
             const featureDesc = card.querySelector('.feature-description').textContent.toLowerCase();
 
-            const matches = featureName.includes(searchTerm) ||
-                          featureTitle.includes(searchTerm) ||
-                          featureDesc.includes(searchTerm);
+            // Check search match
+            const searchMatches = !searchTerm ||
+                featureName.includes(searchTerm) ||
+                featureTitle.includes(searchTerm) ||
+                featureDesc.includes(searchTerm);
 
-            if (matches) {
+            // Check filter match
+            let filterMatches = true;
+            if (this.selectedFilters.size > 0) {
+                const badge = card.querySelector('.badge');
+                const badgeText = badge ? badge.textContent.trim() : null;
+                filterMatches = badgeText && this.selectedFilters.has(badgeText);
+            }
+
+            if (searchMatches && filterMatches) {
                 card.classList.remove('hidden');
                 visibleCount++;
             } else {
@@ -132,6 +214,58 @@ class Dashboard {
         } else {
             this.noResults.style.display = 'none';
             this.featuresGrid.style.display = 'grid';
+        }
+    }
+
+    /**
+     * Toggle filter dropdown visibility
+     */
+    toggleFilterDropdown() {
+        const isVisible = this.filterDropdown.style.display === 'block';
+        this.filterDropdown.style.display = isVisible ? 'none' : 'block';
+    }
+
+    /**
+     * Handle filter checkbox change
+     */
+    handleFilterChange(e) {
+        const checkbox = e.target;
+        const label = checkbox.dataset.label;
+
+        if (checkbox.checked) {
+            this.selectedFilters.add(label);
+        } else {
+            this.selectedFilters.delete(label);
+        }
+
+        this.updateFilterCount();
+        this.handleSearchAndFilter(this.searchInput.value);
+    }
+
+    /**
+     * Clear all filters
+     */
+    clearAllFilters() {
+        this.selectedFilters.clear();
+        document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        this.updateFilterCount();
+        this.handleSearchAndFilter(this.searchInput.value);
+    }
+
+    /**
+     * Update filter count badge
+     */
+    updateFilterCount() {
+        const count = this.selectedFilters.size;
+        if (count > 0) {
+            this.filterCount.textContent = count;
+            this.filterCount.style.display = 'inline-flex';
+            this.filterBtn.classList.add('filter-active');
+        } else {
+            this.filterCount.style.display = 'none';
+            this.filterBtn.classList.remove('filter-active');
         }
     }
 
