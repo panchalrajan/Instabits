@@ -2,6 +2,18 @@ class AutoScroll {
   constructor() {
     this.enabled = true;
     this.VIDEOS_LIST_SELECTOR = "main video";
+    this.intervalId = null;
+    this.init();
+  }
+
+  init() {
+    // Bind the event handler once
+    this.boundEndVideoEvent = this.endVideoEvent.bind(this);
+
+    // Set up interval to periodically check and update current video
+    this.intervalId = setInterval(() => {
+      this.processAllVideos();
+    }, 2000);
   }
 
   isReelsPage() {
@@ -56,12 +68,20 @@ class AutoScroll {
 
   processAllVideos() {
     if (!this.isReelsPage()) return;
+    this.addVideoEndEvent();
+  }
 
-    // Bind the event handler once
-    if (!this.boundEndVideoEvent) {
-      this.boundEndVideoEvent = this.endVideoEvent.bind(this);
+  cleanup() {
+    // Clear interval when feature is disabled
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
     }
 
-    this.addVideoEndEvent();
+    // Remove event listener from current video
+    const currentVideo = this.getCurrentVideo();
+    if (currentVideo) {
+      currentVideo.removeEventListener("ended", this.boundEndVideoEvent);
+    }
   }
 }

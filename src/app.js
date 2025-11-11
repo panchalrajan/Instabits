@@ -15,7 +15,8 @@
       .register('playbackSpeed', PlaybackSpeed, { useVideoObserver: true, priority: 2 })
       .register('pipMode', PIPMode, { useVideoObserver: true, priority: 1 })
       .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 10 })
-      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 9 });
+      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 9 })
+      .register('zenMode', ZenMode, { useVideoObserver: true, priority: 6 });
   }
 
   /**

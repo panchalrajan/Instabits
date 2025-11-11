@@ -106,6 +106,21 @@ const FEATURES_DATA = [
         configButton: null,
         disabled: false,
         toggleable: true
+    },
+    {
+        id: 'zenMode',
+        name: 'Zen Mode',
+        searchName: 'zen mode distraction free clean minimal overlay hide',
+        icon: {
+            name: 'zen',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #a855f7, #9333ea)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Hide video overlays for distraction-free viewing. Overlays appear on hover.',
+        configButton: null,
+        disabled: false,
+        toggleable: true
     }
 ];
 

@@ -108,6 +108,12 @@ class UIComponents {
             pip: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <rect x="2" y="3" width="20" height="14" rx="2" stroke-width="2"/>
                 <rect x="12" y="10" width="8" height="5" rx="1" fill="currentColor"/>
+            </svg>`,
+            zen: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                <path d="M8 15c1.5 1 3.5 1 4 1s2.5 0 4-1" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="9" cy="9" r="1" fill="currentColor"/>
+                <circle cx="15" cy="9" r="1" fill="currentColor"/>
             </svg>`
         };
 
