@@ -1,34 +1,23 @@
-class PIPMode {
+class PIPMode extends BaseFeature {
   constructor() {
-    this.trackedVideos = new WeakMap();
-    this.currentPIPVideo = null;
-    this.isInPIPMode = false;
-    this.init();
+    super();
   }
 
-  init() {
+  initialize() {
+    this.currentPIPVideo = null;
+    this.isInPIPMode = false;
     this.setupVideoSwitching();
   }
 
-  isReelsFeed() {
-    return window.location.pathname.includes('/reels/');
-  }
-
-  createButton() {
-    const button = document.createElement('button');
-    button.className = 'insta-pip-button';
-    button.innerHTML = `
-      <svg class="pip-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  createPIPButton() {
+    const button = this.createButton(
+      'insta-pip-button',
+      `<svg class="pip-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
         <rect x="12" y="10" width="8" height="5" rx="1" fill="currentColor"/>
-      </svg>
-    `;
-    button.title = 'Picture-in-Picture';
-
-    if (this.isReelsFeed()) {
-      button.classList.add('reels-view');
-    }
-
+      </svg>`,
+      'Picture-in-Picture'
+    );
     return button;
   }
 
@@ -147,7 +136,7 @@ class PIPMode {
   updateAllButtonStates() {
     const videos = document.querySelectorAll('video');
     videos.forEach(video => {
-      const tracked = this.trackedVideos.get(video);
+      const tracked = this.getTrackedData(video);
       if (tracked && tracked.button) {
         if (video === this.currentPIPVideo && this.isInPIPMode) {
           tracked.button.classList.add('active');
@@ -239,35 +228,36 @@ class PIPMode {
         childList: true,
         subtree: true
       });
+    } else {
+      // Fallback: Speed button not found (disabled or not rendered)
+      // Position PIP button at least 12px from leading edge
+      pipButton.style.left = '12px';
     }
   }
 
-  addControlToVideo(video) {
+  processVideo(video) {
     if (!video) return null;
 
     if (!this.isReelsFeed()) {
       return null;
     }
 
-    if (this.trackedVideos.has(video)) {
+    if (this.isVideoTracked(video)) {
       return null;
     }
 
-    const videoParent = video.parentElement;
+    const videoParent = this.getVideoParent(video);
     if (!videoParent) return null;
 
-    const currentPosition = window.getComputedStyle(videoParent).position;
-    if (currentPosition === 'static') {
-      videoParent.style.position = 'relative';
-    }
+    this.ensureParentPositioned(videoParent);
 
-    const button = this.createButton();
+    const button = this.createPIPButton();
     videoParent.appendChild(button);
 
     // Position PIP button relative to speed button
     this.positionRelativeToSpeedButton(button, videoParent);
 
-    this.trackedVideos.set(video, { button });
+    this.addToTrackedVideos(video, { button });
 
     button.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -295,24 +285,9 @@ class PIPMode {
       }
     });
 
-    const observer = new MutationObserver(() => {
-      if (!document.contains(video)) {
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    // Cleanup on video removal
+    this.setupCleanupObserver(video);
 
     return { button };
-  }
-
-  processAllVideos() {
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      this.addControlToVideo(video);
-    });
   }
 }

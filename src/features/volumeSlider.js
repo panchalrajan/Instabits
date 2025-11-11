@@ -1,32 +1,28 @@
-class VolumeSlider {
+class VolumeSlider extends BaseFeature {
   constructor() {
-    this.trackedVideos = new WeakMap();
+    super();
+  }
+
+  initialize() {
+    // Set default first
+    this.savedVolume = 1.0;
+
+    // Load saved volume asynchronously
     this.loadSavedVolume();
   }
 
-  loadSavedVolume() {
-    const saved = localStorage.getItem('instabits_volume');
-    this.savedVolume = saved !== null ? parseFloat(saved) : 1.0;
+  async loadSavedVolume() {
+    const saved = await storageService.getUserPreference('volume', 1.0);
+    this.savedVolume = saved;
   }
 
-  saveVolume(volume) {
+  async saveVolume(volume) {
     this.savedVolume = volume;
-    localStorage.setItem('instabits_volume', volume.toString());
+    await storageService.setUserPreference('volume', volume);
   }
 
-  isReelsFeed() {
-    // Only reels feed (/reels/), not single reel (/reel/)
-    return window.location.pathname.includes('/reels/');
-  }
-
-  create() {
-    const container = document.createElement('div');
-    container.className = 'insta-volume-slider-container';
-
-    // Only add reels-view class for reels feed (/reels/), not single reel (/reel/)
-    if (this.isReelsFeed()) {
-      container.classList.add('reels-view');
-    }
+  createVolumeSlider() {
+    const container = this.createContainer('insta-volume-slider-container');
 
     const track = document.createElement('div');
     track.className = 'insta-volume-slider-track';
@@ -109,12 +105,12 @@ class VolumeSlider {
     return null;
   }
 
-  addSliderToVideo(video) {
-    if (!video || this.trackedVideos.has(video)) {
+  processVideo(video) {
+    if (!video || this.isVideoTracked(video)) {
       return null;
     }
 
-    const videoParent = video.parentElement;
+    const videoParent = this.getVideoParent(video);
     if (!videoParent) return null;
 
     const audioButton = this.findAudioButton(videoParent);
@@ -125,14 +121,14 @@ class VolumeSlider {
     // Apply saved volume to this video
     video.volume = this.savedVolume;
 
-    const { container, track, fill, thumb } = this.create();
+    const { container, track, fill, thumb } = this.createVolumeSlider();
 
     videoParent.appendChild(container);
 
     // Position slider relative to audio button
     this.positionSlider(container, audioButton, videoParent);
 
-    this.trackedVideos.set(video, { container, track, fill, thumb, audioButton, videoParent });
+    this.addToTrackedVideos(video, { container, track, fill, thumb, audioButton, videoParent });
 
     let hideTimeout = null;
 
@@ -189,26 +185,12 @@ class VolumeSlider {
       this.updateSlider(fill, thumb, video.volume);
     });
 
-    const observer = new MutationObserver(() => {
-      if (!document.contains(video)) {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
+    // Cleanup on video removal
+    this.setupCleanupObserver(video, () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     });
 
     return { container, track, fill, thumb };
-  }
-
-  processAllVideos() {
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      this.addSliderToVideo(video);
-    });
   }
 }
