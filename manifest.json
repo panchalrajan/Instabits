@@ -53,6 +53,7 @@
         "src/features/pipMode.js",
         "src/features/backgroundPlay.js",
         "src/features/autoScroll.js",
+        "src/features/zenMode.js",
         "src/app.js"
       ],
       "run_at": "document_end"
