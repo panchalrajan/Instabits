@@ -3,7 +3,7 @@
 .insta-speed-button {
   position: absolute;
   top: 12px;
-  left: 12px;
+  /* left position set dynamically via JavaScript */
   min-width: 44px;
   height: 32px;
   background: rgba(35, 35, 40, 1.0);
@@ -39,7 +39,7 @@
 .insta-speed-overlay {
   position: absolute;
   top: 52px;
-  left: 12px;
+  /* left position set dynamically via JavaScript */
   background: rgba(35, 35, 40, 1.0);
   border-radius: 12px;
   padding: 4px 0;

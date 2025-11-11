@@ -44,6 +44,10 @@ class VideoDuration extends BaseFeature {
     this.ensureParentPositioned(videoParent);
 
     const timeDisplay = this.createDurationOverlay();
+
+    // Position relative to PIP button
+    this.positionRelativeToPIP(timeDisplay, videoParent);
+
     videoParent.appendChild(timeDisplay);
     this.addToTrackedVideos(video, timeDisplay);
 
@@ -57,5 +61,128 @@ class VideoDuration extends BaseFeature {
     this.setupCleanupObserver(video);
 
     return timeDisplay;
+  }
+
+  positionRelativeToPIP(timeDisplay, videoParent) {
+    // Find PIP button in the same parent
+    const pipButton = videoParent.querySelector('.insta-pip-button');
+
+    if (pipButton) {
+      const updatePosition = () => {
+        requestAnimationFrame(() => {
+          const pipLeft = parseInt(window.getComputedStyle(pipButton).left) || 12;
+          const pipWidth = pipButton.offsetWidth;
+          const gap = 8; // 8px gap
+
+          // Position duration 8px to the right of PIP button
+          timeDisplay.style.top = '12px';
+          timeDisplay.style.left = `${pipLeft + pipWidth + gap}px`;
+        });
+      };
+
+      // Initial position
+      updatePosition();
+
+      // Watch for PIP button changes
+      const observer = new MutationObserver(updatePosition);
+      observer.observe(pipButton, {
+        attributes: true,
+        attributeFilter: ['style']
+      });
+
+      // Cleanup when duration is removed
+      const durationObserver = new MutationObserver(() => {
+        if (!document.contains(timeDisplay)) {
+          observer.disconnect();
+          durationObserver.disconnect();
+        }
+      });
+
+      durationObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    } else {
+      // Fallback: PIP not found, try speed button
+      const speedButton = videoParent.querySelector('.insta-speed-button');
+
+      if (speedButton) {
+        const updatePosition = () => {
+          requestAnimationFrame(() => {
+            const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
+            const speedWidth = speedButton.offsetWidth;
+            const gap = 8;
+
+            // Position duration 8px to the right of speed button
+            timeDisplay.style.top = '12px';
+            timeDisplay.style.left = `${speedLeft + speedWidth + gap}px`;
+          });
+        };
+
+        updatePosition();
+
+        const observer = new MutationObserver(updatePosition);
+        observer.observe(speedButton, {
+          childList: true,
+          characterData: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['style']
+        });
+
+        const durationObserver = new MutationObserver(() => {
+          if (!document.contains(timeDisplay)) {
+            observer.disconnect();
+            durationObserver.disconnect();
+          }
+        });
+
+        durationObserver.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      } else {
+        // Fallback: Both PIP and speed not found, try fullscreen
+        const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
+
+        if (fullscreenButton) {
+          const updatePosition = () => {
+            requestAnimationFrame(() => {
+              const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
+              const fullscreenWidth = fullscreenButton.offsetWidth;
+              const gap = 8;
+
+              // Position duration 8px to the right of fullscreen button
+              timeDisplay.style.top = '12px';
+              timeDisplay.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
+            });
+          };
+
+          updatePosition();
+
+          const observer = new MutationObserver(updatePosition);
+          observer.observe(fullscreenButton, {
+            attributes: true,
+            attributeFilter: ['style']
+          });
+
+          const durationObserver = new MutationObserver(() => {
+            if (!document.contains(timeDisplay)) {
+              observer.disconnect();
+              durationObserver.disconnect();
+            }
+          });
+
+          durationObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+          });
+        } else {
+          // Fallback: None found - position at top-left
+          timeDisplay.style.top = '12px';
+          timeDisplay.style.left = '12px';
+        }
+      }
+    }
   }
 }

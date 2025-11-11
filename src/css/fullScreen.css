@@ -1,0 +1,46 @@
+/* Full Screen Button Styles */
+
+.insta-fullscreen-button {
+  position: absolute;
+  /* top and right set to 12px via JavaScript - always at top-right corner */
+  width: 32px;
+  height: 32px;
+  background: rgba(35, 35, 40, 1.0);
+  color: white;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease, transform 0.1s ease;
+  padding: 0;
+}
+
+.insta-fullscreen-button:hover {
+  background: rgba(45, 45, 50, 1.0);
+}
+
+.insta-fullscreen-button:active {
+  transform: scale(0.95);
+}
+
+/* Reels view variant */
+.insta-fullscreen-button.reels-view {
+  background: rgba(154, 150, 143, 0.4);
+  backdrop-filter: blur(12px);
+}
+
+.insta-fullscreen-button.reels-view:hover {
+  background: rgba(154, 150, 143, 0.6);
+}
+
+/* Fullscreen icon styling */
+.fullscreen-icon {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
