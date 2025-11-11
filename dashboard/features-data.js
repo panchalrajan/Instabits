@@ -63,6 +63,21 @@ const FEATURES_DATA = [
         toggleable: true
     },
     {
+        id: 'pipMode',
+        name: 'PIP Mode',
+        searchName: 'pip picture in picture floating video',
+        icon: {
+            name: 'pip',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #ec4899, #db2777)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Watch reels in picture-in-picture mode with auto video switching',
+        configButton: null,
+        disabled: false,
+        toggleable: true
+    },
+    {
         id: 'backgroundPlay',
         name: 'Background Play',
         searchName: 'background play tab hidden',

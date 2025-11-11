@@ -2,6 +2,12 @@ class PIPMode {
   constructor() {
     this.trackedVideos = new WeakMap();
     this.currentPIPVideo = null;
+    this.isInPIPMode = false;
+    this.init();
+  }
+
+  init() {
+    this.setupVideoSwitching();
   }
 
   isReelsFeed() {
@@ -26,28 +32,155 @@ class PIPMode {
     return button;
   }
 
-  async enterPIP(video, button) {
-    // Check if PIP is supported
-    if (!document.pictureInPictureEnabled || !video.requestPictureInPicture) {
-      console.log('[InstaBits PiP] ⓘ PiP not supported by browser');
+  findActiveVideo() {
+    const videos = Array.from(document.querySelectorAll('video'))
+      .filter(video => video.readyState !== 0)
+      .filter(video => video.disablePictureInPicture === false);
+
+    if (videos.length === 0) {
+      return null;
+    }
+
+    // Prioritize actively playing videos
+    const playingVideos = videos.filter(v => !v.paused && !v.muted);
+    if (playingVideos.length > 0) {
+      return playingVideos.sort((v1, v2) => {
+        const v1Rect = v1.getBoundingClientRect();
+        const v2Rect = v2.getBoundingClientRect();
+        return (v2Rect.width * v2Rect.height) - (v1Rect.width * v1Rect.height);
+      })[0];
+    }
+
+    // Find most visible video
+    let mostVisibleVideo = null;
+    let maxVisibility = 0;
+
+    for (const video of videos) {
+      const visibility = this.calculateVisibility(video);
+      if (visibility > maxVisibility) {
+        maxVisibility = visibility;
+        mostVisibleVideo = video;
+      }
+    }
+
+    return mostVisibleVideo;
+  }
+
+  calculateVisibility(video) {
+    const rect = video.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    if (rect.bottom < 0 || rect.top > viewportHeight ||
+        rect.right < 0 || rect.left > viewportWidth) {
+      return 0;
+    }
+
+    const visibleHeight = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
+    const visibleWidth = Math.min(rect.right, viewportWidth) - Math.max(rect.left, 0);
+    const visibleArea = visibleHeight * visibleWidth;
+    const totalArea = rect.height * rect.width;
+
+    return totalArea > 0 ? visibleArea / totalArea : 0;
+  }
+
+  setupVideoSwitching() {
+    // Monitor play events for auto-switching
+    document.addEventListener('play', async (e) => {
+      if (!this.isInPIPMode || !this.isReelsFeed()) {
+        return;
+      }
+
+      const newVideo = e.target;
+      if (newVideo !== this.currentPIPVideo && newVideo.tagName === 'VIDEO') {
+        await this.switchPIPVideo(newVideo);
+      }
+    }, true);
+
+    // Monitor scroll for video changes
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+      if (!this.isInPIPMode || !this.isReelsFeed()) {
+        return;
+      }
+
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(async () => {
+        const activeVideo = this.findActiveVideo();
+        if (activeVideo && activeVideo !== this.currentPIPVideo) {
+          await this.switchPIPVideo(activeVideo);
+        }
+      }, 300);
+    }, { passive: true });
+  }
+
+  async switchPIPVideo(newVideo) {
+    if (!newVideo || newVideo === this.currentPIPVideo) {
       return;
     }
 
-    // If already in PIP, don't enter again
+    // Wait for video to be ready
+    if (newVideo.readyState === 0) {
+      await new Promise((resolve) => {
+        const checkReady = () => {
+          if (newVideo.readyState >= 2) {
+            resolve();
+          } else {
+            setTimeout(checkReady, 50);
+          }
+        };
+        checkReady();
+      });
+    }
+
+    try {
+      await newVideo.requestPictureInPicture();
+      this.currentPIPVideo = newVideo;
+      this.updateAllButtonStates();
+    } catch (error) {
+      this.isInPIPMode = false;
+      this.currentPIPVideo = null;
+      this.updateAllButtonStates();
+    }
+  }
+
+  updateAllButtonStates() {
+    const videos = document.querySelectorAll('video');
+    videos.forEach(video => {
+      const tracked = this.trackedVideos.get(video);
+      if (tracked && tracked.button) {
+        if (video === this.currentPIPVideo && this.isInPIPMode) {
+          tracked.button.classList.add('active');
+        } else {
+          tracked.button.classList.remove('active');
+        }
+      }
+    });
+  }
+
+  async enterPIP(video, button) {
+    if (!document.pictureInPictureEnabled || !video.requestPictureInPicture) {
+      return;
+    }
+
+    if (document.pictureInPictureElement === video) {
+      return;
+    }
+
+    // Switch to new video if already in PIP
     if (document.pictureInPictureElement) {
+      await this.switchPIPVideo(video);
       return;
     }
 
     try {
+      video.disablePictureInPicture = false;
       await video.requestPictureInPicture();
       this.currentPIPVideo = video;
+      this.isInPIPMode = true;
       button.classList.add('active');
-      console.log('[InstaBits PiP] ✓ Successfully entered PiP mode');
     } catch (error) {
-      console.log('[InstaBits PiP] ✗ Failed to enter PiP mode:', error.message);
-      // Show user-friendly error if needed
       if (error.name === 'NotAllowedError') {
-        console.log('[InstaBits PiP] ⓘ PiP requires user interaction');
       }
     }
   }
@@ -60,17 +193,62 @@ class PIPMode {
     try {
       await document.exitPictureInPicture();
       this.currentPIPVideo = null;
+      this.isInPIPMode = false;
       button.classList.remove('active');
-      console.log('[InstaBits PiP] ✓ Exited PiP mode');
+      this.updateAllButtonStates();
     } catch (error) {
-      console.log('[InstaBits PiP] ✗ Failed to exit PiP mode:', error.message);
+    }
+  }
+
+  positionRelativeToSpeedButton(pipButton, videoParent) {
+    // Find the speed button in the same parent
+    const speedButton = videoParent.querySelector('.insta-speed-button');
+
+    if (speedButton) {
+      const updatePosition = () => {
+        requestAnimationFrame(() => {
+          const speedButtonLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
+          const speedButtonWidth = speedButton.offsetWidth;
+          const gap = 8; // 8px gap between buttons
+
+          // Position PIP button after speed button
+          pipButton.style.left = `${speedButtonLeft + speedButtonWidth + gap}px`;
+        });
+      };
+
+      // Initial position
+      updatePosition();
+
+      // Watch for speed button text changes (when speed changes)
+      const observer = new MutationObserver(updatePosition);
+      observer.observe(speedButton, {
+        childList: true,
+        characterData: true,
+        subtree: true
+      });
+
+      // Cleanup when PIP button is removed
+      const pipObserver = new MutationObserver(() => {
+        if (!document.contains(pipButton)) {
+          observer.disconnect();
+          pipObserver.disconnect();
+        }
+      });
+
+      pipObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
     }
   }
 
   addControlToVideo(video) {
     if (!video) return null;
 
-    // Check if already tracked
+    if (!this.isReelsFeed()) {
+      return null;
+    }
+
     if (this.trackedVideos.has(video)) {
       return null;
     }
@@ -78,7 +256,6 @@ class PIPMode {
     const videoParent = video.parentElement;
     if (!videoParent) return null;
 
-    // Ensure parent has position for absolute positioning
     const currentPosition = window.getComputedStyle(videoParent).position;
     if (currentPosition === 'static') {
       videoParent.style.position = 'relative';
@@ -87,36 +264,37 @@ class PIPMode {
     const button = this.createButton();
     videoParent.appendChild(button);
 
-    // Mark as tracked
+    // Position PIP button relative to speed button
+    this.positionRelativeToSpeedButton(button, videoParent);
+
     this.trackedVideos.set(video, { button });
 
-    // Handle button click
     button.addEventListener('click', async (e) => {
       e.stopPropagation();
 
       if (document.pictureInPictureElement === video) {
-        // Already in PIP, exit it
         await this.exitPIP(button);
+      } else if (document.pictureInPictureElement) {
+        await this.switchPIPVideo(video);
       } else {
-        // Enter PIP mode
         await this.enterPIP(video, button);
       }
     });
 
-    // Listen for PIP events to update button state
     video.addEventListener('enterpictureinpicture', () => {
       button.classList.add('active');
       this.currentPIPVideo = video;
+      this.isInPIPMode = true;
     });
 
     video.addEventListener('leavepictureinpicture', () => {
       button.classList.remove('active');
       if (this.currentPIPVideo === video) {
         this.currentPIPVideo = null;
+        this.isInPIPMode = false;
       }
     });
 
-    // Cleanup on video removal
     const observer = new MutationObserver(() => {
       if (!document.contains(video)) {
         observer.disconnect();
