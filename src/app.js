@@ -8,6 +8,7 @@
   let videoSeekbar = null;
   let volumeSlider = null;
   let playbackSpeed = null;
+  let pipMode = null;
   let backgroundPlay = null;
   let autoScroll = null;
 
@@ -19,6 +20,7 @@
     videoSeekbar = await InstaBitsUtils.isFeatureEnabled('videoSeekbar') ? new VideoSeekbar() : null;
     volumeSlider = await InstaBitsUtils.isFeatureEnabled('volumeSlider') ? new VolumeSlider() : null;
     playbackSpeed = await InstaBitsUtils.isFeatureEnabled('playbackSpeed') ? new PlaybackSpeed() : null;
+    pipMode = await InstaBitsUtils.isFeatureEnabled('pipMode') ? new PIPMode() : null;
     backgroundPlay = await InstaBitsUtils.isFeatureEnabled('backgroundPlay') ? new BackgroundPlay() : null;
     autoScroll = await InstaBitsUtils.isFeatureEnabled('autoScroll') ? new AutoScroll() : null;
   }
@@ -31,6 +33,7 @@
     if (videoSeekbar) videoSeekbar.processAllVideos();
     if (volumeSlider) volumeSlider.processAllVideos();
     if (playbackSpeed) playbackSpeed.processAllVideos();
+    if (pipMode) pipMode.processAllVideos();
     if (backgroundPlay) backgroundPlay.processAllVideos();
     if (autoScroll) autoScroll.processAllVideos();
   }

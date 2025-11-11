@@ -1,1 +1,0 @@
-chrome.action.onClicked.addListener((function(e){chrome.tabs.create({url:"https://www.instagram.com/reels"})})),chrome.runtime.onMessage.addListener(((e,t)=>{"injectXhrOverride"===e.action&&chrome.scripting.executeScript({target:{tabId:t.tab.id},files:["xhr.js"],injectImmediately:!0,world:"MAIN"}).then((()=>{}))}));

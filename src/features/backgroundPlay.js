@@ -5,14 +5,19 @@ class BackgroundPlay {
   }
 
   init() {
+    // Override visibility properties to always appear visible
+    // This prevents Instagram from pausing videos when tab is hidden
     Object.defineProperty(document, 'visibilityState', {
-      get: () => 'visible'
+      get: () => 'visible',
+      configurable: true
     });
 
     Object.defineProperty(document, 'hidden', {
-      get: () => false
+      get: () => false,
+      configurable: true
     });
 
+    // Stop visibilitychange events from reaching Instagram's handlers
     document.addEventListener(
       'visibilitychange',
       (e) => {
