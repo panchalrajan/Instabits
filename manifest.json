@@ -37,7 +37,8 @@
         "src/css/videoDuration.css",
         "src/css/videoSeekbar.css",
         "src/css/volumeSlider.css",
-        "src/css/playbackSpeed.css"
+        "src/css/playbackSpeed.css",
+        "src/css/pipMode.css"
       ],
       "js": [
         "src/utils.js",
@@ -45,6 +46,7 @@
         "src/features/videoSeekbar.js",
         "src/features/volumeSlider.js",
         "src/features/playbackSpeed.js",
+        "src/features/pipMode.js",
         "src/features/backgroundPlay.js",
         "src/features/autoScroll.js",
         "src/app.js"

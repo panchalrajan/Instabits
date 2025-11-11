@@ -104,6 +104,10 @@ class UIComponents {
             play: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <circle cx="12" cy="12" r="10" stroke-width="2"/>
                 <path d="M10 8l6 4-6 4V8z" fill="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>`,
+            pip: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="2" y="3" width="20" height="14" rx="2" stroke-width="2"/>
+                <rect x="12" y="10" width="8" height="5" rx="1" fill="currentColor"/>
             </svg>`
         };
 
