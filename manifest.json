@@ -41,6 +41,10 @@
         "src/css/pipMode.css"
       ],
       "js": [
+        "src/services/StorageService.js",
+        "src/core/BaseFeature.js",
+        "src/core/VideoObserver.js",
+        "src/core/FeatureManager.js",
         "src/utils.js",
         "src/features/videoDuration.js",
         "src/features/videoSeekbar.js",

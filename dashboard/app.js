@@ -1,8 +1,14 @@
 class Dashboard {
-    constructor() {
+    constructor(featuresData, uiComponents) {
+        // Dependency injection
+        this.featuresData = featuresData;
+        this.uiComponents = uiComponents;
+
+        // State management
         this.features = new Map();
         this.selectedFilters = new Set();
         this.toast = document.getElementById('toast');
+
         this.init();
     }
 
@@ -22,20 +28,20 @@ class Dashboard {
 
     renderUI() {
         // Render header
-        document.getElementById('headerContainer').innerHTML = UIComponents.header();
+        document.getElementById('headerContainer').innerHTML = this.uiComponents.header();
 
         // Render search bar with filter button and dropdown
         const uniqueLabels = this.getUniqueLabels();
-        document.getElementById('searchBarContainer').innerHTML = UIComponents.searchBar('Search features...', uniqueLabels);
+        document.getElementById('searchBarContainer').innerHTML = this.uiComponents.searchBar('Search features...', uniqueLabels);
 
         // Render feature cards
-        const featuresHTML = FEATURES_DATA.map(feature =>
-            UIComponents.featureCard(feature)
+        const featuresHTML = this.featuresData.map(feature =>
+            this.uiComponents.featureCard(feature)
         ).join('');
         document.getElementById('featuresGrid').innerHTML = featuresHTML;
 
         // Render no results message
-        document.getElementById('noResultsContainer').innerHTML = UIComponents.noResults();
+        document.getElementById('noResultsContainer').innerHTML = this.uiComponents.noResults();
 
         // Cache DOM elements after rendering
         this.searchInput = document.getElementById('searchInput');
@@ -51,13 +57,13 @@ class Dashboard {
     }
 
     /**
-     * Extract unique labels from FEATURES_DATA
+     * Extract unique labels from featuresData
      * @returns {Array} Array of unique label objects with text and color
      */
     getUniqueLabels() {
         const labelsMap = new Map();
 
-        FEATURES_DATA.forEach(feature => {
+        this.featuresData.forEach(feature => {
             if (feature.badge && feature.badge.text) {
                 labelsMap.set(feature.badge.text, {
                     text: feature.badge.text,
@@ -76,7 +82,7 @@ class Dashboard {
         const labelCounts = new Map();
 
         // Count features for each label
-        FEATURES_DATA.forEach(feature => {
+        this.featuresData.forEach(feature => {
             if (feature.badge && feature.badge.text) {
                 const count = labelCounts.get(feature.badge.text) || 0;
                 labelCounts.set(feature.badge.text, count + 1);
@@ -373,5 +379,6 @@ class Dashboard {
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    window.dashboard = new Dashboard();
+    // Create Dashboard instance with dependency injection
+    window.dashboard = new Dashboard(FEATURES_DATA, UIComponents);
 });

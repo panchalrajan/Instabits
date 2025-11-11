@@ -1,11 +1,10 @@
-class VideoSeekbar {
+class VideoSeekbar extends BaseFeature {
   constructor() {
-    this.trackedVideos = new WeakMap();
+    super();
   }
 
-  create() {
-    const seekbarContainer = document.createElement('div');
-    seekbarContainer.className = 'insta-video-seekbar-container';
+  createSeekbar() {
+    const seekbarContainer = this.createContainer('insta-video-seekbar-container');
 
     const progressBar = document.createElement('div');
     progressBar.className = 'insta-video-seekbar-progress';
@@ -30,20 +29,17 @@ class VideoSeekbar {
     }
   }
 
-  addOverlayToVideo(video) {
-    if (!video || this.trackedVideos.has(video)) {
+  processVideo(video) {
+    if (!video || this.isVideoTracked(video)) {
       return null;
     }
 
-    const videoParent = video.parentElement;
+    const videoParent = this.getVideoParent(video);
     if (!videoParent) return null;
 
-    const currentPosition = window.getComputedStyle(videoParent).position;
-    if (currentPosition === 'static') {
-      videoParent.style.position = 'relative';
-    }
+    this.ensureParentPositioned(videoParent);
 
-    const { seekbarContainer, progressBar, hoverArea } = this.create();
+    const { seekbarContainer, progressBar, hoverArea } = this.createSeekbar();
 
     videoParent.appendChild(seekbarContainer);
 
@@ -58,7 +54,7 @@ class VideoSeekbar {
 
     smoothUpdate();
 
-    this.trackedVideos.set(video, { seekbarContainer, progressBar, animationFrameId });
+    this.addToTrackedVideos(video, { seekbarContainer, progressBar, animationFrameId });
 
     const handleClick = (e) => {
       e.stopPropagation();
@@ -93,29 +89,15 @@ class VideoSeekbar {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
 
-    const observer = new MutationObserver(() => {
-      if (!document.contains(video)) {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        observer.disconnect();
+    // Cleanup on video removal
+    this.setupCleanupObserver(video, () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
       }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     });
 
     return { seekbarContainer, progressBar };
-  }
-
-  processAllVideos() {
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      this.addOverlayToVideo(video);
-    });
   }
 }

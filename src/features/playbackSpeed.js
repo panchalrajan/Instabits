@@ -1,6 +1,9 @@
-class PlaybackSpeed {
+class PlaybackSpeed extends BaseFeature {
   constructor() {
-    this.trackedVideos = new WeakMap();
+    super();
+  }
+
+  initialize() {
     this.allVideos = new Set(); // Track all videos for bulk updates
     this.speedOptions = [0.25, 0.5, 1.0, 1.25, 1.5, 2.0, 3.0];
     // Always start at 1x on page load/reload
@@ -12,33 +15,21 @@ class PlaybackSpeed {
     this.currentSpeed = speed;
   }
 
-  isReelsFeed() {
-    return window.location.pathname.includes('/reels/');
-  }
-
   formatSpeed(speed) {
     return speed === 1.0 ? '1x' : `${speed}x`;
   }
 
-  createButton() {
-    const button = document.createElement('button');
-    button.className = 'insta-speed-button';
-    button.textContent = this.formatSpeed(this.currentSpeed);
-
-    if (this.isReelsFeed()) {
-      button.classList.add('reels-view');
-    }
-
+  createSpeedButton() {
+    const button = this.createButton(
+      'insta-speed-button',
+      this.formatSpeed(this.currentSpeed),
+      'Playback Speed'
+    );
     return button;
   }
 
-  createOverlay() {
-    const overlay = document.createElement('div');
-    overlay.className = 'insta-speed-overlay';
-
-    if (this.isReelsFeed()) {
-      overlay.classList.add('reels-view');
-    }
+  createSpeedOverlay() {
+    const overlay = this.createContainer('insta-speed-overlay');
 
     this.speedOptions.forEach(speed => {
       const option = document.createElement('div');
@@ -87,7 +78,7 @@ class PlaybackSpeed {
 
     // Update all buttons and overlays
     this.allVideos.forEach(vid => {
-      const tracked = this.trackedVideos.get(vid);
+      const tracked = this.getTrackedData(vid);
       if (tracked) {
         this.updateButton(tracked.button, speed);
         this.updateOverlay(tracked.overlay, speed);
@@ -95,31 +86,28 @@ class PlaybackSpeed {
     });
   }
 
-  addControlToVideo(video) {
+  processVideo(video) {
     if (!video) return null;
 
     // Always apply current speed, even if already tracked
     video.playbackRate = this.currentSpeed;
 
-    if (this.trackedVideos.has(video)) {
+    if (this.isVideoTracked(video)) {
       return null;
     }
 
-    const videoParent = video.parentElement;
+    const videoParent = this.getVideoParent(video);
     if (!videoParent) return null;
 
-    const currentPosition = window.getComputedStyle(videoParent).position;
-    if (currentPosition === 'static') {
-      videoParent.style.position = 'relative';
-    }
+    this.ensureParentPositioned(videoParent);
 
-    const button = this.createButton();
-    const overlay = this.createOverlay();
+    const button = this.createSpeedButton();
+    const overlay = this.createSpeedOverlay();
 
     videoParent.appendChild(button);
     videoParent.appendChild(overlay);
 
-    this.trackedVideos.set(video, { button, overlay });
+    this.addToTrackedVideos(video, { button, overlay });
     this.allVideos.add(video); // Track for bulk speed updates
 
     let hideTimeout = null;
@@ -154,25 +142,10 @@ class PlaybackSpeed {
     });
 
     // Cleanup on video removal
-    const observer = new MutationObserver(() => {
-      if (!document.contains(video)) {
-        this.allVideos.delete(video);
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
+    this.setupCleanupObserver(video, () => {
+      this.allVideos.delete(video);
     });
 
     return { button, overlay };
-  }
-
-  processAllVideos() {
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      this.addControlToVideo(video);
-    });
   }
 }

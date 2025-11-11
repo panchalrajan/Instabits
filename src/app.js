@@ -1,64 +1,35 @@
 // InstaBits - Main Application Entry Point
+// Now using FeatureManager and VideoObserver for better architecture
 
 (async function() {
   'use strict';
 
-  // Feature instances (will be initialized based on settings)
-  let videoDuration = null;
-  let videoSeekbar = null;
-  let volumeSlider = null;
-  let playbackSpeed = null;
-  let pipMode = null;
-  let backgroundPlay = null;
-  let autoScroll = null;
-
   /**
-   * Initialize feature instances based on user settings
+   * Register all available features with the FeatureManager
    */
-  async function initializeFeatures() {
-    videoDuration = await InstaBitsUtils.isFeatureEnabled('videoDuration') ? new VideoDuration() : null;
-    videoSeekbar = await InstaBitsUtils.isFeatureEnabled('videoSeekbar') ? new VideoSeekbar() : null;
-    volumeSlider = await InstaBitsUtils.isFeatureEnabled('volumeSlider') ? new VolumeSlider() : null;
-    playbackSpeed = await InstaBitsUtils.isFeatureEnabled('playbackSpeed') ? new PlaybackSpeed() : null;
-    pipMode = await InstaBitsUtils.isFeatureEnabled('pipMode') ? new PIPMode() : null;
-    backgroundPlay = await InstaBitsUtils.isFeatureEnabled('backgroundPlay') ? new BackgroundPlay() : null;
-    autoScroll = await InstaBitsUtils.isFeatureEnabled('autoScroll') ? new AutoScroll() : null;
+  function registerFeatures() {
+    featureManager
+      .register('videoDuration', VideoDuration, { useVideoObserver: true, priority: 5 })
+      .register('videoSeekbar', VideoSeekbar, { useVideoObserver: true, priority: 4 })
+      .register('volumeSlider', VolumeSlider, { useVideoObserver: true, priority: 3 })
+      .register('playbackSpeed', PlaybackSpeed, { useVideoObserver: true, priority: 2 })
+      .register('pipMode', PIPMode, { useVideoObserver: true, priority: 1 })
+      .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 10 })
+      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 9 });
   }
 
   /**
-   * Process all videos on the page
-   */
-  function processVideos() {
-    if (videoDuration) videoDuration.processAllVideos();
-    if (videoSeekbar) videoSeekbar.processAllVideos();
-    if (volumeSlider) volumeSlider.processAllVideos();
-    if (playbackSpeed) playbackSpeed.processAllVideos();
-    if (pipMode) pipMode.processAllVideos();
-    if (backgroundPlay) backgroundPlay.processAllVideos();
-    if (autoScroll) autoScroll.processAllVideos();
-  }
-
-  /**
-   * Initialize the extension
+   * Initialize the extension with new architecture
    */
   async function init() {
-    await initializeFeatures();
+    // Register all features
+    registerFeatures();
 
-    // Initial scan
-    processVideos();
+    // Initialize feature manager (automatically enables features based on settings)
+    await featureManager.initialize(videoObserver);
 
-    // Periodically scan for new videos (Instagram loads content dynamically)
-    setInterval(processVideos, 2000);
-
-    // Observe DOM changes for more responsive detection
-    const observer = new MutationObserver(() => {
-      setTimeout(processVideos, 100);
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+    // Set up storage listener to handle real-time feature toggle from dashboard
+    featureManager.setupStorageListener();
   }
 
   // Start when DOM is ready
@@ -67,5 +38,10 @@
   } else {
     init();
   }
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    featureManager.cleanup();
+  });
 
 })();

@@ -1,10 +1,6 @@
-class VideoDuration {
+class VideoDuration extends BaseFeature {
   constructor() {
-    this.trackedVideos = new WeakMap();
-  }
-
-  isReelsFeed() {
-    return window.location.pathname.includes('/reels/');
+    super();
   }
 
   formatTime(seconds) {
@@ -25,14 +21,8 @@ class VideoDuration {
     return `${paddedMins}:${paddedSecs}`;
   }
 
-  create() {
-    const timeDisplay = document.createElement('div');
-    timeDisplay.className = 'insta-video-duration-overlay';
-
-    if (this.isReelsFeed()) {
-      timeDisplay.classList.add('reels-view');
-    }
-
+  createDurationOverlay() {
+    const timeDisplay = this.createContainer('insta-video-duration-overlay');
     timeDisplay.textContent = '0:00 / 0:00';
     return timeDisplay;
   }
@@ -43,22 +33,20 @@ class VideoDuration {
     timeDisplay.textContent = `${currentTime} / ${duration}`;
   }
 
-  addOverlayToVideo(video) {
-    if (!video || this.trackedVideos.has(video)) {
+  processVideo(video) {
+    if (!video || this.isVideoTracked(video)) {
       return null;
     }
 
-    const videoParent = video.parentElement;
+    const videoParent = this.getVideoParent(video);
     if (!videoParent) return null;
 
-    const currentPosition = window.getComputedStyle(videoParent).position;
-    if (currentPosition === 'static') {
-      videoParent.style.position = 'relative';
-    }
+    this.ensureParentPositioned(videoParent);
 
-    const timeDisplay = this.create();
+    const timeDisplay = this.createDurationOverlay();
     videoParent.appendChild(timeDisplay);
-    this.trackedVideos.set(video, timeDisplay);
+    this.addToTrackedVideos(video, timeDisplay);
+
     const updateTime = () => this.updateTimeDisplay(timeDisplay, video);
     updateTime();
 
@@ -66,13 +54,8 @@ class VideoDuration {
     video.addEventListener('loadedmetadata', updateTime);
     video.addEventListener('durationchange', updateTime);
 
-    return timeDisplay;
-  }
+    this.setupCleanupObserver(video);
 
-  processAllVideos() {
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      this.addOverlayToVideo(video);
-    });
+    return timeDisplay;
   }
 }

@@ -1,5 +1,6 @@
 // InstaBits Utilities
-// Helper functions for feature management using Chrome Storage API
+// Helper functions for feature management
+// Now uses StorageService internally for better abstraction
 
 class InstaBitsUtils {
   /**
@@ -8,32 +9,17 @@ class InstaBitsUtils {
    * @returns {Promise<boolean>} True if enabled, false if disabled
    */
   static async isFeatureEnabled(featureId) {
-    return new Promise((resolve) => {
-      const storageKey = `instabits_feature_${featureId}`;
-
-      chrome.storage.sync.get([storageKey], (result) => {
-        const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
-        resolve(isEnabled);
-      });
-    });
+    return await storageService.getFeatureState(featureId);
   }
 
   /**
    * Set feature enabled state (async)
    * @param {string} featureId - The feature ID
    * @param {boolean} enabled - True to enable, false to disable
-   * @returns {Promise<void>}
+   * @returns {Promise<boolean>} Success status
    */
   static async setFeatureEnabled(featureId, enabled) {
-    return new Promise((resolve) => {
-      const storageKey = `instabits_feature_${featureId}`;
-      const data = {};
-      data[storageKey] = enabled;
-
-      chrome.storage.sync.set(data, () => {
-        resolve();
-      });
-    });
+    return await storageService.setFeatureState(featureId, enabled);
   }
 
   /**
@@ -41,17 +27,26 @@ class InstaBitsUtils {
    * @returns {Promise<Object>} Object with feature IDs as keys and boolean values
    */
   static async getAllFeatureStates() {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(null, (items) => {
-        const features = {};
-        for (const key in items) {
-          if (key.startsWith('instabits_feature_')) {
-            const featureId = key.replace('instabits_feature_', '');
-            features[featureId] = items[key];
-          }
-        }
-        resolve(features);
-      });
-    });
+    return await storageService.getAllFeatureStates();
+  }
+
+  /**
+   * Get user preference
+   * @param {string} key - Preference key
+   * @param {*} defaultValue - Default value
+   * @returns {Promise<*>} Preference value
+   */
+  static async getUserPreference(key, defaultValue = null) {
+    return await storageService.getUserPreference(key, defaultValue);
+  }
+
+  /**
+   * Set user preference
+   * @param {string} key - Preference key
+   * @param {*} value - Preference value
+   * @returns {Promise<boolean>} Success status
+   */
+  static async setUserPreference(key, value) {
+    return await storageService.setUserPreference(key, value);
   }
 }
