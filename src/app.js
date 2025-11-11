@@ -9,14 +9,15 @@
    */
   function registerFeatures() {
     featureManager
-      .register('videoDuration', VideoDuration, { useVideoObserver: true, priority: 5 })
-      .register('videoSeekbar', VideoSeekbar, { useVideoObserver: true, priority: 4 })
-      .register('volumeSlider', VolumeSlider, { useVideoObserver: true, priority: 3 })
-      .register('playbackSpeed', PlaybackSpeed, { useVideoObserver: true, priority: 2 })
-      .register('pipMode', PIPMode, { useVideoObserver: true, priority: 1 })
-      .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 10 })
-      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 9 })
-      .register('zenMode', ZenMode, { useVideoObserver: true, priority: 6 });
+      .register('fullScreen', FullScreen, { useVideoObserver: true, priority: 10 })
+      .register('playbackSpeed', PlaybackSpeed, { useVideoObserver: true, priority: 9 })
+      .register('pipMode', PIPMode, { useVideoObserver: true, priority: 8 })
+      .register('videoDuration', VideoDuration, { useVideoObserver: true, priority: 7 })
+      .register('videoSeekbar', VideoSeekbar, { useVideoObserver: true, priority: 6 })
+      .register('volumeSlider', VolumeSlider, { useVideoObserver: true, priority: 5 })
+      .register('zenMode', ZenMode, { useVideoObserver: true, priority: 4 })
+      .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 3 })
+      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2 });
   }
 
   /**

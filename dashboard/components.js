@@ -114,6 +114,9 @@ class UIComponents {
                 <path d="M8 15c1.5 1 3.5 1 4 1s2.5 0 4-1" stroke-width="2" stroke-linecap="round"/>
                 <circle cx="9" cy="9" r="1" fill="currentColor"/>
                 <circle cx="15" cy="9" r="1" fill="currentColor"/>
+            </svg>`,
+            fullscreen: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>`
         };
 

@@ -121,6 +121,21 @@ const FEATURES_DATA = [
         configButton: null,
         disabled: false,
         toggleable: true
+    },
+    {
+        id: 'fullScreen',
+        name: 'Full Screen',
+        searchName: 'fullscreen full screen expand maximize theater',
+        icon: {
+            name: 'fullscreen',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #f97316, #ea580c)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Add fullscreen button next to video duration for quick fullscreen access',
+        configButton: null,
+        disabled: false,
+        toggleable: true
     }
 ];
 

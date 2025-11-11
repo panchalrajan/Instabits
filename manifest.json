@@ -38,7 +38,8 @@
         "src/css/videoSeekbar.css",
         "src/css/volumeSlider.css",
         "src/css/playbackSpeed.css",
-        "src/css/pipMode.css"
+        "src/css/pipMode.css",
+        "src/css/fullScreen.css"
       ],
       "js": [
         "src/services/StorageService.js",
@@ -54,6 +55,7 @@
         "src/features/backgroundPlay.js",
         "src/features/autoScroll.js",
         "src/features/zenMode.js",
+        "src/features/fullScreen.js",
         "src/app.js"
       ],
       "run_at": "document_end"

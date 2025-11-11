@@ -86,6 +86,54 @@ class PlaybackSpeed extends BaseFeature {
     });
   }
 
+  positionRelativeToFullscreen(button, overlay, videoParent) {
+    // Find the fullscreen button in the same parent
+    const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
+
+    if (fullscreenButton) {
+      const updatePosition = () => {
+        requestAnimationFrame(() => {
+          const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
+          const fullscreenWidth = fullscreenButton.offsetWidth;
+          const gap = 8; // 8px gap
+
+          // Position speed button 8px to the right of fullscreen
+          const leftPosition = fullscreenLeft + fullscreenWidth + gap;
+          button.style.left = `${leftPosition}px`;
+          overlay.style.left = `${leftPosition}px`;
+        });
+      };
+
+      // Initial position
+      updatePosition();
+
+      // Watch for fullscreen button changes
+      const observer = new MutationObserver(updatePosition);
+      observer.observe(fullscreenButton, {
+        attributes: true,
+        attributeFilter: ['style']
+      });
+
+      // Cleanup when button is removed
+      const cleanupObserver = new MutationObserver(() => {
+        if (!document.contains(button)) {
+          observer.disconnect();
+          cleanupObserver.disconnect();
+        }
+      });
+
+      cleanupObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    } else {
+      // Fallback: Fullscreen not found
+      // Position at 12px from left edge
+      button.style.left = '12px';
+      overlay.style.left = '12px';
+    }
+  }
+
   processVideo(video) {
     if (!video) return null;
 
@@ -106,6 +154,9 @@ class PlaybackSpeed extends BaseFeature {
 
     videoParent.appendChild(button);
     videoParent.appendChild(overlay);
+
+    // Position speed button relative to fullscreen button
+    this.positionRelativeToFullscreen(button, overlay, videoParent);
 
     this.addToTrackedVideos(video, { button, overlay });
     this.allVideos.add(video); // Track for bulk speed updates

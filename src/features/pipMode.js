@@ -196,24 +196,26 @@ class PIPMode extends BaseFeature {
     if (speedButton) {
       const updatePosition = () => {
         requestAnimationFrame(() => {
-          const speedButtonLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
-          const speedButtonWidth = speedButton.offsetWidth;
-          const gap = 8; // 8px gap between buttons
+          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
+          const speedWidth = speedButton.offsetWidth;
+          const gap = 8; // 8px gap
 
-          // Position PIP button after speed button
-          pipButton.style.left = `${speedButtonLeft + speedButtonWidth + gap}px`;
+          // Position PIP button 8px to the right of speed button
+          pipButton.style.left = `${speedLeft + speedWidth + gap}px`;
         });
       };
 
       // Initial position
       updatePosition();
 
-      // Watch for speed button text changes (when speed changes)
+      // Watch for speed button changes
       const observer = new MutationObserver(updatePosition);
       observer.observe(speedButton, {
         childList: true,
         characterData: true,
-        subtree: true
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style']
       });
 
       // Cleanup when PIP button is removed
@@ -229,9 +231,80 @@ class PIPMode extends BaseFeature {
         subtree: true
       });
     } else {
-      // Fallback: Speed button not found (disabled or not rendered)
-      // Position PIP button at least 12px from leading edge
-      pipButton.style.left = '12px';
+      // Fallback: Speed not found, try to position relative to duration
+      const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
+
+      if (durationOverlay) {
+        const updatePosition = () => {
+          requestAnimationFrame(() => {
+            const durationLeft = parseInt(window.getComputedStyle(durationOverlay).left) || 12;
+            const durationWidth = durationOverlay.offsetWidth;
+            const gap = 8;
+
+            // Position PIP button 8px to the right of duration
+            pipButton.style.left = `${durationLeft + durationWidth + gap}px`;
+          });
+        };
+
+        updatePosition();
+
+        const observer = new MutationObserver(updatePosition);
+        observer.observe(durationOverlay, {
+          attributes: true,
+          attributeFilter: ['style']
+        });
+
+        const pipObserver = new MutationObserver(() => {
+          if (!document.contains(pipButton)) {
+            observer.disconnect();
+            pipObserver.disconnect();
+          }
+        });
+
+        pipObserver.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+      } else {
+        // Fallback: Both speed and duration not found, try fullscreen
+        const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
+
+        if (fullscreenButton) {
+          const updatePosition = () => {
+            requestAnimationFrame(() => {
+              const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
+              const fullscreenWidth = fullscreenButton.offsetWidth;
+              const gap = 8;
+
+              // Position PIP button 8px to the right of fullscreen
+              pipButton.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
+            });
+          };
+
+          updatePosition();
+
+          const observer = new MutationObserver(updatePosition);
+          observer.observe(fullscreenButton, {
+            attributes: true,
+            attributeFilter: ['style']
+          });
+
+          const pipObserver = new MutationObserver(() => {
+            if (!document.contains(pipButton)) {
+              observer.disconnect();
+              pipObserver.disconnect();
+            }
+          });
+
+          pipObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+          });
+        } else {
+          // Fallback: None found - position at 12px from leading edge
+          pipButton.style.left = '12px';
+        }
+      }
     }
   }
 
