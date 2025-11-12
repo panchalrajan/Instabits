@@ -17,7 +17,12 @@
       .register('volumeSlider', VolumeSlider, { useVideoObserver: true, priority: 5 })
       .register('zenMode', ZenMode, { useVideoObserver: true, priority: 4 })
       .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 3 })
-      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2 });
+      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2 })
+      .register('hideReels', HideReels, { useVideoObserver: false, priority: 1 })
+      .register('hideExplore', HideExplore, { useVideoObserver: false, priority: 1 })
+      .register('hideStories', HideStories, { useVideoObserver: false, priority: 1 })
+      .register('hideSuggestedFollowers', HideSuggestedFollowers, { useVideoObserver: false, priority: 1 })
+      .register('hideThreads', HideThreads, { useVideoObserver: false, priority: 1 });
   }
 
   /**

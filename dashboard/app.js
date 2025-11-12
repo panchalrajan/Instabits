@@ -176,7 +176,7 @@ class Dashboard {
         chrome.storage.sync.set(data, () => {
             const featureName = this.formatName(feature);
             const title = enabled ? 'Feature Enabled' : 'Feature Disabled';
-            const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}. Reload Instagram to apply changes.`;
+            const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}.`;
             const type = enabled ? 'success' : 'warning';
 
             this.showToast(title, message, type);

@@ -117,6 +117,30 @@ class UIComponents {
             </svg>`,
             fullscreen: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>`,
+            hideReels: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="2" y="6" width="20" height="12" rx="2" stroke-width="2"/>
+                <path d="M2 6l6 6M8 6l-6 6M16 6l6 6M22 6l-6 6" stroke-width="2" stroke-linecap="round"/>
+                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
+            </svg>`,
+            hideExplore: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                <path d="M8 14l2-6 6-2-2 6-6 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
+            </svg>`,
+            hideStories: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
+            </svg>`,
+            hideSuggestedFollowers: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
+            </svg>`,
+            hideThreads: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 10h8M8 14h4" stroke-width="2" stroke-linecap="round"/>
+                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
             </svg>`
         };
 
@@ -169,7 +193,7 @@ class UIComponents {
         // Toggle HTML - only show if toggleable is true
         const toggleHtml = toggleable ? `
             <label class="toggle">
-                <input type="checkbox" data-feature="${id}" ${disabled ? 'disabled' : ''}>
+                <input type="checkbox" data-feature="${id}">
                 <span class="toggle-slider"></span>
             </label>
         ` : '';
