@@ -81,6 +81,69 @@ class BaseDistraction extends BaseFeature {
   }
 
   /**
+   * Create a reusable blocked screen component
+   * @param {Object} options - Configuration options
+   * @param {string} options.id - Unique ID for the screen
+   * @param {string} options.title - Title text (e.g., "Reels Blocked")
+   * @param {string} options.description - Description text
+   * @param {string} options.iconSvg - SVG markup for the icon
+   * @returns {HTMLElement} The blocked screen element
+   */
+  createBlockedScreenComponent(options) {
+    const { id, title, description, iconSvg } = options;
+
+    const screen = document.createElement('div');
+    screen.id = id;
+    screen.className = 'instabits-blocked-screen';
+
+    const content = document.createElement('div');
+    content.className = 'instabits-blocked-content';
+
+    content.innerHTML = `
+      <div class="instabits-blocked-icon">
+        ${iconSvg}
+      </div>
+      <h1 class="instabits-blocked-title">${title}</h1>
+      <p class="instabits-blocked-description">
+        ${description}
+      </p>
+      <div class="instabits-blocked-actions">
+        <button class="instabits-blocked-button instabits-blocked-button-primary" data-action="go-home">
+          Go to Homepage
+        </button>
+      </div>
+      <div class="instabits-blocked-footer">
+        Blocked by <a href="#" data-action="open-settings">InstaBits</a>
+      </div>
+    `;
+
+    screen.appendChild(content);
+
+    // Get button references
+    const homeBtn = content.querySelector('[data-action="go-home"]');
+    const settingsLink = content.querySelector('[data-action="open-settings"]');
+
+    // Add event listeners
+    if (homeBtn) {
+      homeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = '/';
+      });
+    }
+
+    if (settingsLink) {
+      settingsLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        chrome.runtime.openOptionsPage();
+      });
+    }
+
+    return screen;
+  }
+
+  /**
    * Start observing DOM mutations
    * Child classes should override this to implement specific hiding logic
    */

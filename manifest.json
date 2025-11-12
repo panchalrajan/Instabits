@@ -39,7 +39,8 @@
         "src/css/volumeSlider.css",
         "src/css/playbackSpeed.css",
         "src/css/pipMode.css",
-        "src/css/fullScreen.css"
+        "src/css/fullScreen.css",
+        "src/css/distractionBlock.css"
       ],
       "js": [
         "src/services/StorageService.js",
