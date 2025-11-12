@@ -282,8 +282,28 @@ body {
     font-size: 13px;
 }
 
-/* Features Grid */
-.features {
+/* Features Sections - Stack vertically */
+#featuresGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.features-section {
+    width: 100%;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Features Grid within each section */
+.features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 16px;

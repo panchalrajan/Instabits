@@ -207,14 +207,16 @@ class StorageService {
   /**
    * Get all feature states
    * @param {string[]} featureIds - Array of feature identifiers (optional)
+   * @param {Object} defaultStates - Object mapping feature IDs to their default enabled states
    * @returns {Promise<Object>} Object mapping feature IDs to enabled states
    */
-  async getAllFeatureStates(featureIds = null) {
+  async getAllFeatureStates(featureIds = null, defaultStates = {}) {
     if (featureIds && featureIds.length > 0) {
       const keys = featureIds.map(id => `instabits_feature_${id}`);
       const defaults = {};
       featureIds.forEach(id => {
-        defaults[`instabits_feature_${id}`] = true; // Default: enabled
+        // Use provided default or fallback to true
+        defaults[`instabits_feature_${id}`] = defaultStates[id] !== undefined ? defaultStates[id] : true;
       });
 
       const result = await this.getMultiple(keys, defaults);
