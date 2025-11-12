@@ -1,10 +1,18 @@
 // Features Configuration Data
 // Add or modify features here - no need to touch HTML
 
+// Section definitions - add new sections here
+const SECTIONS = [
+    { id: 'video', name: 'Video' },
+    { id: 'automation', name: 'Automation' },
+    { id: 'distraction', name: 'Distraction' }
+];
+
 const FEATURES_DATA = [
     {
         id: 'playbackSpeed',
         name: 'Playback Speed',
+        section: 'video',
         searchName: 'playback speed video speed control',
         icon: {
             name: 'speed',
@@ -15,11 +23,13 @@ const FEATURES_DATA = [
         description: 'Control video playback speed from 0.25x to 3x for reels and posts',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'volumeSlider',
         name: 'Volume Control',
+        section: 'video',
         searchName: 'volume control audio slider',
         icon: {
             name: 'volume',
@@ -30,10 +40,12 @@ const FEATURES_DATA = [
         description: 'Visual volume slider with persistent settings across videos',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'videoSeekbar',
+        section: 'video',
         name: 'Video Seekbar',
         searchName: 'seekbar progress bar scrubber',
         icon: {
@@ -45,10 +57,12 @@ const FEATURES_DATA = [
         description: 'Interactive progress bar to navigate through videos easily',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'videoDuration',
+        section: 'video',
         name: 'Video Duration',
         searchName: 'duration time timestamp',
         icon: {
@@ -60,10 +74,12 @@ const FEATURES_DATA = [
         description: 'Display current time and total duration overlay on videos',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'pipMode',
+        section: 'video',
         name: 'PIP Mode',
         searchName: 'pip picture in picture floating video',
         icon: {
@@ -75,10 +91,12 @@ const FEATURES_DATA = [
         description: 'Watch reels in picture-in-picture mode with auto video switching',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'backgroundPlay',
+        section: 'video',
         name: 'Background Play',
         searchName: 'background play tab hidden',
         icon: {
@@ -90,10 +108,12 @@ const FEATURES_DATA = [
         description: 'Keep videos playing when switching tabs or minimizing browser',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'autoScroll',
+        section: 'automation',
         name: 'Auto Scroll',
         searchName: 'auto scroll automatic reels',
         icon: {
@@ -105,10 +125,12 @@ const FEATURES_DATA = [
         description: 'Automatically scroll to the next reel when current video ends',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'zenMode',
+        section: 'video',
         name: 'Zen Mode',
         searchName: 'zen mode distraction free clean minimal overlay hide',
         icon: {
@@ -120,10 +142,12 @@ const FEATURES_DATA = [
         description: 'Hide video overlays for distraction-free viewing. Overlays appear on hover.',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'fullScreen',
+        section: 'video',
         name: 'Full Screen',
         searchName: 'fullscreen full screen expand maximize theater',
         icon: {
@@ -135,10 +159,12 @@ const FEATURES_DATA = [
         description: 'Add fullscreen button next to video duration for quick fullscreen access',
         configButton: null,
         disabled: false,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: true
     },
     {
         id: 'hideReels',
+        section: 'distraction',
         name: 'Hide Reels',
         searchName: 'hide reels distraction remove block',
         icon: {
@@ -150,10 +176,12 @@ const FEATURES_DATA = [
         description: 'Hide Reels navigation link and Reels screen for distraction-free browsing',
         configButton: null,
         disabled: true,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: false
     },
     {
         id: 'hideExplore',
+        section: 'distraction',
         name: 'Hide Explore',
         searchName: 'hide explore distraction remove block',
         icon: {
@@ -165,10 +193,12 @@ const FEATURES_DATA = [
         description: 'Hide Explore navigation link and Explore screen to reduce distractions',
         configButton: null,
         disabled: true,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: false
     },
     {
         id: 'hideStories',
+        section: 'distraction',
         name: 'Hide Stories',
         searchName: 'hide stories distraction remove block',
         icon: {
@@ -180,10 +210,12 @@ const FEATURES_DATA = [
         description: 'Hide Stories feed on home page and Stories screen',
         configButton: null,
         disabled: true,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: false
     },
     {
         id: 'hideSuggestedFollowers',
+        section: 'distraction',
         name: 'Hide Suggested Followers',
         searchName: 'hide suggested followers recommendations distraction remove block',
         icon: {
@@ -195,10 +227,12 @@ const FEATURES_DATA = [
         description: 'Hide the "Suggested for you" section on home page',
         configButton: null,
         disabled: true,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: false
     },
     {
         id: 'hideThreads',
+        section: 'distraction',
         name: 'Hide Threads',
         searchName: 'hide threads distraction remove block',
         icon: {
@@ -210,7 +244,8 @@ const FEATURES_DATA = [
         description: 'Hide Threads navigation link from Instagram',
         configButton: null,
         disabled: true,
-        toggleable: true
+        toggleable: true,
+        defaultEnabled: false
     }
 ];
 

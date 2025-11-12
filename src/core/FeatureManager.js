@@ -42,7 +42,8 @@ class FeatureManager {
       options: {
         useVideoObserver: options.useVideoObserver !== false, // Default: true
         autoEnable: options.autoEnable !== false, // Default: true
-        priority: options.priority || 0 // For initialization order
+        priority: options.priority || 0, // For initialization order
+        defaultEnabled: options.defaultEnabled !== undefined ? options.defaultEnabled : true // Default enabled state
       }
     });
 
@@ -75,11 +76,15 @@ class FeatureManager {
     // Set video observer
     this.videoObserver = videoObserverInstance || videoObserver;
 
-    // Get all feature IDs
+    // Get all feature IDs and their default states
     const featureIds = Array.from(this.featureRegistry.keys());
+    const defaultStates = {};
+    this.featureRegistry.forEach((config, id) => {
+      defaultStates[id] = config.options.defaultEnabled;
+    });
 
-    // Get enabled states from storage
-    const enabledStates = await storageService.getAllFeatureStates(featureIds);
+    // Get enabled states from storage with defaults
+    const enabledStates = await storageService.getAllFeatureStates(featureIds, defaultStates);
 
     // Sort features by priority
     const sortedFeatures = Array.from(this.featureRegistry.values())
@@ -90,7 +95,7 @@ class FeatureManager {
       const { id, FeatureClass, options } = featureConfig;
 
       // Check if feature should be enabled
-      const isEnabled = enabledStates[id] !== false; // Default: enabled
+      const isEnabled = enabledStates[id];
       const shouldEnable = options.autoEnable && isEnabled;
 
       if (shouldEnable) {

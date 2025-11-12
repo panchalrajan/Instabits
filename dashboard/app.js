@@ -34,11 +34,29 @@ class Dashboard {
         const uniqueLabels = this.getUniqueLabels();
         document.getElementById('searchBarContainer').innerHTML = this.uiComponents.searchBar('Search features...', uniqueLabels);
 
-        // Render feature cards
-        const featuresHTML = this.featuresData.map(feature =>
-            this.uiComponents.featureCard(feature)
-        ).join('');
-        document.getElementById('featuresGrid').innerHTML = featuresHTML;
+        // Group features by section
+        const featuresBySection = this.groupFeaturesBySection();
+
+        // Render sections with their features
+        const sectionsHTML = SECTIONS.map(section => {
+            const sectionFeatures = featuresBySection[section.id] || [];
+            if (sectionFeatures.length === 0) return '';
+
+            const featuresHTML = sectionFeatures.map(feature =>
+                this.uiComponents.featureCard(feature)
+            ).join('');
+
+            return `
+                <div class="features-section" data-section="${section.id}">
+                    <h2 class="section-title">${section.name}</h2>
+                    <div class="features-grid">
+                        ${featuresHTML}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('featuresGrid').innerHTML = sectionsHTML;
 
         // Render no results message
         document.getElementById('noResultsContainer').innerHTML = this.uiComponents.noResults();
@@ -54,6 +72,24 @@ class Dashboard {
 
         // Update label counts
         this.updateLabelCounts();
+    }
+
+    /**
+     * Group features by section
+     * @returns {Object} Object with section IDs as keys and arrays of features as values
+     */
+    groupFeaturesBySection() {
+        const grouped = {};
+
+        this.featuresData.forEach(feature => {
+            const section = feature.section || 'other';
+            if (!grouped[section]) {
+                grouped[section] = [];
+            }
+            grouped[section].push(feature);
+        });
+
+        return grouped;
     }
 
     /**
@@ -109,8 +145,14 @@ class Dashboard {
                 toggles.forEach(toggle => {
                     const feature = toggle.dataset.feature;
                     const storageKey = `instabits_feature_${feature}`;
-                    // Default to enabled if not set
-                    const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
+
+                    // Find feature config to get default enabled state
+                    const featureConfig = this.featuresData.find(f => f.id === feature);
+                    const defaultEnabled = featureConfig?.defaultEnabled ?? true;
+
+                    // Use stored value if exists, otherwise use default from config
+                    const isEnabled = result[storageKey] === undefined ? defaultEnabled : result[storageKey] === true;
+
                     toggle.checked = isEnabled;
                     this.features.set(feature, isEnabled);
                 });
@@ -226,13 +268,24 @@ class Dashboard {
             }
         });
 
+        // Hide sections that have no visible cards
+        const sections = document.querySelectorAll('.features-section');
+        sections.forEach(section => {
+            const visibleCards = section.querySelectorAll('.feature-card:not(.hidden)');
+            if (visibleCards.length === 0) {
+                section.style.display = 'none';
+            } else {
+                section.style.display = 'block';
+            }
+        });
+
         // Show/hide no results message
         if (visibleCount === 0) {
             this.noResults.style.display = 'block';
             this.featuresGrid.style.display = 'none';
         } else {
             this.noResults.style.display = 'none';
-            this.featuresGrid.style.display = 'grid';
+            this.featuresGrid.style.display = 'flex';
         }
     }
 

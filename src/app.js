@@ -9,20 +9,20 @@
    */
   function registerFeatures() {
     featureManager
-      .register('fullScreen', FullScreen, { useVideoObserver: true, priority: 10 })
-      .register('playbackSpeed', PlaybackSpeed, { useVideoObserver: true, priority: 9 })
-      .register('pipMode', PIPMode, { useVideoObserver: true, priority: 8 })
-      .register('videoDuration', VideoDuration, { useVideoObserver: true, priority: 7 })
-      .register('videoSeekbar', VideoSeekbar, { useVideoObserver: true, priority: 6 })
-      .register('volumeSlider', VolumeSlider, { useVideoObserver: true, priority: 5 })
-      .register('zenMode', ZenMode, { useVideoObserver: true, priority: 4 })
-      .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 3 })
-      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2 })
-      .register('hideReels', HideReels, { useVideoObserver: false, priority: 1 })
-      .register('hideExplore', HideExplore, { useVideoObserver: false, priority: 1 })
-      .register('hideStories', HideStories, { useVideoObserver: false, priority: 1 })
-      .register('hideSuggestedFollowers', HideSuggestedFollowers, { useVideoObserver: false, priority: 1 })
-      .register('hideThreads', HideThreads, { useVideoObserver: false, priority: 1 });
+      .register('fullScreen', FullScreen, { useVideoObserver: true, priority: 10, defaultEnabled: true })
+      .register('playbackSpeed', PlaybackSpeed, { useVideoObserver: true, priority: 9, defaultEnabled: true })
+      .register('pipMode', PIPMode, { useVideoObserver: true, priority: 8, defaultEnabled: true })
+      .register('videoDuration', VideoDuration, { useVideoObserver: true, priority: 7, defaultEnabled: true })
+      .register('videoSeekbar', VideoSeekbar, { useVideoObserver: true, priority: 6, defaultEnabled: true })
+      .register('volumeSlider', VolumeSlider, { useVideoObserver: true, priority: 5, defaultEnabled: true })
+      .register('zenMode', ZenMode, { useVideoObserver: true, priority: 4, defaultEnabled: true })
+      .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 3, defaultEnabled: true })
+      .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2, defaultEnabled: true })
+      .register('hideReels', HideReels, { useVideoObserver: false, priority: 1, defaultEnabled: false })
+      .register('hideExplore', HideExplore, { useVideoObserver: false, priority: 1, defaultEnabled: false })
+      .register('hideStories', HideStories, { useVideoObserver: false, priority: 1, defaultEnabled: false })
+      .register('hideSuggestedFollowers', HideSuggestedFollowers, { useVideoObserver: false, priority: 1, defaultEnabled: false })
+      .register('hideThreads', HideThreads, { useVideoObserver: false, priority: 1, defaultEnabled: false });
   }
 
   /**
