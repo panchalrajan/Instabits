@@ -1,6 +1,37 @@
 class VideoSeekbar extends BaseFeature {
   constructor() {
     super();
+    this.progressColor = '#0095f6'; // Default color
+    this.initializeColor();
+    this.setupMessageListener();
+  }
+
+  async initializeColor() {
+    // Load saved color from storage
+    const color = await storageService.getUserPreference('seekbarProgressColor', '#0095f6');
+    this.progressColor = color;
+
+    // Update all existing progress bars
+    this.updateAllProgressBars();
+  }
+
+  setupMessageListener() {
+    // Listen for color updates from settings page
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.type === 'updateSeekbarColor') {
+        this.progressColor = message.color;
+        this.updateAllProgressBars();
+      }
+    });
+  }
+
+  updateAllProgressBars() {
+    // Update all tracked video progress bars with new color
+    this.trackedVideos.forEach((data) => {
+      if (data.progressBar) {
+        data.progressBar.style.background = this.progressColor;
+      }
+    });
   }
 
   createSeekbar() {
@@ -8,6 +39,7 @@ class VideoSeekbar extends BaseFeature {
 
     const progressBar = document.createElement('div');
     progressBar.className = 'insta-video-seekbar-progress';
+    progressBar.style.background = this.progressColor; // Apply saved color
 
     const hoverArea = document.createElement('div');
     hoverArea.className = 'insta-video-seekbar-hover';

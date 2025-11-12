@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seekbar Settings - InstaBits</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="settingsPage.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <button class="icon-btn back-btn" id="backBtn" title="Back to Dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="header-text">
+                    <h1>Seekbar Settings</h1>
+                    <p>Customize your video seekbar appearance</p>
+                </div>
+            </div>
+        </div>
+
+        <main class="main settings-main">
+            <!-- Color Selection Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Progress Bar Color</h2>
+                <p class="settings-section-description">Choose the color for the seekbar progress indicator</p>
+
+                <div class="color-grid" id="colorGrid">
+                    <!-- Colors will be injected here by JS -->
+                </div>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Preview</h2>
+                <p class="settings-section-description">See how your seekbar will look</p>
+
+                <div class="seekbar-preview">
+                    <div class="preview-video-container">
+                        <div class="preview-seekbar">
+                            <div class="preview-seekbar-bg">
+                                <div class="preview-seekbar-progress" id="previewProgress"></div>
+                            </div>
+                        </div>
+                        <div class="preview-label">Hover over to see effect</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="settings-actions">
+                <button class="btn btn-secondary" id="resetBtn">Reset to Default</button>
+                <button class="btn btn-primary" id="saveBtn">Save Changes</button>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="seekbarSettings.js"></script>
+</body>
+</html>

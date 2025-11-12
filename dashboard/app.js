@@ -229,11 +229,10 @@ class Dashboard {
         e.preventDefault();
         const page = e.currentTarget.dataset.page;
 
-        this.showToast(
-            'Opening Configuration',
-            `${this.formatName(page)} settings will open soon`,
-            'info'
-        );
+        // Navigate to settings page
+        if (page) {
+            window.location.href = `${page}.html`;
+        }
     }
 
     handleSearchAndFilter(query) {
