@@ -136,6 +136,81 @@ const FEATURES_DATA = [
         configButton: null,
         disabled: false,
         toggleable: true
+    },
+    {
+        id: 'hideReels',
+        name: 'Hide Reels',
+        searchName: 'hide reels distraction remove block',
+        icon: {
+            name: 'hideReels',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #ef4444, #dc2626)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Hide Reels navigation link and Reels screen for distraction-free browsing',
+        configButton: null,
+        disabled: true,
+        toggleable: true
+    },
+    {
+        id: 'hideExplore',
+        name: 'Hide Explore',
+        searchName: 'hide explore distraction remove block',
+        icon: {
+            name: 'hideExplore',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #f59e0b, #d97706)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Hide Explore navigation link and Explore screen to reduce distractions',
+        configButton: null,
+        disabled: true,
+        toggleable: true
+    },
+    {
+        id: 'hideStories',
+        name: 'Hide Stories',
+        searchName: 'hide stories distraction remove block',
+        icon: {
+            name: 'hideStories',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Hide Stories feed on home page and Stories screen',
+        configButton: null,
+        disabled: true,
+        toggleable: true
+    },
+    {
+        id: 'hideSuggestedFollowers',
+        name: 'Hide Suggested Followers',
+        searchName: 'hide suggested followers recommendations distraction remove block',
+        icon: {
+            name: 'hideSuggestedFollowers',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #06b6d4, #0891b2)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Hide the "Suggested for you" section on home page',
+        configButton: null,
+        disabled: true,
+        toggleable: true
+    },
+    {
+        id: 'hideThreads',
+        name: 'Hide Threads',
+        searchName: 'hide threads distraction remove block',
+        icon: {
+            name: 'hideThreads',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #64748b, #475569)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Hide Threads navigation link from Instagram',
+        configButton: null,
+        disabled: true,
+        toggleable: true
     }
 ];
 

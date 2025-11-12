@@ -56,6 +56,12 @@
         "src/features/autoScroll.js",
         "src/features/zenMode.js",
         "src/features/fullScreen.js",
+        "src/distractions/BaseDistraction.js",
+        "src/distractions/hideReels.js",
+        "src/distractions/hideExplore.js",
+        "src/distractions/hideStories.js",
+        "src/distractions/hideSuggestedFollowers.js",
+        "src/distractions/hideThreads.js",
         "src/app.js"
       ],
       "run_at": "document_end"
