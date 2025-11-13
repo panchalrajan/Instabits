@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playback Speed Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <link rel="stylesheet" href="../settingsPage.css">
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../../../components/settingsComponents.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <!-- Speed Options Selection Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Available Speed Options</h2>
+                <p class="settings-section-description">Choose which playback speeds to show in the video menu</p>
+
+                <div class="speed-grid" id="speedOptionsGrid">
+                    <!-- Speed options will be injected here by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="playbackSpeedSettings.js"></script>
+</body>
+</html>

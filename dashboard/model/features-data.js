@@ -21,7 +21,11 @@ const FEATURES_DATA = [
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Control video playback speed from 0.25x to 3x for reels and posts',
-        configButton: null,
+        configButton: {
+            text: 'Configure',
+            page: 'playbackSpeedSettings',
+            icon: 'arrow'
+        },
         disabled: false,
         toggleable: true,
         defaultEnabled: true
@@ -93,7 +97,11 @@ const FEATURES_DATA = [
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Watch reels in picture-in-picture mode with auto video switching',
-        configButton: null,
+        configButton: {
+            text: 'Info',
+            page: 'pipModeSettings',
+            icon: 'arrow'
+        },
         disabled: false,
         toggleable: true,
         defaultEnabled: true

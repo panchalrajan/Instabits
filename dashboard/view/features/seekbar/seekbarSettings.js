@@ -1,7 +1,7 @@
 // Seekbar Settings Page
-class SeekbarSettings {
+class SeekbarSettings extends SettingsComponents.BaseSettingsPage {
     constructor() {
-        this.toastManager = new Toast('toast');
+        super();
 
         this.colors = [
             { name: 'Instagram Blue', value: '#0095f6' },
@@ -33,8 +33,11 @@ class SeekbarSettings {
     }
 
     async init() {
-        // Render header
-        this.renderHeader();
+        // Render header using base class method
+        this.renderHeader({
+            title: 'Seekbar Settings',
+            subtitle: 'Customize your video seekbar appearance'
+        });
 
         // Load saved color preference
         await this.loadSavedColor();
@@ -47,20 +50,6 @@ class SeekbarSettings {
 
         // Setup event listeners
         this.setupEventListeners();
-    }
-
-    renderHeader() {
-        const headerContainer = document.getElementById('headerContainer');
-        if (headerContainer) {
-            headerContainer.innerHTML = UIComponents.header({
-                icon: '../../../../icons/icon_128.png',
-                title: 'Seekbar Settings',
-                subtitle: 'Customize your video seekbar appearance',
-                buttons: null,
-                showBackButton: true,
-                backButtonUrl: '../../index.html'
-            });
-        }
     }
 
     async loadSavedColor() {
@@ -125,13 +114,8 @@ class SeekbarSettings {
     }
 
     setupEventListeners() {
-        // Back button
-        const backBtn = document.getElementById('backBtn');
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                window.location.href = '../../index.html';
-            });
-        }
+        // Setup common listeners (back button) from base class
+        this.setupCommonListeners();
     }
 
     async saveSettings() {
@@ -141,35 +125,17 @@ class SeekbarSettings {
                 pref_seekbarProgressColor: this.selectedColor
             });
 
-            // Show success message (brief)
-            this.toastManager.show('Saved', 'Color updated', 'success');
+            // Show success message using base class method
+            this.showToast('Saved', 'Color updated', 'success');
 
-            // Notify content script to update colors immediately
-            this.notifyContentScript();
+            // Notify content script using base class method
+            await this.notifyContentScript('updateSeekbarColor', {
+                color: this.selectedColor
+            });
 
         } catch (error) {
             console.error('Error saving settings:', error);
-            this.toastManager.show('Error', 'Failed to save', 'error');
-        }
-    }
-
-    async notifyContentScript() {
-        try {
-            // Get all tabs with Instagram
-            const tabs = await chrome.tabs.query({ url: '*://*.instagram.com/*' });
-
-            // Send message to all Instagram tabs to update seekbar colors
-            tabs.forEach(tab => {
-                chrome.tabs.sendMessage(tab.id, {
-                    type: 'updateSeekbarColor',
-                    color: this.selectedColor
-                }).catch(() => {
-                    // Tab might not have content script loaded, ignore error
-                });
-            });
-        } catch (error) {
-            // Ignore errors, this is just for immediate updates
-            console.log('Could not notify content script:', error);
+            this.showToast('Error', 'Failed to save', 'error');
         }
     }
 }
