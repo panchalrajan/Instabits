@@ -95,10 +95,19 @@ class BaseDistraction extends BaseFeature {
    * @param {string} options.title - Title text (e.g., "Reels Blocked")
    * @param {string} options.description - Description text
    * @param {string} options.iconSvg - SVG markup for the icon
+   * @param {string} [options.buttonText] - Custom text for primary button (default: "Go to Homepage")
+   * @param {string} [options.buttonUrl] - Custom URL for primary button (default: "/")
    * @returns {HTMLElement} The blocked screen element
    */
   createBlockedScreenComponent(options) {
-    const { id, title, description, iconSvg } = options;
+    const {
+      id,
+      title,
+      description,
+      iconSvg,
+      buttonText = 'Go to Homepage',
+      buttonUrl = '/'
+    } = options;
 
     const screen = document.createElement('div');
     screen.id = id;
@@ -117,7 +126,7 @@ class BaseDistraction extends BaseFeature {
       </p>
       <div class="instabits-blocked-actions">
         <button class="instabits-blocked-button instabits-blocked-button-primary" data-action="go-home">
-          Go to Homepage
+          ${buttonText}
         </button>
       </div>
       <div class="instabits-blocked-footer">
@@ -136,7 +145,7 @@ class BaseDistraction extends BaseFeature {
       homeBtn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        window.location.href = '/';
+        window.location.href = buttonUrl;
       });
     }
 

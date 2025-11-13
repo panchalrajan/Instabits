@@ -28,7 +28,8 @@
         .register('hideExplore', HideExplore, { useVideoObserver: false, priority: 1, defaultEnabled: false })
         .register('hideStories', HideStories, { useVideoObserver: false, priority: 1, defaultEnabled: false })
         .register('hideSuggestedFollowers', HideSuggestedFollowers, { useVideoObserver: false, priority: 1, defaultEnabled: false })
-        .register('hideThreads', HideThreads, { useVideoObserver: false, priority: 1, defaultEnabled: false });
+        .register('hideThreads', HideThreads, { useVideoObserver: false, priority: 1, defaultEnabled: false })
+        .register('forceFollowing', ForceFollowing, { useVideoObserver: false, priority: 1, defaultEnabled: false });
       return true;
     } catch (error) {
       console.error('[InstaBits] Error registering features:', error);

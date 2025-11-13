@@ -258,6 +258,23 @@ const FEATURES_DATA = [
         disabled: true,
         toggleable: true,
         defaultEnabled: false
+    },
+    {
+        id: 'forceFollowing',
+        section: 'distraction',
+        name: 'Focus on Following',
+        searchName: 'force following focus feed distraction productivity',
+        icon: {
+            name: 'forceFollowing',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #14b8a6, #0d9488)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.cyan },
+        description: 'Block Reels and Explore pages. Redirects to Following feed for focused browsing.',
+        configButton: null,
+        disabled: false,
+        toggleable: true,
+        defaultEnabled: false
     }
 ];
 
