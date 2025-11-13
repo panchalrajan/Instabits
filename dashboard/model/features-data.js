@@ -126,8 +126,8 @@ const FEATURES_DATA = [
     {
         id: 'autoScroll',
         section: 'automation',
-        name: 'Auto Scroll',
-        searchName: 'auto scroll automatic reels',
+        name: 'Auto Scroll: Reels',
+        searchName: 'auto scroll reels automatic',
         icon: {
             name: 'scroll',
             color: '#ffffff',
