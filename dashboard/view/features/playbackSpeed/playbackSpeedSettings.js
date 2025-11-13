@@ -1,7 +1,7 @@
 // Playback Speed Settings Page
-class PlaybackSpeedSettings {
+class PlaybackSpeedSettings extends SettingsComponents.BaseSettingsPage {
     constructor() {
-        this.toastManager = new Toast('toast');
+        super();
 
         // Available speed options (all possible speeds)
         this.availableSpeeds = [
@@ -24,8 +24,11 @@ class PlaybackSpeedSettings {
     }
 
     async init() {
-        // Render header
-        this.renderHeader();
+        // Render header using base class method
+        this.renderHeader({
+            title: 'Playback Speed Settings',
+            subtitle: 'Customize which playback speed options you want to see'
+        });
 
         // Load saved speed preferences
         await this.loadSavedSpeeds();
@@ -35,20 +38,6 @@ class PlaybackSpeedSettings {
 
         // Setup event listeners
         this.setupEventListeners();
-    }
-
-    renderHeader() {
-        const headerContainer = document.getElementById('headerContainer');
-        if (headerContainer) {
-            headerContainer.innerHTML = UIComponents.header({
-                icon: '../../../../icons/icon_128.png',
-                title: 'Playback Speed Settings',
-                subtitle: 'Customize which playback speed options you want to see',
-                buttons: null,
-                showBackButton: true,
-                backButtonUrl: '../../index.html'
-            });
-        }
     }
 
     async loadSavedSpeeds() {
@@ -161,13 +150,8 @@ class PlaybackSpeedSettings {
     }
 
     setupEventListeners() {
-        // Back button
-        const backBtn = document.getElementById('backBtn');
-        if (backBtn) {
-            backBtn.addEventListener('click', () => {
-                window.location.href = '../../index.html';
-            });
-        }
+        // Setup common listeners (back button) from base class
+        this.setupCommonListeners();
     }
 
     async saveSettings() {
@@ -177,35 +161,17 @@ class PlaybackSpeedSettings {
                 pref_enabledPlaybackSpeeds: this.enabledSpeeds
             });
 
-            // Show success message (brief)
-            this.toastManager.show('Saved', 'Speed options updated', 'success');
+            // Show success message using base class method
+            this.showToast('Saved', 'Speed options updated', 'success');
 
-            // Notify content script to update speeds immediately
-            this.notifyContentScript();
+            // Notify content script using base class method
+            await this.notifyContentScript('updatePlaybackSpeeds', {
+                speeds: this.enabledSpeeds
+            });
 
         } catch (error) {
             console.error('Error saving settings:', error);
-            this.toastManager.show('Error', 'Failed to save', 'error');
-        }
-    }
-
-    async notifyContentScript() {
-        try {
-            // Get all tabs with Instagram
-            const tabs = await chrome.tabs.query({ url: '*://*.instagram.com/*' });
-
-            // Send message to all Instagram tabs to update playback speed options
-            tabs.forEach(tab => {
-                chrome.tabs.sendMessage(tab.id, {
-                    type: 'updatePlaybackSpeeds',
-                    speeds: this.enabledSpeeds
-                }).catch(() => {
-                    // Tab might not have content script loaded, ignore error
-                });
-            });
-        } catch (error) {
-            // Ignore errors, this is just for immediate updates
-            console.log('Could not notify content script:', error);
+            this.showToast('Error', 'Failed to save', 'error');
         }
     }
 }

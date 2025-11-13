@@ -97,7 +97,11 @@ const FEATURES_DATA = [
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Watch reels in picture-in-picture mode with auto video switching',
-        configButton: null,
+        configButton: {
+            text: 'Info',
+            page: 'pipModeSettings',
+            icon: 'arrow'
+        },
         disabled: false,
         toggleable: true,
         defaultEnabled: true

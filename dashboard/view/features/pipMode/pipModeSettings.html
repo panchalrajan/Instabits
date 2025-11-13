@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIP Mode Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../../../components/settingsComponents.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <!-- Information Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">PIP Mode Information</h2>
+                <p class="settings-section-description">Learn how PIP mode works and check your feature status</p>
+
+                <!-- How PIP Works -->
+                <div class="info-box">
+                    <div class="info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <h3 class="info-title">How PIP Mode Works</h3>
+                        <ul class="info-list">
+                            <li>External PIP window opens when you click the PIP button</li>
+                            <li>Video automatically switches when you scroll to the next reel</li>
+                            <li>Works seamlessly with other InstaBits features</li>
+                            <li>Stay productive while watching your favorite content</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Feature Status Section -->
+                <div class="status-divider"></div>
+
+                <h3 class="status-section-title">Related Features Status</h3>
+                <p class="status-section-description">For better experience in PIP mode, enable these features</p>
+
+                <div class="status-grid" id="statusGrid">
+                    <!-- Status items will be injected here by JS -->
+                </div>
+            </div>
+
+            <!-- Tips Section (will be injected by JS) -->
+            <div id="tipsContainer"></div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="pipModeSettings.js"></script>
+</body>
+</html>

@@ -1,37 +1,7 @@
-/* Settings Page Styles */
+/* Feature-Specific Settings Styles */
+/* Only styles unique to individual feature settings (Color Grid, Speed Grid, Preview) */
 
-.settings-main {
-    max-width: 600px;
-}
-
-.settings-section {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 16px;
-}
-
-.settings-section-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-}
-
-.settings-section-description {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 14px;
-}
-
-.preview-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 18px 0 14px 0;
-}
-
-/* Color Grid */
+/* ===== COLOR GRID (Seekbar Settings) ===== */
 .color-grid {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
@@ -90,7 +60,13 @@
     margin-top: 4px;
 }
 
-/* Preview Section */
+/* ===== PREVIEW SECTION (Seekbar Settings) ===== */
+.preview-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 18px 0 14px 0;
+}
+
 .seekbar-preview {
     background: transparent;
     border-radius: 8px;
@@ -143,15 +119,7 @@
     text-align: center;
 }
 
-.back-btn {
-    transition: all 0.2s;
-}
-
-.back-btn:hover {
-    transform: translateX(-2px);
-}
-
-/* Speed Options Grid (for Playback Speed Settings) */
+/* ===== SPEED GRID (Playback Speed Settings) ===== */
 .speed-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
