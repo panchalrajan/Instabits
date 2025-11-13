@@ -116,7 +116,7 @@ const FEATURES_DATA = [
             color: '#ffffff',
             background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
         },
-        badge: { text: 'New', color: BADGE_COLORS.green },
+        badge: { text: 'Experimental', color: BADGE_COLORS.orange },
         description: 'Keep videos playing when switching tabs or minimizing browser',
         configButton: null,
         disabled: false,
@@ -133,7 +133,7 @@ const FEATURES_DATA = [
             color: '#ffffff',
             background: 'linear-gradient(135deg, #06b6d4, #0891b2)'
         },
-        badge: { text: 'New', color: BADGE_COLORS.green },
+        badge: { text: 'Beta', color: BADGE_COLORS.pink },
         description: 'Automatically scroll to the next reel when current video ends',
         configButton: null,
         disabled: false,
@@ -256,6 +256,23 @@ const FEATURES_DATA = [
         description: 'Hide Threads navigation link from Instagram',
         configButton: null,
         disabled: true,
+        toggleable: true,
+        defaultEnabled: false
+    },
+    {
+        id: 'forceFollowing',
+        section: 'distraction',
+        name: 'Focus on Following',
+        searchName: 'force following focus feed distraction productivity homepage',
+        icon: {
+            name: 'forceFollowing',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #14b8a6, #0d9488)'
+        },
+        badge: { text: 'Experimental', color: BADGE_COLORS.orange },
+        description: 'Block Instagram Homepage. Redirects to Following feed. Works with Hide Reels and Hide Explore for smart CTAs.',
+        configButton: null,
+        disabled: false,
         toggleable: true,
         defaultEnabled: false
     }
