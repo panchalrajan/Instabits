@@ -7,7 +7,7 @@ class PIPModeSettings extends UIComponents.BaseSettingsPage {
         this.relatedFeatures = [
             {
                 id: 'autoScroll',
-                name: 'Auto Scroll',
+                name: 'Auto Scroll: Reels',
                 description: 'Automatically scroll to next reel when video ends',
                 icon: 'scroll'
             },
@@ -52,7 +52,7 @@ class PIPModeSettings extends UIComponents.BaseSettingsPage {
 
         const tips = [
             {
-                title: 'Enable Auto Scroll',
+                title: 'Enable Auto Scroll: Reels',
                 text: 'Automatically moves to the next reel when the current video ends',
                 icon: 'check'
             },
