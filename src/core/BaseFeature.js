@@ -19,8 +19,9 @@ class BaseFeature {
 
     // Common properties all features need
     this.trackedVideos = new WeakMap();
-    this.mutationObservers = new WeakMap();
+    this.videoCleanupCallbacks = new WeakMap();
     this.featureName = this.constructor.name;
+    this.sharedMutationObserver = null;
 
     // Initialize the feature
     this.initialize();
@@ -111,34 +112,49 @@ class BaseFeature {
   /**
    * Set up cleanup observer for a video
    * Automatically cleans up when video is removed from DOM
+   * Uses a single shared MutationObserver for all videos in this feature instance
    * @param {HTMLVideoElement} video
    * @param {Function} cleanupCallback - Called when video is removed
    */
   setupCleanupObserver(video, cleanupCallback = null) {
     if (!video) return;
 
-    const observer = new MutationObserver(() => {
-      if (!document.contains(video)) {
-        // Video was removed from DOM
-        if (cleanupCallback) {
-          cleanupCallback(video);
-        }
+    // Store cleanup callback for this video
+    if (cleanupCallback) {
+      this.videoCleanupCallbacks.set(video, cleanupCallback);
+    }
 
-        // Remove from tracking
-        this.removeFromTrackedVideos(video);
+    // Set up shared observer on first call
+    if (!this.sharedMutationObserver) {
+      this.sharedMutationObserver = new MutationObserver(() => {
+        // Check all tracked videos to see if any were removed
+        const videos = document.querySelectorAll('video');
+        const videosInDOM = new Set(videos);
 
-        // Disconnect observer
-        observer.disconnect();
-        this.mutationObservers.delete(video);
-      }
-    });
+        // Get all tracked videos by checking WeakMap
+        // We need to iterate through all videos we've seen
+        videos.forEach(videoElement => {
+          if (this.isVideoTracked(videoElement) && !document.contains(videoElement)) {
+            // Video was removed from DOM
+            const callback = this.videoCleanupCallbacks.get(videoElement);
+            if (callback) {
+              callback(videoElement);
+            }
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
+            // Remove from tracking
+            this.removeFromTrackedVideos(videoElement);
+            this.videoCleanupCallbacks.delete(videoElement);
+          }
+        });
+      });
 
-    this.mutationObservers.set(video, observer);
+      // Observe only the main content area, not entire document.body
+      const mainElement = document.querySelector('main') || document.body;
+      this.sharedMutationObserver.observe(mainElement, {
+        childList: true,
+        subtree: true
+      });
+    }
   }
 
   /**
@@ -177,15 +193,14 @@ class BaseFeature {
    * Called when feature is disabled or unloaded
    */
   cleanup() {
-    // Disconnect all mutation observers
-    const videos = document.querySelectorAll('video');
-    videos.forEach(video => {
-      const observer = this.mutationObservers.get(video);
-      if (observer) {
-        observer.disconnect();
-        this.mutationObservers.delete(video);
-      }
-    });
+    // Disconnect shared mutation observer
+    if (this.sharedMutationObserver) {
+      this.sharedMutationObserver.disconnect();
+      this.sharedMutationObserver = null;
+    }
+
+    // Clear cleanup callbacks
+    // Note: WeakMaps will be garbage collected automatically when videos are removed
 
     // Subclasses can override to add more cleanup
     this.onCleanup();
@@ -272,7 +287,7 @@ class BaseFeature {
    */
   addElementToVideoParent(video, element) {
     const parent = this.getVideoParent(video);
-    if (!parent) return false;
+    if (!parent || !element) return false;
 
     this.ensureParentPositioned(parent);
     parent.appendChild(element);

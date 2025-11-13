@@ -17,14 +17,22 @@ class BaseDistraction extends BaseFeature {
       return;
     }
 
-    if (elements instanceof Node) {
-      elements.style.display = 'none';
-    } else if (elements instanceof NodeList || Array.isArray(elements)) {
-      elements.forEach((element) => {
-        if (element) {
-          element.style.display = 'none';
-        }
-      });
+    try {
+      if (elements instanceof Node) {
+        elements.style.display = 'none';
+      } else if (elements instanceof NodeList || Array.isArray(elements)) {
+        elements.forEach((element) => {
+          if (element) {
+            try {
+              element.style.display = 'none';
+            } catch (error) {
+              console.error(`${this.featureName}: Error hiding element:`, error);
+            }
+          }
+        });
+      }
+    } catch (error) {
+      console.error(`${this.featureName}: Error in hideElements:`, error);
     }
   }
 
@@ -148,21 +156,29 @@ class BaseDistraction extends BaseFeature {
    * Child classes should override this to implement specific hiding logic
    */
   startObserving() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
+    try {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
 
-    this.observer = new MutationObserver(() => {
+      this.observer = new MutationObserver(() => {
+        try {
+          this.hideDistraction();
+        } catch (error) {
+          console.error(`${this.featureName}: Error in hideDistraction:`, error);
+        }
+      });
+
+      this.observer.observe(document.body, {
+        subtree: true,
+        childList: true
+      });
+
+      // Initial hide
       this.hideDistraction();
-    });
-
-    this.observer.observe(document.body, {
-      subtree: true,
-      childList: true
-    });
-
-    // Initial hide
-    this.hideDistraction();
+    } catch (error) {
+      console.error(`${this.featureName}: Error starting observer:`, error);
+    }
   }
 
   /**

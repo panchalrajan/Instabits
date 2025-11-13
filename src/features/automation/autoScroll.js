@@ -2,7 +2,10 @@ class AutoScroll {
   constructor() {
     this.enabled = true;
     this.VIDEOS_LIST_SELECTOR = "main video";
-    this.intervalId = null;
+    this.currentVideo = null;
+    this.observedVideos = new Set();
+    this.intersectionObserver = null;
+    this.mutationObserver = null;
     this.init();
   }
 
@@ -10,37 +13,91 @@ class AutoScroll {
     // Bind the event handler once
     this.boundEndVideoEvent = this.endVideoEvent.bind(this);
 
-    // Set up interval to periodically check and update current video
-    this.intervalId = setInterval(() => {
-      this.processAllVideos();
-    }, 2000);
+    // Set up IntersectionObserver for efficient viewport detection
+    this.setupIntersectionObserver();
+
+    // Observe existing videos
+    this.observeAllVideos();
+
+    // Watch for new videos being added to DOM
+    this.setupMutationObserver();
+  }
+
+  setupIntersectionObserver() {
+    // A video is considered "current" if more than 50% is visible
+    this.intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const video = entry.target;
+
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            // This video is now the current one
+            this.setCurrentVideo(video);
+          }
+        });
+      },
+      {
+        threshold: [0, 0.5, 1.0], // Trigger at 0%, 50%, and 100% visibility
+        rootMargin: '0px'
+      }
+    );
+  }
+
+  setupMutationObserver() {
+    if (!this.isReelsPage()) return;
+
+    this.mutationObserver = new MutationObserver(() => {
+      this.observeAllVideos();
+    });
+
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      this.mutationObserver.observe(mainElement, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  observeAllVideos() {
+    if (!this.isReelsPage()) return;
+
+    const videos = document.querySelectorAll(this.VIDEOS_LIST_SELECTOR);
+    videos.forEach((video) => {
+      if (!this.observedVideos.has(video)) {
+        this.intersectionObserver.observe(video);
+        this.observedVideos.add(video);
+      }
+    });
+  }
+
+  setCurrentVideo(video) {
+    // Remove listener from previous video
+    if (this.currentVideo && this.currentVideo !== video) {
+      this.currentVideo.removeEventListener("ended", this.boundEndVideoEvent);
+    }
+
+    this.currentVideo = video;
+
+    if (!this.enabled || !this.isReelsPage()) return;
+
+    // Remove loop attribute so video ends naturally
+    video.removeAttribute("loop");
+
+    // Add ended event listener
+    video.removeEventListener("ended", this.boundEndVideoEvent);
+    video.addEventListener("ended", this.boundEndVideoEvent);
   }
 
   isReelsPage() {
     return window.location.pathname.includes('/reels/');
   }
 
-  getCurrentVideo() {
-    return Array.from(document.querySelectorAll(this.VIDEOS_LIST_SELECTOR)).find((video) => {
-      const videoRect = video.getBoundingClientRect();
-      const isVideoInView =
-        videoRect.top >= 0 &&
-        videoRect.left >= 0 &&
-        videoRect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        videoRect.right <= (window.innerWidth || document.documentElement.clientWidth);
-      return isVideoInView;
-    });
-  }
-
   endVideoEvent() {
-    if (!this.enabled) return;
+    if (!this.enabled || !this.currentVideo) return;
 
     const VIDEOS_LIST = Array.from(document.querySelectorAll(this.VIDEOS_LIST_SELECTOR));
-    const currentVideo = this.getCurrentVideo();
-
-    if (!currentVideo) return;
-
-    const index = VIDEOS_LIST.findIndex((vid) => vid.src && vid.src === currentVideo.src);
+    const index = VIDEOS_LIST.findIndex((vid) => vid.src && vid.src === this.currentVideo.src);
     const nextVideo = VIDEOS_LIST[index + 1];
 
     if (nextVideo) {
@@ -52,36 +109,32 @@ class AutoScroll {
     }
   }
 
-  addVideoEndEvent() {
-    if (!this.enabled || !this.isReelsPage()) return;
-
-    const currentVideo = this.getCurrentVideo();
-    if (!currentVideo) return;
-
-    // Remove loop attribute
-    currentVideo.removeAttribute("loop");
-
-    // Remove old listener and add new one
-    currentVideo.removeEventListener("ended", this.boundEndVideoEvent);
-    currentVideo.addEventListener("ended", this.boundEndVideoEvent);
-  }
-
   processAllVideos() {
+    // This method is called by BaseFeature pattern, but we handle videos via observers
     if (!this.isReelsPage()) return;
-    this.addVideoEndEvent();
+    this.observeAllVideos();
   }
 
   cleanup() {
-    // Clear interval when feature is disabled
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
+    // Disconnect IntersectionObserver
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+      this.intersectionObserver = null;
+    }
+
+    // Disconnect MutationObserver
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect();
+      this.mutationObserver = null;
     }
 
     // Remove event listener from current video
-    const currentVideo = this.getCurrentVideo();
-    if (currentVideo) {
-      currentVideo.removeEventListener("ended", this.boundEndVideoEvent);
+    if (this.currentVideo) {
+      this.currentVideo.removeEventListener("ended", this.boundEndVideoEvent);
+      this.currentVideo = null;
     }
+
+    // Clear observed videos set
+    this.observedVideos.clear();
   }
 }

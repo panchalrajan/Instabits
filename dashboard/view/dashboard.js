@@ -13,17 +13,22 @@ class Dashboard {
     }
 
     async init() {
-        // Scroll to top on load
-        window.scrollTo(0, 0);
+        try {
+            // Scroll to top on load
+            window.scrollTo(0, 0);
 
-        // Render UI components
-        this.renderUI();
+            // Render UI components
+            this.renderUI();
 
-        // Load feature states from chrome storage
-        await this.loadFeatures();
+            // Load feature states from chrome storage
+            await this.loadFeatures();
 
-        // Attach event listeners
-        this.attachListeners();
+            // Attach event listeners
+            this.attachListeners();
+        } catch (error) {
+            console.error('[InstaBits Dashboard] Error during initialization:', error);
+            this.showToast('Error', 'Failed to initialize dashboard', 'error');
+        }
     }
 
     renderUI() {
@@ -206,23 +211,36 @@ class Dashboard {
     }
 
     handleToggle(toggle) {
-        const feature = toggle.dataset.feature;
-        const enabled = toggle.checked;
-        const storageKey = `instabits_feature_${feature}`;
+        try {
+            const feature = toggle.dataset.feature;
+            const enabled = toggle.checked;
+            const storageKey = `instabits_feature_${feature}`;
 
-        this.features.set(feature, enabled);
+            this.features.set(feature, enabled);
 
-        // Save to chrome storage
-        const data = {};
-        data[storageKey] = enabled;
-        chrome.storage.sync.set(data, () => {
-            const featureName = this.formatName(feature);
-            const title = enabled ? 'Feature Enabled' : 'Feature Disabled';
-            const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}.`;
-            const type = enabled ? 'success' : 'warning';
+            // Save to chrome storage
+            const data = {};
+            data[storageKey] = enabled;
+            chrome.storage.sync.set(data, () => {
+                if (chrome.runtime.lastError) {
+                    console.error('[InstaBits Dashboard] Storage error:', chrome.runtime.lastError);
+                    this.showToast('Error', 'Failed to save setting', 'error');
+                    // Revert toggle
+                    toggle.checked = !enabled;
+                    return;
+                }
 
-            this.showToast(title, message, type);
-        });
+                const featureName = this.formatName(feature);
+                const title = enabled ? 'Feature Enabled' : 'Feature Disabled';
+                const message = `${featureName} has been ${enabled ? 'enabled' : 'disabled'}.`;
+                const type = enabled ? 'success' : 'warning';
+
+                this.showToast(title, message, type);
+            });
+        } catch (error) {
+            console.error('[InstaBits Dashboard] Error toggling feature:', error);
+            this.showToast('Error', 'Failed to toggle feature', 'error');
+        }
     }
 
     handleLinkClick(e) {
