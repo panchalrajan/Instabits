@@ -82,34 +82,20 @@ class Toast {
      * @returns {string} HTML string
      */
     getToastHTML(title, message, type) {
-        const icons = {
-            success: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            error: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M10 6v4m0 4h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            warning: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M10 6v4m0 4h.01M10 2l8 14H2L10 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            info: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M10 11v5m0-10h.01M19 10a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`
-        };
+        // Use centralized IconLibrary
+        const iconName = `toast-${type}`;
 
         return `
             <div class="toast-content">
                 <div class="toast-icon">
-                    ${icons[type]}
+                    ${IconLibrary.get(iconName)}
                 </div>
                 <div class="toast-details">
                     <div class="toast-title">${title}</div>
                     <div class="toast-message">${message}</div>
                 </div>
                 <button class="toast-close" onclick="this.closest('.toast').classList.remove('show')">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor">
-                        <path d="M12 4L4 12M4 4l8 8" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
+                    ${IconLibrary.get('toast-close')}
                 </button>
             </div>
         `;

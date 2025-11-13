@@ -43,108 +43,8 @@ class UIComponents {
      * @returns {string} SVG HTML string
      */
     static icon(iconName) {
-        const icons = {
-            download: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            story: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                <circle cx="12" cy="12" r="3" stroke-width="2"/>
-            </svg>`,
-            scroll: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 5v14M5 12l7 7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            profile: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            message: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            clock: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                <path d="M12 6v6l4 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            grid: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            star: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            arrow: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
-                <path d="M6 12L10 8L6 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            // Header icons
-            favorites: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M10 2L12.163 7.654L18 8.5L14 12.654L14.854 18.5L10 15.5L5.146 18.5L6 12.654L2 8.5L7.837 7.654L10 2Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            feedback: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M3 3h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5l-3 3V4a1 1 0 0 1 1-1z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            settings: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16.5 12.5a1.5 1.5 0 0 0 .3 1.65l.05.05a1.82 1.82 0 0 1 0 2.57 1.82 1.82 0 0 1-2.57 0l-.05-.05a1.5 1.5 0 0 0-1.65-.3 1.5 1.5 0 0 0-.9 1.37v.14a1.82 1.82 0 0 1-3.64 0v-.07a1.5 1.5 0 0 0-.98-1.37 1.5 1.5 0 0 0-1.65.3l-.05.05a1.82 1.82 0 0 1-2.57 0 1.82 1.82 0 0 1 0-2.57l.05-.05a1.5 1.5 0 0 0 .3-1.65 1.5 1.5 0 0 0-1.37-.9h-.14a1.82 1.82 0 0 1 0-3.64h.07a1.5 1.5 0 0 0 1.37-.98 1.5 1.5 0 0 0-.3-1.65l-.05-.05a1.82 1.82 0 0 1 0-2.57 1.82 1.82 0 0 1 2.57 0l.05.05a1.5 1.5 0 0 0 1.65.3h.07a1.5 1.5 0 0 0 .9-1.37v-.14a1.82 1.82 0 0 1 3.64 0v.07a1.5 1.5 0 0 0 .9 1.37 1.5 1.5 0 0 0 1.65-.3l.05-.05a1.82 1.82 0 0 1 2.57 0 1.82 1.82 0 0 1 0 2.57l-.05.05a1.5 1.5 0 0 0-.3 1.65v.07a1.5 1.5 0 0 0 1.37.9h.14a1.82 1.82 0 0 1 0 3.64h-.07a1.5 1.5 0 0 0-1.37.98z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            // Feature icons
-            volume: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            seekbar: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <rect x="2" y="10" width="20" height="4" rx="2" stroke-width="2"/>
-                <circle cx="6" cy="12" r="2" fill="currentColor"/>
-            </svg>`,
-            speed: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="12" cy="12" r="3" stroke-width="2"/>
-            </svg>`,
-            duration: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                <path d="M12 6v6l4 2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 2h2v4M8 2H6v4" stroke-width="2" stroke-linecap="round"/>
-            </svg>`,
-            play: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                <path d="M10 8l6 4-6 4V8z" fill="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            </svg>`,
-            pip: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <rect x="2" y="3" width="20" height="14" rx="2" stroke-width="2"/>
-                <rect x="12" y="10" width="8" height="5" rx="1" fill="currentColor"/>
-            </svg>`,
-            zen: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                <path d="M8 15c1.5 1 3.5 1 4 1s2.5 0 4-1" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="9" cy="9" r="1" fill="currentColor"/>
-                <circle cx="15" cy="9" r="1" fill="currentColor"/>
-            </svg>`,
-            fullscreen: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            hideReels: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <rect x="2" y="6" width="20" height="12" rx="2" stroke-width="2"/>
-                <path d="M2 6l6 6M8 6l-6 6M16 6l6 6M22 6l-6 6" stroke-width="2" stroke-linecap="round"/>
-                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
-            </svg>`,
-            hideExplore: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                <path d="M8 14l2-6 6-2-2 6-6 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
-            </svg>`,
-            hideStories: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                <circle cx="12" cy="12" r="3" stroke-width="2"/>
-                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
-            </svg>`,
-            hideSuggestedFollowers: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
-            </svg>`,
-            hideThreads: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8 10h8M8 14h4" stroke-width="2" stroke-linecap="round"/>
-                <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
-            </svg>`
-        };
-
-        return icons[iconName] || '';
+        // Use the centralized IconLibrary
+        return IconLibrary.get(iconName);
     }
 
     /**
@@ -258,9 +158,7 @@ class UIComponents {
 
         const backButtonHtml = showBackButton ? `
             <button class="icon-btn back-btn" id="backBtn" title="Back to Dashboard">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
+                ${this.icon('arrow-left')}
             </button>
         ` : '';
 

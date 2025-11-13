@@ -2,7 +2,7 @@ class VideoSeekbar extends BaseFeature {
   constructor() {
     super();
     this.progressColor = '#0095f6'; // Default color
-    this.progressBars = []; // Track progress bars for color updates
+    this.styleElementId = 'instabits-seekbar-style';
     this.initializeColor();
     this.setupMessageListener();
   }
@@ -12,8 +12,8 @@ class VideoSeekbar extends BaseFeature {
     const color = await storageService.getUserPreference('seekbarProgressColor', '#0095f6');
     this.progressColor = color;
 
-    // Update all existing progress bars
-    this.updateAllProgressBars();
+    // Inject CSS variable
+    this.injectColorStyles();
   }
 
   setupMessageListener() {
@@ -21,21 +21,25 @@ class VideoSeekbar extends BaseFeature {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.type === 'updateSeekbarColor') {
         this.progressColor = message.color;
-        this.updateAllProgressBars();
+        this.injectColorStyles();
       }
     });
   }
 
-  updateAllProgressBars() {
-    // Update all tracked progress bars with new color
-    // Filter out any bars that have been removed from DOM
-    this.progressBars = this.progressBars.filter(bar => {
-      if (document.contains(bar)) {
-        bar.style.background = this.progressColor;
-        return true;
-      }
-      return false;
-    });
+  /**
+   * Inject CSS variable for seekbar color
+   * This approach keeps styling in CSS and makes color changes more performant
+   */
+  injectColorStyles() {
+    let styleElement = document.getElementById(this.styleElementId);
+
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = this.styleElementId;
+      document.head.appendChild(styleElement);
+    }
+
+    styleElement.textContent = `:root { --instabits-seekbar-color: ${this.progressColor}; }`;
   }
 
   createSeekbar() {
@@ -43,7 +47,7 @@ class VideoSeekbar extends BaseFeature {
 
     const progressBar = document.createElement('div');
     progressBar.className = 'insta-video-seekbar-progress';
-    progressBar.style.background = this.progressColor; // Apply saved color
+    // Color is now applied via CSS variable --instabits-seekbar-color
 
     const hoverArea = document.createElement('div');
     hoverArea.className = 'insta-video-seekbar-hover';
@@ -89,9 +93,6 @@ class VideoSeekbar extends BaseFeature {
     };
 
     smoothUpdate();
-
-    // Track progress bar for color updates
-    this.progressBars.push(progressBar);
 
     this.addToTrackedVideos(video, { seekbarContainer, progressBar, animationFrameId });
 
