@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seekbar Settings - InstaBits</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
     <link rel="stylesheet" href="settingsPage.css">
 </head>
 <body>
@@ -25,7 +26,7 @@
         </div>
 
         <main class="main settings-main">
-            <!-- Color Selection Section -->
+            <!-- Color Selection & Preview Section -->
             <div class="settings-section">
                 <h2 class="settings-section-title">Progress Bar Color</h2>
                 <p class="settings-section-description">Choose the color for the seekbar progress indicator</p>
@@ -33,12 +34,9 @@
                 <div class="color-grid" id="colorGrid">
                     <!-- Colors will be injected here by JS -->
                 </div>
-            </div>
 
-            <!-- Preview Section -->
-            <div class="settings-section">
-                <h2 class="settings-section-title">Preview</h2>
-                <p class="settings-section-description">See how your seekbar will look</p>
+                <!-- Preview integrated in same section -->
+                <div class="preview-divider"></div>
 
                 <div class="seekbar-preview">
                     <div class="preview-video-container">
@@ -51,17 +49,12 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Action Buttons -->
-            <div class="settings-actions">
-                <button class="btn btn-secondary" id="resetBtn">Reset to Default</button>
-                <button class="btn btn-primary" id="saveBtn">Save Changes</button>
-            </div>
         </main>
     </div>
 
     <div class="toast" id="toast"></div>
 
+    <script src="../../../toast/toast.js"></script>
     <script src="seekbarSettings.js"></script>
 </body>
 </html>

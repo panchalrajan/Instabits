@@ -1,6 +1,8 @@
 // Seekbar Settings Page
 class SeekbarSettings {
     constructor() {
+        this.toastManager = new Toast('toast');
+
         this.colors = [
             { name: 'Instagram Blue', value: '#0095f6' },
             { name: 'Red', value: '#ef4444' },
@@ -93,6 +95,9 @@ class SeekbarSettings {
 
         // Update preview
         this.updatePreview();
+
+        // Auto-save
+        this.saveSettings();
     }
 
     updatePreview() {
@@ -107,23 +112,7 @@ class SeekbarSettings {
         const backBtn = document.getElementById('backBtn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
-                window.location.href = 'index.html';
-            });
-        }
-
-        // Save button
-        const saveBtn = document.getElementById('saveBtn');
-        if (saveBtn) {
-            saveBtn.addEventListener('click', () => {
-                this.saveSettings();
-            });
-        }
-
-        // Reset button
-        const resetBtn = document.getElementById('resetBtn');
-        if (resetBtn) {
-            resetBtn.addEventListener('click', () => {
-                this.resetToDefault();
+                window.location.href = '../../index.html';
             });
         }
     }
@@ -135,15 +124,15 @@ class SeekbarSettings {
                 pref_seekbarProgressColor: this.selectedColor
             });
 
-            // Show success message
-            this.showToast('Settings Saved', 'Your seekbar color has been updated successfully', 'success');
+            // Show success message (brief)
+            this.toastManager.show('Saved', 'Color updated', 'success');
 
-            // Optional: Notify content script to update colors immediately
+            // Notify content script to update colors immediately
             this.notifyContentScript();
 
         } catch (error) {
             console.error('Error saving settings:', error);
-            this.showToast('Error', 'Failed to save settings. Please try again.', 'error');
+            this.toastManager.show('Error', 'Failed to save', 'error');
         }
     }
 
@@ -165,28 +154,6 @@ class SeekbarSettings {
             // Ignore errors, this is just for immediate updates
             console.log('Could not notify content script:', error);
         }
-    }
-
-    resetToDefault() {
-        this.selectColor(this.defaultColor);
-        this.showToast('Reset', 'Seekbar color has been reset to default', 'info');
-    }
-
-    showToast(title, message, type = 'info') {
-        const toast = document.getElementById('toast');
-        if (!toast) return;
-
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `
-            <div style="font-weight: 600; margin-bottom: 4px;">${title}</div>
-            <div style="font-size: 13px; color: var(--text-secondary);">${message}</div>
-        `;
-
-        toast.classList.add('show');
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
     }
 }
 

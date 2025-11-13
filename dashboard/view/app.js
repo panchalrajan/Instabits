@@ -7,7 +7,7 @@ class Dashboard {
         // State management
         this.features = new Map();
         this.selectedFilters = new Set();
-        this.toast = document.getElementById('toast');
+        this.toastManager = new Toast('toast');
 
         this.init();
     }
@@ -230,8 +230,10 @@ class Dashboard {
         const page = e.currentTarget.dataset.page;
 
         // Navigate to settings page
+        // page is like "seekbarSettings", extract feature name (seekbar)
         if (page) {
-            window.location.href = `${page}.html`;
+            const featureName = page.replace('Settings', '');
+            window.location.href = `features/${featureName}/${page}.html`;
         }
     }
 
@@ -341,50 +343,11 @@ class Dashboard {
     }
 
     showToast(title, message, type = 'info') {
-        // Clear any existing toast timeout
-        if (this.toastTimeout) {
-            clearTimeout(this.toastTimeout);
-        }
-
-        // Remove existing toast immediately if showing
-        if (this.toast.classList.contains('show')) {
-            this.toast.classList.remove('show');
-
-            // Wait for slide out animation before showing new toast
-            setTimeout(() => {
-                this.displayToast(title, message, type);
-            }, 200);
-        } else {
-            this.displayToast(title, message, type);
-        }
-    }
-
-    displayToast(title, message, type) {
-        // Remove all type classes
-        this.toast.className = 'toast';
-
-        // Add the appropriate type class
-        this.toast.classList.add(`toast-${type}`);
-
-        // Use UIComponents to generate toast HTML
-        this.toast.innerHTML = UIComponents.toast({ title, message, type });
-
-        // Show toast with animation
-        requestAnimationFrame(() => {
-            this.toast.classList.add('show');
-        });
-
-        // Auto hide after 3 seconds
-        this.toastTimeout = setTimeout(() => {
-            this.hideToast();
-        }, 3000);
+        this.toastManager.show(title, message, type);
     }
 
     hideToast() {
-        this.toast.classList.remove('show');
-        if (this.toastTimeout) {
-            clearTimeout(this.toastTimeout);
-        }
+        this.toastManager.hide();
     }
 
     handleHeaderAction(action) {

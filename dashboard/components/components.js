@@ -238,51 +238,6 @@ class UIComponents {
     }
 
     /**
-     * Create a toast notification
-     * @param {Object} options - Toast configuration
-     * @returns {string} HTML string
-     */
-    static toast(options) {
-        const { title, message, type = 'info' } = options;
-
-        const icons = {
-            success: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M16.5 5.5L7.5 14.5L3.5 10.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>`,
-            warning: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <path d="M10 3L2 17h16L10 3z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M10 8v4M10 14h.01" stroke-width="2" stroke-linecap="round"/>
-            </svg>`,
-            error: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <circle cx="10" cy="10" r="8" stroke-width="2"/>
-                <path d="M12.5 7.5L7.5 12.5M7.5 7.5l5 5" stroke-width="2" stroke-linecap="round"/>
-            </svg>`,
-            info: `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                <circle cx="10" cy="10" r="8" stroke-width="2"/>
-                <path d="M10 14V10M10 7h.01" stroke-width="2" stroke-linecap="round"/>
-            </svg>`
-        };
-
-        return `
-            <div class="toast-content">
-                <div class="toast-icon">
-                    ${icons[type]}
-                </div>
-                <div class="toast-details">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-                <button class="toast-close" onclick="window.dashboard.hideToast()">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor">
-                        <path d="M12 4L4 12M4 4l8 8" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </div>
-            <div class="toast-progress"></div>
-        `;
-    }
-
-    /**
      * Create a header component
      * @param {Object} options - Header configuration
      * @returns {string} HTML string

@@ -2,6 +2,7 @@ class VideoSeekbar extends BaseFeature {
   constructor() {
     super();
     this.progressColor = '#0095f6'; // Default color
+    this.progressBars = []; // Track progress bars for color updates
     this.initializeColor();
     this.setupMessageListener();
   }
@@ -26,11 +27,14 @@ class VideoSeekbar extends BaseFeature {
   }
 
   updateAllProgressBars() {
-    // Update all tracked video progress bars with new color
-    this.trackedVideos.forEach((data) => {
-      if (data.progressBar) {
-        data.progressBar.style.background = this.progressColor;
+    // Update all tracked progress bars with new color
+    // Filter out any bars that have been removed from DOM
+    this.progressBars = this.progressBars.filter(bar => {
+      if (document.contains(bar)) {
+        bar.style.background = this.progressColor;
+        return true;
       }
+      return false;
     });
   }
 
@@ -85,6 +89,9 @@ class VideoSeekbar extends BaseFeature {
     };
 
     smoothUpdate();
+
+    // Track progress bar for color updates
+    this.progressBars.push(progressBar);
 
     this.addToTrackedVideos(video, { seekbarContainer, progressBar, animationFrameId });
 
