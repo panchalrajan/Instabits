@@ -1,5 +1,5 @@
 // PIP Mode Settings Page
-class PIPModeSettings extends SettingsComponents.BaseSettingsPage {
+class PIPModeSettings extends UIComponents.BaseSettingsPage {
     constructor() {
         super();
 
@@ -19,7 +19,7 @@ class PIPModeSettings extends SettingsComponents.BaseSettingsPage {
             }
         ];
 
-        this.featureStateManager = new SettingsComponents.FeatureStateManager(
+        this.featureStateManager = new UIComponents.FeatureStateManager(
             this.relatedFeatures.map(f => f.id)
         );
 
@@ -73,7 +73,7 @@ class PIPModeSettings extends SettingsComponents.BaseSettingsPage {
             }
         ];
 
-        tipsContainer.innerHTML = SettingsComponents.tipsSection({
+        tipsContainer.innerHTML = UIComponents.tipsSection({
             title: 'Tips for Best Experience',
             description: 'Get the most out of PIP mode',
             tips: tips
@@ -90,7 +90,7 @@ class PIPModeSettings extends SettingsComponents.BaseSettingsPage {
             const isEnabled = this.featureStateManager.get(feature.id);
 
             // Create status item using common component
-            const statusItemHtml = SettingsComponents.statusItem({
+            const statusItemHtml = UIComponents.statusItem({
                 featureId: feature.id,
                 name: feature.name,
                 description: feature.description,

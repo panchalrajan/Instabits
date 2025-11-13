@@ -72,7 +72,7 @@ IconLibrary.icons = {
     </svg>`,
 
     // ========== HEADER ACTION ICONS ==========
-    'favorites': `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+    'star-rating': `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
         <path d="M10 2L12.163 7.654L18 8.5L14 12.654L14.854 18.5L10 15.5L5.146 18.5L6 12.654L2 8.5L7.837 7.654L10 2Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
 

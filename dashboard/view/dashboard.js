@@ -379,8 +379,8 @@ class Dashboard {
 
         const actionMessages = {
             favorites: {
-                title: 'Favorites',
-                message: 'Your favorite features will appear here soon'
+                title: 'Rate Extension',
+                message: 'Rate InstaBits on the Chrome Web Store'
             },
             feedback: {
                 title: 'Feedback',
