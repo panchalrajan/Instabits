@@ -1,15 +1,16 @@
 class PlaybackSpeed extends BaseFeature {
   constructor() {
     super();
+    // Initialize with default values immediately to prevent undefined errors
+    this.allSpeedOptions = [0.25, 0.5, 1.0, 1.25, 1.5, 2.0, 3.0];
+    this.speedOptions = [...this.allSpeedOptions]; // Default: all speeds enabled
+    this.currentSpeed = 1.0;
+    this.allVideos = new Set();
   }
 
   async initialize() {
-    this.allVideos = new Set(); // Track all videos for bulk updates
-    this.allSpeedOptions = [0.25, 0.5, 1.0, 1.25, 1.5, 2.0, 3.0];
-    // Load enabled speeds from storage
+    // Load enabled speeds from storage (will override defaults)
     await this.loadEnabledSpeeds();
-    // Always start at 1x on page load/reload
-    this.currentSpeed = 1.0;
 
     // Listen for speed preference updates
     this.setupMessageListener();

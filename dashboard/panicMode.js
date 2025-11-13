@@ -113,6 +113,7 @@ class PanicModeHandler {
 
     /**
      * Enable panic mode
+     * Note: This will reload all Instagram tabs
      */
     async enablePanicMode() {
         return new Promise((resolve) => {
@@ -122,8 +123,13 @@ class PanicModeHandler {
                     resolve(false);
                     return;
                 }
-                this.isPanicMode = true;
-                this.updateUI();
+
+                // Don't call updateUI() here - we're reloading the page anyway
+                // This prevents showing the panic overlay twice
+
+                // Reload all Instagram tabs (which will reload this dashboard too)
+                this.reloadAllInstagramTabs();
+
                 resolve(true);
             });
         });
@@ -193,13 +199,33 @@ class PanicModeHandler {
     }
 
     /**
-     * Toggle panic mode
+     * Toggle panic mode with confirmation
      */
     async togglePanicMode() {
         if (this.isPanicMode) {
-            return await this.disablePanicMode();
+            // Disabling panic mode - show confirmation
+            window.confirmDialog.show({
+                title: 'Disable Panic Mode?',
+                message: 'This will re-enable all extension features.',
+                warning: '⚠️ All Instagram tabs will be reloaded',
+                confirmText: 'Disable',
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    this.disablePanicMode();
+                }
+            });
         } else {
-            return await this.enablePanicMode();
+            // Enabling panic mode - show confirmation
+            window.confirmDialog.show({
+                title: 'Enable Panic Mode?',
+                message: 'This will temporarily disable all extension features. Your settings will remain unchanged.',
+                warning: '⚠️ All Instagram tabs will be reloaded',
+                confirmText: 'Enable',
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    this.enablePanicMode();
+                }
+            });
         }
     }
 
@@ -214,22 +240,19 @@ class PanicModeHandler {
                 const newValue = changes.instabits_panic_mode.newValue === true;
                 const oldValue = this.isPanicMode;
 
-                // If panic mode was just disabled, reload all Instagram tabs
-                if (oldValue === true && newValue === false) {
+                // If panic mode was just enabled or disabled, reload all Instagram tabs
+                // Don't update UI here because we're reloading the page anyway
+                if (oldValue !== newValue) {
                     // Check if we're on an Instagram page
                     if (window.location.hostname.includes('instagram.com')) {
                         // Just reload this Instagram tab
                         window.location.reload();
                     } else {
-                        // We're on dashboard, reload all Instagram tabs
+                        // We're on dashboard, reload all Instagram tabs and current page
                         this.reloadAllInstagramTabs();
                     }
                     return;
                 }
-
-                // Otherwise, just update UI
-                this.isPanicMode = newValue;
-                this.updateUI();
             }
         });
     }
