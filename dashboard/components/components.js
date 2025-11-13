@@ -148,7 +148,8 @@ class UIComponents {
             title = 'InstaBits',
             subtitle = 'Manage your Instagram features',
             buttons = [
-                { id: 'favorites', icon: 'favorites', title: 'Favorites' },
+                { id: 'panic', icon: 'panic', title: 'Panic Mode - Temporarily disable extension' },
+                { id: 'favorites', icon: 'star-rating', title: 'Rate Extension' },
                 { id: 'feedback', icon: 'feedback', title: 'Feedback' },
                 { id: 'settings', icon: 'settings', title: 'Settings' }
             ],
@@ -157,13 +158,13 @@ class UIComponents {
         } = options;
 
         const backButtonHtml = showBackButton ? `
-            <button class="icon-btn back-btn" id="backBtn" title="Back to Dashboard">
+            <button class="icon-btn back-btn" id="backBtn" data-tooltip="Back to Dashboard" data-tooltip-position="bottom">
                 ${this.icon('arrow-left')}
             </button>
         ` : '';
 
         const buttonsHtml = buttons ? buttons.map(btn => `
-            <button class="icon-btn" title="${btn.title}" data-action="${btn.id}">
+            <button class="icon-btn" data-tooltip="${btn.title}" data-tooltip-position="bottom" data-action="${btn.id}">
                 ${this.icon(btn.icon)}
             </button>
         `).join('') : '';
@@ -259,6 +260,203 @@ class UIComponents {
             </div>
         `;
     }
+
+    // ========== SETTINGS PAGE COMPONENTS ==========
+
+    /**
+     * Base Settings Page Class
+     */
+    static BaseSettingsPage = class {
+        constructor() {
+            this.toastManager = new Toast('toast');
+        }
+
+        renderHeader(config) {
+            try {
+                const { title, subtitle, backUrl = '../../index.html' } = config;
+                const headerContainer = document.getElementById('headerContainer');
+                if (headerContainer) {
+                    headerContainer.innerHTML = UIComponents.header({
+                        icon: null,
+                        title,
+                        subtitle,
+                        buttons: null,
+                        showBackButton: true,
+                        backButtonUrl: backUrl
+                    });
+                }
+            } catch (error) {
+                console.error('[InstaBits Settings] Error rendering header:', error);
+            }
+        }
+
+        setupCommonListeners() {
+            const backBtn = document.getElementById('backBtn');
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    const backUrl = backBtn.getAttribute('data-back-url') || '../../index.html';
+                    window.location.href = backUrl;
+                });
+            }
+        }
+
+        showToast(title, message, type = 'success') {
+            this.toastManager.show(title, message, type);
+        }
+
+        async notifyContentScript(messageType, data) {
+            try {
+                const tabs = await chrome.tabs.query({ url: '*://*.instagram.com/*' });
+                tabs.forEach(tab => {
+                    chrome.tabs.sendMessage(tab.id, {
+                        type: messageType,
+                        ...data
+                    }).catch(() => {});
+                });
+            } catch (error) {
+                console.log('Could not notify content script:', error);
+            }
+        }
+    };
+
+    static settingsSection(config) {
+        const { title, description, content, className = '' } = config;
+        return `
+            <div class="settings-section ${className}">
+                ${title ? `<h2 class="settings-section-title">${title}</h2>` : ''}
+                ${description ? `<p class="settings-section-description">${description}</p>` : ''}
+                ${content || ''}
+            </div>
+        `;
+    }
+
+    static infoBox(config) {
+        const { title, items, icon = 'info' } = config;
+        const iconSvg = this.icon(icon);
+        const itemsHtml = items.map(item => `<li>${item}</li>`).join('');
+
+        return `
+            <div class="info-box">
+                <div class="info-icon">${iconSvg}</div>
+                <div class="info-content">
+                    <h3 class="info-title">${title}</h3>
+                    <ul class="info-list">${itemsHtml}</ul>
+                </div>
+            </div>
+        `;
+    }
+
+    static statusItem(config) {
+        const { featureId, name, description, icon, isEnabled } = config;
+        const statusClass = isEnabled ? 'status-enabled' : 'status-disabled';
+        const badgeClass = isEnabled ? 'badge-enabled' : 'badge-disabled';
+        const badgeText = isEnabled ? 'Enabled' : 'Disabled';
+        const iconSvg = this.icon(icon);
+
+        const buttonHtml = !isEnabled
+            ? `<button class="status-toggle-btn" data-feature-id="${featureId}">Enable</button>`
+            : '';
+
+        return `
+            <div class="status-item ${statusClass}" data-feature-id="${featureId}">
+                <div class="status-indicator"></div>
+                <div class="status-icon">${iconSvg}</div>
+                <div class="status-content">
+                    <div class="status-header">
+                        <h4 class="status-name">${name}</h4>
+                        <span class="status-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <p class="status-description">${description}</p>
+                </div>
+                ${buttonHtml}
+            </div>
+        `;
+    }
+
+    static tipItem(config) {
+        const { title, text, icon = 'check' } = config;
+        const iconSvg = this.icon(icon);
+
+        return `
+            <div class="tip-item">
+                <div class="tip-icon">${iconSvg}</div>
+                <div class="tip-content">
+                    <h4 class="tip-title">${title}</h4>
+                    <p class="tip-text">${text}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    static tipsSection(config) {
+        const { title = 'Tips for Best Experience', description = 'Get the most out of this feature', tips = [] } = config;
+        const tipsHtml = tips.map(tip => this.tipItem(tip)).join('');
+
+        return this.settingsSection({
+            title,
+            description,
+            content: `<div class="tips-list">${tipsHtml}</div>`
+        });
+    }
+
+    static divider() {
+        return '<div class="settings-divider"></div>';
+    }
+
+    /**
+     * Feature State Manager
+     */
+    static FeatureStateManager = class {
+        constructor(features) {
+            this.features = features;
+            this.states = new Map();
+        }
+
+        async load() {
+            try {
+                const storageKeys = this.features.map(f => `instabits_feature_${f}`);
+                const result = await chrome.storage.sync.get(storageKeys);
+
+                this.features.forEach(featureId => {
+                    const storageKey = `instabits_feature_${featureId}`;
+                    const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
+                    this.states.set(featureId, isEnabled);
+                });
+
+                return this.states;
+            } catch (error) {
+                console.error('[InstaBits Settings] Error loading feature states:', error);
+                this.features.forEach(featureId => {
+                    this.states.set(featureId, true);
+                });
+                return this.states;
+            }
+        }
+
+        async toggle(featureId) {
+            try {
+                const currentState = this.states.get(featureId);
+                const newState = !currentState;
+
+                const storageKey = `instabits_feature_${featureId}`;
+                await chrome.storage.sync.set({ [storageKey]: newState });
+
+                this.states.set(featureId, newState);
+                return newState;
+            } catch (error) {
+                console.error('[InstaBits Settings] Error toggling feature:', error);
+                throw error;
+            }
+        }
+
+        get(featureId) {
+            return this.states.get(featureId);
+        }
+
+        getAll() {
+            return this.states;
+        }
+    };
 }
 
 // Predefined color tokens for common badge colors

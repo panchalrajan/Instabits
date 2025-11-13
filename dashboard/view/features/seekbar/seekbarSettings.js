@@ -1,5 +1,5 @@
 // Seekbar Settings Page
-class SeekbarSettings extends SettingsComponents.BaseSettingsPage {
+class SeekbarSettings extends UIComponents.BaseSettingsPage {
     constructor() {
         super();
 

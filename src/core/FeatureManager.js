@@ -21,6 +21,8 @@ class FeatureManager {
     this.activeFeatures = new Map();
     this.videoObserver = null;
     this.isInitialized = false;
+    this.isPanicMode = false;
+    this.savedFeatureStates = new Map(); // Store feature states when panic mode is enabled
   }
 
   /**
@@ -75,6 +77,17 @@ class FeatureManager {
 
     // Set video observer
     this.videoObserver = videoObserverInstance || videoObserver;
+
+    // Check panic mode status
+    const panicModeState = await storageService.get('instabits_panic_mode');
+    this.isPanicMode = panicModeState === true;
+
+    // If panic mode is enabled, don't initialize any features
+    if (this.isPanicMode) {
+      console.log('FeatureManager: Panic mode enabled, skipping feature initialization');
+      this.isInitialized = true;
+      return;
+    }
 
     // Get all feature IDs and their default states
     const featureIds = Array.from(this.featureRegistry.keys());
@@ -296,6 +309,18 @@ class FeatureManager {
           return;
         }
 
+        // Check for panic mode changes first
+        if (changes.instabits_panic_mode) {
+          const isPanicModeEnabled = changes.instabits_panic_mode.newValue === true;
+          await this.handlePanicModeChange(isPanicModeEnabled);
+          return; // Don't process other changes when panic mode is toggled
+        }
+
+        // Skip feature changes if panic mode is enabled
+        if (this.isPanicMode) {
+          return;
+        }
+
         // Check for feature state changes
         for (const [key, { newValue }] of Object.entries(changes)) {
           if (key.startsWith('instabits_feature_')) {
@@ -322,6 +347,64 @@ class FeatureManager {
   }
 
   /**
+   * Handle panic mode state change
+   * @param {boolean} isPanicModeEnabled - Whether panic mode is enabled
+   */
+  async handlePanicModeChange(isPanicModeEnabled) {
+    console.log(`FeatureManager: Panic mode ${isPanicModeEnabled ? 'enabled' : 'disabled'}`);
+
+    this.isPanicMode = isPanicModeEnabled;
+
+    if (isPanicModeEnabled) {
+      // Save current feature states before disabling
+      this.savedFeatureStates.clear();
+      const currentFeatures = Array.from(this.activeFeatures.keys());
+
+      for (const featureId of currentFeatures) {
+        this.savedFeatureStates.set(featureId, true);
+      }
+
+      // Disable all active features without saving to storage
+      for (const featureId of currentFeatures) {
+        await this.disableFeature(featureId, false);
+      }
+
+      // Stop video observer
+      if (this.videoObserver) {
+        this.videoObserver.stop();
+      }
+
+      console.log(`FeatureManager: Disabled ${currentFeatures.length} features for panic mode`);
+    } else {
+      // Re-enable previously active features based on storage settings
+      const featureIds = Array.from(this.featureRegistry.keys());
+      const defaultStates = {};
+      this.featureRegistry.forEach((config, id) => {
+        defaultStates[id] = config.options.defaultEnabled;
+      });
+
+      const enabledStates = await storageService.getAllFeatureStates(featureIds, defaultStates);
+
+      // Re-enable features that were enabled in storage
+      for (const [featureId, isEnabled] of Object.entries(enabledStates)) {
+        if (isEnabled && this.featureRegistry.has(featureId)) {
+          await this.enableFeature(featureId, false);
+        }
+      }
+
+      // Restart video observer if we have active features
+      if (this.activeFeatures.size > 0 && this.videoObserver) {
+        this.videoObserver.start();
+      }
+
+      // Clear saved states
+      this.savedFeatureStates.clear();
+
+      console.log(`FeatureManager: Re-enabled ${this.activeFeatures.size} features after panic mode`);
+    }
+  }
+
+  /**
    * Get statistics
    * @returns {Object}
    */
@@ -330,7 +413,8 @@ class FeatureManager {
       totalRegistered: this.featureRegistry.size,
       totalActive: this.activeFeatures.size,
       videoObserverActive: this.videoObserver ? this.videoObserver.isActive() : false,
-      isInitialized: this.isInitialized
+      isInitialized: this.isInitialized,
+      isPanicMode: this.isPanicMode
     };
   }
 }

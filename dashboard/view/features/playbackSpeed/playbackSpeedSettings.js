@@ -1,5 +1,5 @@
 // Playback Speed Settings Page
-class PlaybackSpeedSettings extends SettingsComponents.BaseSettingsPage {
+class PlaybackSpeedSettings extends UIComponents.BaseSettingsPage {
     constructor() {
         super();
 
