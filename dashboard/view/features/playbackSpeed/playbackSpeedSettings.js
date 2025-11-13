@@ -72,33 +72,70 @@ class PlaybackSpeedSettings {
         speedGrid.innerHTML = '';
 
         this.availableSpeeds.forEach(speed => {
-            const speedOption = document.createElement('div');
-            speedOption.className = 'speed-option-item';
+            const isSelected = this.enabledSpeeds.includes(speed.value);
+            const isNormal = speed.value === 1.0;
+            const isDisabled = isNormal; // 1x is always disabled (can't be unchecked)
 
+            const speedOption = document.createElement('div');
+            speedOption.className = 'speed-option';
+            if (isSelected) speedOption.classList.add('speed-selected');
+            if (isDisabled) speedOption.classList.add('speed-disabled');
+
+            // Hidden checkbox for accessibility
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.id = `speed-${speed.value}`;
             checkbox.className = 'speed-checkbox';
             checkbox.value = speed.value;
-            checkbox.checked = this.enabledSpeeds.includes(speed.value);
+            checkbox.checked = isSelected;
+            checkbox.disabled = isDisabled;
 
-            const label = document.createElement('label');
-            label.htmlFor = `speed-${speed.value}`;
+            // Label
+            const label = document.createElement('span');
             label.className = 'speed-label';
-            label.textContent = speed.label;
+            label.textContent = speed.value + 'x';
+
+            // Description
+            const description = document.createElement('span');
+            description.className = 'speed-description';
+            if (isNormal) {
+                description.textContent = 'Normal (Required)';
+            } else if (speed.value < 1.0) {
+                description.textContent = 'Slower';
+            } else {
+                description.textContent = 'Faster';
+            }
+
+            // Checkmark for selected items
+            if (isSelected) {
+                const checkmark = document.createElement('span');
+                checkmark.className = 'speed-checkmark';
+                checkmark.innerHTML = '✓';
+                speedOption.appendChild(checkmark);
+            }
 
             speedOption.appendChild(checkbox);
             speedOption.appendChild(label);
+            speedOption.appendChild(description);
 
-            checkbox.addEventListener('change', (e) => {
-                this.handleSpeedToggle(speed.value, e.target.checked);
-            });
+            // Click handler (only if not disabled)
+            if (!isDisabled) {
+                speedOption.addEventListener('click', () => {
+                    checkbox.checked = !checkbox.checked;
+                    this.handleSpeedToggle(speed.value, checkbox.checked);
+                });
+            }
 
             speedGrid.appendChild(speedOption);
         });
     }
 
     handleSpeedToggle(speedValue, isChecked) {
+        // Prevent disabling 1x (it's always required)
+        if (speedValue === 1.0 && !isChecked) {
+            return;
+        }
+
         if (isChecked) {
             // Add speed to enabled list
             if (!this.enabledSpeeds.includes(speedValue)) {
@@ -106,20 +143,18 @@ class PlaybackSpeedSettings {
                 this.enabledSpeeds.sort((a, b) => a - b); // Keep sorted
             }
         } else {
-            // Check if at least one speed will remain
-            if (this.enabledSpeeds.length <= 1) {
-                this.toastManager.show('Error', 'At least one speed option must remain enabled', 'error');
-                // Revert the checkbox
-                const checkbox = document.getElementById(`speed-${speedValue}`);
-                if (checkbox) {
-                    checkbox.checked = true;
-                }
-                return;
-            }
-
             // Remove speed from enabled list
             this.enabledSpeeds = this.enabledSpeeds.filter(s => s !== speedValue);
         }
+
+        // Ensure 1x is always in the list
+        if (!this.enabledSpeeds.includes(1.0)) {
+            this.enabledSpeeds.push(1.0);
+            this.enabledSpeeds.sort((a, b) => a - b);
+        }
+
+        // Re-render to update UI
+        this.renderSpeedOptions();
 
         // Auto-save
         this.saveSettings();
