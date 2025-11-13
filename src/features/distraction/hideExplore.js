@@ -7,11 +7,35 @@ class HideExplore extends BaseDistraction {
     this.blockedScreenId = 'instabits-explore-blocked-screen';
   }
 
-  createBlockedScreen() {
+  /**
+   * Check if Focus on Following feature is enabled
+   * @returns {Promise<boolean>}
+   */
+  async isForceFollowingEnabled() {
+    try {
+      const result = await chrome.storage.sync.get('instabits_feature_forceFollowing');
+      return result.instabits_feature_forceFollowing === true;
+    } catch (error) {
+      console.error('HideExplore: Error checking forceFollowing state:', error);
+      return false;
+    }
+  }
+
+  async createBlockedScreen() {
+    // Check if Focus on Following is enabled
+    const forceFollowingEnabled = await this.isForceFollowingEnabled();
+
+    // If Focus on Following is enabled, redirect to following feed
+    // Otherwise, redirect to homepage
+    const buttonText = forceFollowingEnabled ? 'Go to Following Feed' : 'Go to Homepage';
+    const buttonUrl = forceFollowingEnabled ? '/?variant=following' : '/';
+
     return this.createBlockedScreenComponent({
       id: this.blockedScreenId,
       title: 'Explore Blocked',
       description: "You've blocked Explore to stay focused. Take a break or disable this feature in settings.",
+      buttonText,
+      buttonUrl,
       iconSvg: `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <circle cx="12" cy="12" r="10" stroke-width="2"/>
@@ -22,7 +46,7 @@ class HideExplore extends BaseDistraction {
     });
   }
 
-  hideDistraction() {
+  async hideDistraction() {
     const path = this.getCurrentPath();
 
     // Hide Explore navigation link
@@ -37,7 +61,7 @@ class HideExplore extends BaseDistraction {
 
       // Show blocked screen if not already present
       if (!document.getElementById(this.blockedScreenId)) {
-        const blockedScreen = this.createBlockedScreen();
+        const blockedScreen = await this.createBlockedScreen();
         document.body.appendChild(blockedScreen);
       }
     } else {
