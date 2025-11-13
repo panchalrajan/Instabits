@@ -93,9 +93,13 @@ class BaseFeature {
   ensureParentPositioned(parent) {
     if (!parent) return;
 
-    const currentPosition = window.getComputedStyle(parent).position;
-    if (currentPosition === 'static') {
-      parent.style.position = 'relative';
+    try {
+      const currentPosition = window.getComputedStyle(parent).position;
+      if (currentPosition === 'static') {
+        parent.style.position = 'relative';
+      }
+    } catch (error) {
+      console.error(`${this.featureName}: Error setting parent position:`, error);
     }
   }
 
@@ -117,28 +121,40 @@ class BaseFeature {
   setupCleanupObserver(video, cleanupCallback = null) {
     if (!video) return;
 
-    const observer = new MutationObserver(() => {
-      if (!document.contains(video)) {
-        // Video was removed from DOM
-        if (cleanupCallback) {
-          cleanupCallback(video);
+    try {
+      const observer = new MutationObserver(() => {
+        try {
+          if (!document.contains(video)) {
+            // Video was removed from DOM
+            if (cleanupCallback) {
+              try {
+                cleanupCallback(video);
+              } catch (error) {
+                console.error(`${this.featureName}: Error in cleanup callback:`, error);
+              }
+            }
+
+            // Remove from tracking
+            this.removeFromTrackedVideos(video);
+
+            // Disconnect observer
+            observer.disconnect();
+            this.mutationObservers.delete(video);
+          }
+        } catch (error) {
+          console.error(`${this.featureName}: Error in mutation observer:`, error);
         }
+      });
 
-        // Remove from tracking
-        this.removeFromTrackedVideos(video);
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
 
-        // Disconnect observer
-        observer.disconnect();
-        this.mutationObservers.delete(video);
-      }
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-
-    this.mutationObservers.set(video, observer);
+      this.mutationObservers.set(video, observer);
+    } catch (error) {
+      console.error(`${this.featureName}: Error setting up cleanup observer:`, error);
+    }
   }
 
   /**
@@ -271,12 +287,17 @@ class BaseFeature {
    * @returns {boolean} Success status
    */
   addElementToVideoParent(video, element) {
-    const parent = this.getVideoParent(video);
-    if (!parent) return false;
+    try {
+      const parent = this.getVideoParent(video);
+      if (!parent || !element) return false;
 
-    this.ensureParentPositioned(parent);
-    parent.appendChild(element);
+      this.ensureParentPositioned(parent);
+      parent.appendChild(element);
 
-    return true;
+      return true;
+    } catch (error) {
+      console.error(`${this.featureName}: Error adding element to video parent:`, error);
+      return false;
+    }
   }
 }

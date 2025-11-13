@@ -16,17 +16,21 @@ class SettingsComponents {
          * @param {Object} config - Header configuration
          */
         renderHeader(config) {
-            const { title, subtitle, backUrl = '../../index.html' } = config;
-            const headerContainer = document.getElementById('headerContainer');
-            if (headerContainer) {
-                headerContainer.innerHTML = UIComponents.header({
-                    icon: null, // No icon for settings pages
-                    title,
-                    subtitle,
-                    buttons: null,
-                    showBackButton: true,
-                    backButtonUrl: backUrl
-                });
+            try {
+                const { title, subtitle, backUrl = '../../index.html' } = config;
+                const headerContainer = document.getElementById('headerContainer');
+                if (headerContainer) {
+                    headerContainer.innerHTML = UIComponents.header({
+                        icon: null, // No icon for settings pages
+                        title,
+                        subtitle,
+                        buttons: null,
+                        showBackButton: true,
+                        backButtonUrl: backUrl
+                    });
+                }
+            } catch (error) {
+                console.error('[InstaBits Settings] Error rendering header:', error);
             }
         }
 
@@ -65,7 +69,7 @@ class SettingsComponents {
                     });
                 });
             } catch (error) {
-                console.log('Could not notify content script:', error);
+                console.error('Could not notify content script:', error);
             }
         }
     };
@@ -211,27 +215,41 @@ class SettingsComponents {
         }
 
         async load() {
-            const storageKeys = this.features.map(f => `instabits_feature_${f}`);
-            const result = await chrome.storage.sync.get(storageKeys);
+            try {
+                const storageKeys = this.features.map(f => `instabits_feature_${f}`);
+                const result = await chrome.storage.sync.get(storageKeys);
 
-            this.features.forEach(featureId => {
-                const storageKey = `instabits_feature_${featureId}`;
-                const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
-                this.states.set(featureId, isEnabled);
-            });
+                this.features.forEach(featureId => {
+                    const storageKey = `instabits_feature_${featureId}`;
+                    const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
+                    this.states.set(featureId, isEnabled);
+                });
 
-            return this.states;
+                return this.states;
+            } catch (error) {
+                console.error('[InstaBits Settings] Error loading feature states:', error);
+                // Return default states on error
+                this.features.forEach(featureId => {
+                    this.states.set(featureId, true);
+                });
+                return this.states;
+            }
         }
 
         async toggle(featureId) {
-            const currentState = this.states.get(featureId);
-            const newState = !currentState;
+            try {
+                const currentState = this.states.get(featureId);
+                const newState = !currentState;
 
-            const storageKey = `instabits_feature_${featureId}`;
-            await chrome.storage.sync.set({ [storageKey]: newState });
+                const storageKey = `instabits_feature_${featureId}`;
+                await chrome.storage.sync.set({ [storageKey]: newState });
 
-            this.states.set(featureId, newState);
-            return newState;
+                this.states.set(featureId, newState);
+                return newState;
+            } catch (error) {
+                console.error('[InstaBits Settings] Error toggling feature:', error);
+                throw error; // Re-throw so calling code can handle it
+            }
         }
 
         get(featureId) {

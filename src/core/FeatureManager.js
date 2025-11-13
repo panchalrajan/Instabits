@@ -290,25 +290,33 @@ class FeatureManager {
    */
   setupStorageListener() {
     storageService.addChangeListener(async (changes, areaName) => {
-      // Only respond to sync storage changes
-      if (areaName !== 'sync') {
-        return;
-      }
+      try {
+        // Only respond to sync storage changes
+        if (areaName !== 'sync') {
+          return;
+        }
 
-      // Check for feature state changes
-      for (const [key, { newValue }] of Object.entries(changes)) {
-        if (key.startsWith('instabits_feature_')) {
-          const featureId = key.replace('instabits_feature_', '');
+        // Check for feature state changes
+        for (const [key, { newValue }] of Object.entries(changes)) {
+          if (key.startsWith('instabits_feature_')) {
+            const featureId = key.replace('instabits_feature_', '');
 
-          // Only update if this feature is registered
-          if (this.featureRegistry.has(featureId)) {
-            if (newValue === true) {
-              await this.enableFeature(featureId, false);
-            } else {
-              await this.disableFeature(featureId, false);
+            // Only update if this feature is registered
+            if (this.featureRegistry.has(featureId)) {
+              try {
+                if (newValue === true) {
+                  await this.enableFeature(featureId, false);
+                } else {
+                  await this.disableFeature(featureId, false);
+                }
+              } catch (error) {
+                console.error(`FeatureManager: Error toggling ${featureId}:`, error);
+              }
             }
           }
         }
+      } catch (error) {
+        console.error('FeatureManager: Error in storage listener:', error);
       }
     });
   }
