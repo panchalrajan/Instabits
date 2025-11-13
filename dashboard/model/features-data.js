@@ -21,7 +21,11 @@ const FEATURES_DATA = [
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Control video playback speed from 0.25x to 3x for reels and posts',
-        configButton: null,
+        configButton: {
+            text: 'Configure',
+            page: 'playbackSpeedSettings',
+            icon: 'arrow'
+        },
         disabled: false,
         toggleable: true,
         defaultEnabled: true

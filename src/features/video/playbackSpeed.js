@@ -3,11 +3,65 @@ class PlaybackSpeed extends BaseFeature {
     super();
   }
 
-  initialize() {
+  async initialize() {
     this.allVideos = new Set(); // Track all videos for bulk updates
-    this.speedOptions = [0.25, 0.5, 1.0, 1.25, 1.5, 2.0, 3.0];
+    this.allSpeedOptions = [0.25, 0.5, 1.0, 1.25, 1.5, 2.0, 3.0];
+    // Load enabled speeds from storage
+    await this.loadEnabledSpeeds();
     // Always start at 1x on page load/reload
     this.currentSpeed = 1.0;
+
+    // Listen for speed preference updates
+    this.setupMessageListener();
+  }
+
+  async loadEnabledSpeeds() {
+    try {
+      const result = await chrome.storage.sync.get('pref_enabledPlaybackSpeeds');
+      if (result.pref_enabledPlaybackSpeeds && Array.isArray(result.pref_enabledPlaybackSpeeds)) {
+        this.speedOptions = result.pref_enabledPlaybackSpeeds;
+      } else {
+        // Default: all speeds enabled
+        this.speedOptions = [...this.allSpeedOptions];
+      }
+    } catch (error) {
+      console.error('Error loading enabled speeds:', error);
+      this.speedOptions = [...this.allSpeedOptions];
+    }
+  }
+
+  setupMessageListener() {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.type === 'updatePlaybackSpeeds' && message.speeds) {
+        this.speedOptions = message.speeds;
+        // Refresh all overlays with new speed options
+        this.refreshAllOverlays();
+      }
+    });
+  }
+
+  refreshAllOverlays() {
+    this.allVideos.forEach(video => {
+      if (document.contains(video)) {
+        const tracked = this.getTrackedData(video);
+        if (tracked && tracked.overlay) {
+          // Recreate overlay with new speed options
+          const oldOverlay = tracked.overlay;
+          const newOverlay = this.createSpeedOverlay();
+
+          // Replace old overlay with new one
+          oldOverlay.parentNode.replaceChild(newOverlay, oldOverlay);
+
+          // Update tracked data
+          tracked.overlay = newOverlay;
+
+          // Reattach event listeners
+          this.attachOverlayListeners(tracked.button, newOverlay, video);
+        }
+      } else {
+        this.allVideos.delete(video);
+      }
+    });
   }
 
   saveSpeed(speed) {
@@ -82,6 +136,39 @@ class PlaybackSpeed extends BaseFeature {
       if (tracked) {
         this.updateButton(tracked.button, speed);
         this.updateOverlay(tracked.overlay, speed);
+      }
+    });
+  }
+
+  attachOverlayListeners(button, overlay, video) {
+    let hideTimeout = null;
+
+    const showOverlay = () => {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+      overlay.classList.add('visible');
+    };
+
+    const hideOverlay = () => {
+      hideTimeout = setTimeout(() => {
+        overlay.classList.remove('visible');
+      }, 300);
+    };
+
+    button.addEventListener('mouseenter', showOverlay);
+    button.addEventListener('mouseleave', hideOverlay);
+
+    overlay.addEventListener('mouseenter', showOverlay);
+    overlay.addEventListener('mouseleave', hideOverlay);
+
+    overlay.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (e.target.classList.contains('insta-speed-option')) {
+        const speed = parseFloat(e.target.dataset.speed);
+        this.setSpeed(video, speed, button, overlay);
+        hideOverlay();
       }
     });
   }
@@ -161,36 +248,8 @@ class PlaybackSpeed extends BaseFeature {
     this.addToTrackedVideos(video, { button, overlay });
     this.allVideos.add(video); // Track for bulk speed updates
 
-    let hideTimeout = null;
-
-    const showOverlay = () => {
-      if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
-      }
-      overlay.classList.add('visible');
-    };
-
-    const hideOverlay = () => {
-      hideTimeout = setTimeout(() => {
-        overlay.classList.remove('visible');
-      }, 300);
-    };
-
-    button.addEventListener('mouseenter', showOverlay);
-    button.addEventListener('mouseleave', hideOverlay);
-
-    overlay.addEventListener('mouseenter', showOverlay);
-    overlay.addEventListener('mouseleave', hideOverlay);
-
-    overlay.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (e.target.classList.contains('insta-speed-option')) {
-        const speed = parseFloat(e.target.dataset.speed);
-        this.setSpeed(video, speed, button, overlay);
-        hideOverlay();
-      }
-    });
+    // Attach event listeners
+    this.attachOverlayListeners(button, overlay, video);
 
     // Cleanup on video removal
     this.setupCleanupObserver(video, () => {

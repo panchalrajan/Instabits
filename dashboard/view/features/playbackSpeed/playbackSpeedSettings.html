@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playback Speed Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../seekbar/settingsPage.css">
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <!-- Speed Options Selection Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Available Speed Options</h2>
+                <p class="settings-section-description">Select which playback speed values you want to see on Instagram</p>
+
+                <div class="speed-options-grid" id="speedOptionsGrid">
+                    <!-- Speed options will be injected here by JS -->
+                </div>
+
+                <div class="preview-divider"></div>
+
+                <div class="settings-info">
+                    <p class="info-text">
+                        <strong>Note:</strong> Unchecked speed options will be hidden from the playback speed menu on Instagram videos.
+                        At least one speed option must remain selected.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="playbackSpeedSettings.js"></script>
+</body>
+</html>
