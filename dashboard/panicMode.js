@@ -63,6 +63,9 @@ class PanicModeHandler {
                     </div>
                     <h2>Panic Mode Enabled</h2>
                     <p>The extension is temporarily disabled. All features remain unchanged and will be restored when you disable Panic Mode.</p>
+                    <div class="panic-mode-warning">
+                        ⚠️ Disabling Panic Mode will reload all Instagram tabs
+                    </div>
                     <button class="panic-mode-disable-btn" id="disablePanicMode">
                         Disable Panic Mode
                     </button>
@@ -128,6 +131,7 @@ class PanicModeHandler {
 
     /**
      * Disable panic mode
+     * Note: This will reload all Instagram tabs to re-initialize features cleanly
      */
     async disablePanicMode() {
         return new Promise((resolve) => {
@@ -137,11 +141,55 @@ class PanicModeHandler {
                     resolve(false);
                     return;
                 }
-                this.isPanicMode = false;
-                this.updateUI();
+
+                // Show loading message before reload
+                if (this.overlay) {
+                    const content = this.overlay.querySelector('.panic-mode-content');
+                    if (content) {
+                        content.innerHTML = `
+                            <div class="panic-mode-icon">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor">
+                                    <circle cx="32" cy="32" r="28" stroke-width="3"/>
+                                    <path d="M32 16v16" stroke-width="3" stroke-linecap="round"/>
+                                    <circle cx="32" cy="44" r="2" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <h2>Reloading...</h2>
+                            <p>Panic Mode disabled. Reloading all Instagram tabs...</p>
+                        `;
+                    }
+                }
+
+                // Reload all Instagram tabs
+                this.reloadAllInstagramTabs();
+
                 resolve(true);
             });
         });
+    }
+
+    /**
+     * Reload all Instagram tabs
+     */
+    async reloadAllInstagramTabs() {
+        try {
+            // Query all tabs with Instagram URL
+            const tabs = await chrome.tabs.query({ url: '*://*.instagram.com/*' });
+
+            // Reload each Instagram tab
+            tabs.forEach(tab => {
+                chrome.tabs.reload(tab.id);
+            });
+
+            // Also reload current page if it's a dashboard page
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        } catch (error) {
+            console.error('[Panic Mode] Error reloading Instagram tabs:', error);
+            // Fallback: just reload current page
+            window.location.reload();
+        }
     }
 
     /**
@@ -163,7 +211,24 @@ class PanicModeHandler {
             if (areaName !== 'sync') return;
 
             if (changes.instabits_panic_mode) {
-                this.isPanicMode = changes.instabits_panic_mode.newValue === true;
+                const newValue = changes.instabits_panic_mode.newValue === true;
+                const oldValue = this.isPanicMode;
+
+                // If panic mode was just disabled, reload all Instagram tabs
+                if (oldValue === true && newValue === false) {
+                    // Check if we're on an Instagram page
+                    if (window.location.hostname.includes('instagram.com')) {
+                        // Just reload this Instagram tab
+                        window.location.reload();
+                    } else {
+                        // We're on dashboard, reload all Instagram tabs
+                        this.reloadAllInstagramTabs();
+                    }
+                    return;
+                }
+
+                // Otherwise, just update UI
+                this.isPanicMode = newValue;
                 this.updateUI();
             }
         });

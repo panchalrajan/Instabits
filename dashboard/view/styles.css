@@ -647,7 +647,22 @@ body.panic-mode-active .container {
     font-size: 15px;
     color: var(--text-secondary);
     line-height: 1.6;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+}
+
+.panic-mode-warning {
+    background: rgba(251, 191, 36, 0.15);
+    border: 1.5px solid rgba(251, 191, 36, 0.5);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #854d0e;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .panic-mode-disable-btn {
