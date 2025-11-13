@@ -8,6 +8,7 @@ class Dashboard {
         this.features = new Map();
         this.selectedFilters = new Set();
         this.toastManager = new Toast('toast');
+        this.isPanicMode = false;
 
         this.init();
     }
@@ -20,8 +21,9 @@ class Dashboard {
             // Render UI components
             this.renderUI();
 
-            // Load feature states from chrome storage
+            // Load feature states and panic mode from chrome storage
             await this.loadFeatures();
+            await this.loadPanicMode();
 
             // Attach event listeners
             this.attachListeners();
@@ -66,6 +68,12 @@ class Dashboard {
         // Render no results message
         document.getElementById('noResultsContainer').innerHTML = this.uiComponents.noResults();
 
+        // Render panic mode overlay
+        const existingOverlay = document.getElementById('panicModeOverlay');
+        if (!existingOverlay) {
+            document.body.insertAdjacentHTML('beforeend', this.uiComponents.panicModeOverlay());
+        }
+
         // Cache DOM elements after rendering
         this.searchInput = document.getElementById('searchInput');
         this.featuresGrid = document.getElementById('featuresGrid');
@@ -74,6 +82,8 @@ class Dashboard {
         this.filterDropdown = document.getElementById('filterDropdown');
         this.filterCount = document.getElementById('filterCount');
         this.filterClear = document.getElementById('filterClear');
+        this.panicModeOverlay = document.getElementById('panicModeOverlay');
+        this.panicModeDisableBtn = document.getElementById('disablePanicMode');
 
         // Update label counts
         this.updateLabelCounts();
@@ -166,6 +176,16 @@ class Dashboard {
         });
     }
 
+    async loadPanicMode() {
+        return new Promise((resolve) => {
+            chrome.storage.sync.get(['instabits_panic_mode'], (result) => {
+                this.isPanicMode = result.instabits_panic_mode === true;
+                this.updatePanicModeUI();
+                resolve();
+            });
+        });
+    }
+
     attachListeners() {
         // Feature toggles
         document.querySelectorAll('input[data-feature]').forEach(toggle => {
@@ -208,6 +228,11 @@ class Dashboard {
                 this.filterDropdown.style.display = 'none';
             }
         });
+
+        // Panic mode disable button
+        if (this.panicModeDisableBtn) {
+            this.panicModeDisableBtn.addEventListener('click', () => this.togglePanicMode(false));
+        }
     }
 
     handleToggle(toggle) {
@@ -369,6 +394,11 @@ class Dashboard {
     }
 
     handleHeaderAction(action) {
+        if (action === 'panic') {
+            this.togglePanicMode(!this.isPanicMode);
+            return;
+        }
+
         const actionMessages = {
             favorites: {
                 title: 'Favorites',
@@ -407,6 +437,53 @@ class Dashboard {
             states[feature] = enabled;
         });
         return states;
+    }
+
+    /**
+     * Toggle panic mode
+     * @param {boolean} enable - Whether to enable or disable panic mode
+     */
+    togglePanicMode(enable) {
+        this.isPanicMode = enable;
+
+        // Save to chrome storage
+        chrome.storage.sync.set({ instabits_panic_mode: enable }, () => {
+            if (chrome.runtime.lastError) {
+                console.error('[InstaBits Dashboard] Error saving panic mode:', chrome.runtime.lastError);
+                this.showToast('Error', 'Failed to toggle panic mode', 'error');
+                return;
+            }
+
+            // Update UI
+            this.updatePanicModeUI();
+
+            // Show toast notification (only when enabling, since overlay is shown when disabling)
+            if (enable) {
+                this.showToast('Panic Mode', 'Extension temporarily disabled', 'warning');
+            } else {
+                this.showToast('Panic Mode', 'Extension re-enabled', 'success');
+            }
+        });
+    }
+
+    /**
+     * Update panic mode UI elements
+     */
+    updatePanicModeUI() {
+        // Show/hide overlay
+        if (this.panicModeOverlay) {
+            this.panicModeOverlay.style.display = this.isPanicMode ? 'flex' : 'none';
+        }
+
+        // Update panic button style
+        const panicBtn = document.querySelector('[data-action="panic"]');
+        if (panicBtn) {
+            if (this.isPanicMode) {
+                panicBtn.classList.add('panic-active');
+            } else {
+                panicBtn.classList.remove('panic-active');
+            }
+        }
     }
 }
 

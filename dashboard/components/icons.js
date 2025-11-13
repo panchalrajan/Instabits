@@ -85,6 +85,12 @@ IconLibrary.icons = {
         <path d="M16.5 12.5a1.5 1.5 0 0 0 .3 1.65l.05.05a1.817 1.817 0 0 1 0 2.575 1.817 1.817 0 0 1-2.575 0l-.05-.05a1.5 1.5 0 0 0-1.65-.3 1.5 1.5 0 0 0-.9 1.375v.15a1.818 1.818 0 0 1-3.636 0v-.08a1.5 1.5 0 0 0-.975-1.375 1.5 1.5 0 0 0-1.65.3l-.05.05a1.817 1.817 0 0 1-2.575 0 1.817 1.817 0 0 1 0-2.575l.05-.05a1.5 1.5 0 0 0 .3-1.65 1.5 1.5 0 0 0-1.375-.9h-.15a1.818 1.818 0 0 1 0-3.636h.08a1.5 1.5 0 0 0 1.375-.975 1.5 1.5 0 0 0-.3-1.65l-.05-.05a1.817 1.817 0 0 1 0-2.575 1.817 1.817 0 0 1 2.575 0l.05.05a1.5 1.5 0 0 0 1.65.3h.075a1.5 1.5 0 0 0 .9-1.375v-.15a1.818 1.818 0 0 1 3.636 0v.08a1.5 1.5 0 0 0 .9 1.375 1.5 1.5 0 0 0 1.65-.3l.05-.05a1.817 1.817 0 0 1 2.575 0 1.817 1.817 0 0 1 0 2.575l-.05.05a1.5 1.5 0 0 0-.3 1.65v.075a1.5 1.5 0 0 0 1.375.9h.15a1.818 1.818 0 0 1 0 3.636h-.08a1.5 1.5 0 0 0-1.375.975z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
 
+    'panic': `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+        <path d="M10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M10 6V10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="10" cy="13" r="0.5" fill="currentColor" stroke="none"/>
+    </svg>`,
+
     // ========== UTILITY ICONS ==========
     'download': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

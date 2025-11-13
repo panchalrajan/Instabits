@@ -150,6 +150,7 @@ class UIComponents {
             buttons = [
                 { id: 'favorites', icon: 'favorites', title: 'Favorites' },
                 { id: 'feedback', icon: 'feedback', title: 'Feedback' },
+                { id: 'panic', icon: 'panic', title: 'Panic Mode - Temporarily disable extension' },
                 { id: 'settings', icon: 'settings', title: 'Settings' }
             ],
             showBackButton = false,
@@ -256,6 +257,31 @@ class UIComponents {
                 </svg>
                 <h3>No features found</h3>
                 <p>Try searching with different keywords</p>
+            </div>
+        `;
+    }
+
+    /**
+     * Create a panic mode overlay
+     * @returns {string} HTML string
+     */
+    static panicModeOverlay() {
+        return `
+            <div id="panicModeOverlay" class="panic-mode-overlay" style="display: none;">
+                <div class="panic-mode-content">
+                    <div class="panic-mode-icon">
+                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor">
+                            <circle cx="32" cy="32" r="28" stroke-width="3"/>
+                            <path d="M32 16v16" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="32" cy="44" r="2" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h2>Panic Mode Enabled</h2>
+                    <p>The extension is temporarily disabled. All features remain unchanged and will be restored when you disable Panic Mode.</p>
+                    <button class="panic-mode-disable-btn" id="disablePanicMode">
+                        Disable Panic Mode
+                    </button>
+                </div>
             </div>
         `;
     }
