@@ -591,6 +591,24 @@ body {
     align-items: center;
     justify-content: center;
     animation: fadeIn 0.3s ease;
+    overflow: hidden;
+    pointer-events: all;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Prevent body scroll when panic mode is active */
+body.panic-mode-active {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Make all content behind overlay non-interactive */
+body.panic-mode-active .container {
+    pointer-events: none;
+    user-select: none;
 }
 
 .panic-mode-content {
@@ -602,6 +620,8 @@ body {
     text-align: center;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.4s ease;
+    pointer-events: all;
+    user-select: text;
 }
 
 .panic-mode-icon {
@@ -653,10 +673,26 @@ body {
     transform: translateY(0);
 }
 
+/* Panic button - orange/red color to indicate urgency */
+[data-action="panic"] {
+    color: #f97316;
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.05);
+}
+
+[data-action="panic"]:hover {
+    background: rgba(249, 115, 22, 0.15);
+    border-color: #ea580c;
+}
+
 .icon-btn.panic-active {
     color: #ef4444;
     border-color: #ef4444;
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.icon-btn.panic-active:hover {
+    background: rgba(239, 68, 68, 0.25);
 }
 
 /* Animations */
