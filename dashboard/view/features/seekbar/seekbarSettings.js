@@ -33,6 +33,9 @@ class SeekbarSettings {
     }
 
     async init() {
+        // Render header
+        this.renderHeader();
+
         // Load saved color preference
         await this.loadSavedColor();
 
@@ -44,6 +47,20 @@ class SeekbarSettings {
 
         // Setup event listeners
         this.setupEventListeners();
+    }
+
+    renderHeader() {
+        const headerContainer = document.getElementById('headerContainer');
+        if (headerContainer) {
+            headerContainer.innerHTML = UIComponents.header({
+                icon: '../../../../icons/icon_128.png',
+                title: 'Seekbar Settings',
+                subtitle: 'Customize your video seekbar appearance',
+                buttons: null,
+                showBackButton: true,
+                backButtonUrl: '../../index.html'
+            });
+        }
     }
 
     async loadSavedColor() {

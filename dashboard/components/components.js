@@ -244,26 +244,37 @@ class UIComponents {
      */
     static header(options = {}) {
         const {
-            icon = '../icons/icon_128.png',
+            icon = '../../icons/icon_128.png',
             title = 'InstaBits',
             subtitle = 'Manage your Instagram features',
             buttons = [
                 { id: 'favorites', icon: 'favorites', title: 'Favorites' },
                 { id: 'feedback', icon: 'feedback', title: 'Feedback' },
                 { id: 'settings', icon: 'settings', title: 'Settings' }
-            ]
+            ],
+            showBackButton = false,
+            backButtonUrl = '../index.html'
         } = options;
 
-        const buttonsHtml = buttons.map(btn => `
+        const backButtonHtml = showBackButton ? `
+            <button class="icon-btn back-btn" id="backBtn" title="Back to Dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+        ` : '';
+
+        const buttonsHtml = buttons ? buttons.map(btn => `
             <button class="icon-btn" title="${btn.title}" data-action="${btn.id}">
                 ${this.icon(btn.icon)}
             </button>
-        `).join('');
+        `).join('') : '';
 
         return `
             <header class="header">
                 <div class="header-left">
-                    <img src="${icon}" alt="${title}" class="app-icon">
+                    ${backButtonHtml}
+                    ${icon ? `<img src="${icon}" alt="${title}" class="app-icon">` : ''}
                     <div class="header-text">
                         <h1>${title}</h1>
                         <p>${subtitle}</p>

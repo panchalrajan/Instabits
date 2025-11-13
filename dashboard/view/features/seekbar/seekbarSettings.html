@@ -7,23 +7,12 @@
     <link rel="stylesheet" href="../../styles.css">
     <link rel="stylesheet" href="../../../toast/toast.css">
     <link rel="stylesheet" href="settingsPage.css">
+    <script src="../../../components/components.js"></script>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="header-left">
-                <button class="icon-btn back-btn" id="backBtn" title="Back to Dashboard">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                    </svg>
-                </button>
-                <div class="header-text">
-                    <h1>Seekbar Settings</h1>
-                    <p>Customize your video seekbar appearance</p>
-                </div>
-            </div>
-        </div>
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
 
         <main class="main settings-main">
             <!-- Color Selection & Preview Section -->
