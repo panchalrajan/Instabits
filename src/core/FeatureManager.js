@@ -84,7 +84,6 @@ class FeatureManager {
 
     // If panic mode is enabled, don't initialize any features
     if (this.isPanicMode) {
-      console.log('FeatureManager: Panic mode enabled, skipping feature initialization');
       this.isInitialized = true;
       return;
     }
@@ -351,8 +350,6 @@ class FeatureManager {
    * @param {boolean} isPanicModeEnabled - Whether panic mode is enabled
    */
   async handlePanicModeChange(isPanicModeEnabled) {
-    console.log(`FeatureManager: Panic mode ${isPanicModeEnabled ? 'enabled' : 'disabled'}`);
-
     this.isPanicMode = isPanicModeEnabled;
 
     if (isPanicModeEnabled) {
@@ -373,34 +370,15 @@ class FeatureManager {
       if (this.videoObserver) {
         this.videoObserver.stop();
       }
-
-      console.log(`FeatureManager: Disabled ${currentFeatures.length} features for panic mode`);
     } else {
-      // Re-enable previously active features based on storage settings
-      const featureIds = Array.from(this.featureRegistry.keys());
-      const defaultStates = {};
-      this.featureRegistry.forEach((config, id) => {
-        defaultStates[id] = config.options.defaultEnabled;
-      });
-
-      const enabledStates = await storageService.getAllFeatureStates(featureIds, defaultStates);
-
-      // Re-enable features that were enabled in storage
-      for (const [featureId, isEnabled] of Object.entries(enabledStates)) {
-        if (isEnabled && this.featureRegistry.has(featureId)) {
-          await this.enableFeature(featureId, false);
-        }
-      }
-
-      // Restart video observer if we have active features
-      if (this.activeFeatures.size > 0 && this.videoObserver) {
-        this.videoObserver.start();
-      }
+      // When panic mode is disabled, reload the page to re-initialize features cleanly
+      // This prevents UI duplication issues that occur when trying to re-enable features
 
       // Clear saved states
       this.savedFeatureStates.clear();
 
-      console.log(`FeatureManager: Re-enabled ${this.activeFeatures.size} features after panic mode`);
+      // Reload the page
+      window.location.reload();
     }
   }
 

@@ -63,6 +63,9 @@ class PanicModeHandler {
                     </div>
                     <h2>Panic Mode Enabled</h2>
                     <p>The extension is temporarily disabled. All features remain unchanged and will be restored when you disable Panic Mode.</p>
+                    <div class="panic-mode-warning">
+                        ⚠️ Disabling Panic Mode will reload all Instagram tabs
+                    </div>
                     <button class="panic-mode-disable-btn" id="disablePanicMode">
                         Disable Panic Mode
                     </button>
@@ -110,6 +113,7 @@ class PanicModeHandler {
 
     /**
      * Enable panic mode
+     * Note: This will reload all Instagram tabs
      */
     async enablePanicMode() {
         return new Promise((resolve) => {
@@ -119,8 +123,13 @@ class PanicModeHandler {
                     resolve(false);
                     return;
                 }
-                this.isPanicMode = true;
-                this.updateUI();
+
+                // Don't call updateUI() here - we're reloading the page anyway
+                // This prevents showing the panic overlay twice
+
+                // Reload all Instagram tabs (which will reload this dashboard too)
+                this.reloadAllInstagramTabs();
+
                 resolve(true);
             });
         });
@@ -128,6 +137,7 @@ class PanicModeHandler {
 
     /**
      * Disable panic mode
+     * Note: This will reload all Instagram tabs to re-initialize features cleanly
      */
     async disablePanicMode() {
         return new Promise((resolve) => {
@@ -137,21 +147,85 @@ class PanicModeHandler {
                     resolve(false);
                     return;
                 }
-                this.isPanicMode = false;
-                this.updateUI();
+
+                // Show loading message before reload
+                if (this.overlay) {
+                    const content = this.overlay.querySelector('.panic-mode-content');
+                    if (content) {
+                        content.innerHTML = `
+                            <div class="panic-mode-icon">
+                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor">
+                                    <circle cx="32" cy="32" r="28" stroke-width="3"/>
+                                    <path d="M32 16v16" stroke-width="3" stroke-linecap="round"/>
+                                    <circle cx="32" cy="44" r="2" fill="currentColor"/>
+                                </svg>
+                            </div>
+                            <h2>Reloading...</h2>
+                            <p>Panic Mode disabled. Reloading all Instagram tabs...</p>
+                        `;
+                    }
+                }
+
+                // Reload all Instagram tabs
+                this.reloadAllInstagramTabs();
+
                 resolve(true);
             });
         });
     }
 
     /**
-     * Toggle panic mode
+     * Reload all Instagram tabs
+     */
+    async reloadAllInstagramTabs() {
+        try {
+            // Query all tabs with Instagram URL
+            const tabs = await chrome.tabs.query({ url: '*://*.instagram.com/*' });
+
+            // Reload each Instagram tab
+            tabs.forEach(tab => {
+                chrome.tabs.reload(tab.id);
+            });
+
+            // Also reload current page if it's a dashboard page
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        } catch (error) {
+            console.error('[Panic Mode] Error reloading Instagram tabs:', error);
+            // Fallback: just reload current page
+            window.location.reload();
+        }
+    }
+
+    /**
+     * Toggle panic mode with confirmation
      */
     async togglePanicMode() {
         if (this.isPanicMode) {
-            return await this.disablePanicMode();
+            // Disabling panic mode - show confirmation
+            window.confirmDialog.show({
+                title: 'Disable Panic Mode?',
+                message: 'This will re-enable all extension features.',
+                warning: '⚠️ All Instagram tabs will be reloaded',
+                confirmText: 'Disable',
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    this.disablePanicMode();
+                }
+            });
         } else {
-            return await this.enablePanicMode();
+            // Enabling panic mode - show confirmation
+            window.confirmDialog.show({
+                title: 'Enable Panic Mode?',
+                message: 'This will temporarily disable all extension features. Your settings will remain unchanged.',
+                warning: '⚠️ All Instagram tabs will be reloaded',
+                confirmText: 'Enable',
+                cancelText: 'Cancel',
+                onConfirm: () => {
+                    this.enablePanicMode();
+                }
+            });
         }
     }
 
@@ -163,8 +237,22 @@ class PanicModeHandler {
             if (areaName !== 'sync') return;
 
             if (changes.instabits_panic_mode) {
-                this.isPanicMode = changes.instabits_panic_mode.newValue === true;
-                this.updateUI();
+                const newValue = changes.instabits_panic_mode.newValue === true;
+                const oldValue = this.isPanicMode;
+
+                // If panic mode was just enabled or disabled, reload all Instagram tabs
+                // Don't update UI here because we're reloading the page anyway
+                if (oldValue !== newValue) {
+                    // Check if we're on an Instagram page
+                    if (window.location.hostname.includes('instagram.com')) {
+                        // Just reload this Instagram tab
+                        window.location.reload();
+                    } else {
+                        // We're on dashboard, reload all Instagram tabs and current page
+                        this.reloadAllInstagramTabs();
+                    }
+                    return;
+                }
             }
         });
     }

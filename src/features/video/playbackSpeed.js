@@ -1,15 +1,16 @@
 class PlaybackSpeed extends BaseFeature {
   constructor() {
     super();
+    // Initialize with default values immediately to prevent undefined errors
+    this.allSpeedOptions = [0.25, 0.5, 1.0, 1.25, 1.5, 2.0, 3.0];
+    this.speedOptions = [...this.allSpeedOptions]; // Default: all speeds enabled
+    this.currentSpeed = 1.0;
+    this.allVideos = new Set();
   }
 
   async initialize() {
-    this.allVideos = new Set(); // Track all videos for bulk updates
-    this.allSpeedOptions = [0.25, 0.5, 1.0, 1.25, 1.5, 2.0, 3.0];
-    // Load enabled speeds from storage
+    // Load enabled speeds from storage (will override defaults)
     await this.loadEnabledSpeeds();
-    // Always start at 1x on page load/reload
-    this.currentSpeed = 1.0;
 
     // Listen for speed preference updates
     this.setupMessageListener();
@@ -117,13 +118,23 @@ class PlaybackSpeed extends BaseFeature {
   }
 
   setSpeed(video, speed, button, overlay) {
+    // Validate speed is a finite number
+    if (!Number.isFinite(speed) || speed <= 0) {
+      console.error('PlaybackSpeed: Invalid speed value:', speed);
+      return;
+    }
+
     // Update current speed
     this.saveSpeed(speed);
 
     // Apply to ALL tracked videos, not just the current one
     this.allVideos.forEach(vid => {
       if (document.contains(vid)) {
-        vid.playbackRate = speed;
+        try {
+          vid.playbackRate = speed;
+        } catch (error) {
+          console.error('PlaybackSpeed: Error setting playbackRate:', error);
+        }
       } else {
         // Remove dead videos
         this.allVideos.delete(vid);
@@ -167,8 +178,13 @@ class PlaybackSpeed extends BaseFeature {
       e.stopPropagation();
       if (e.target.classList.contains('insta-speed-option')) {
         const speed = parseFloat(e.target.dataset.speed);
-        this.setSpeed(video, speed, button, overlay);
-        hideOverlay();
+        // Validate parsed speed
+        if (Number.isFinite(speed) && speed > 0) {
+          this.setSpeed(video, speed, button, overlay);
+          hideOverlay();
+        } else {
+          console.error('PlaybackSpeed: Invalid speed from dataset:', e.target.dataset.speed);
+        }
       }
     });
   }
@@ -225,7 +241,14 @@ class PlaybackSpeed extends BaseFeature {
     if (!video) return null;
 
     // Always apply current speed, even if already tracked
-    video.playbackRate = this.currentSpeed;
+    // Validate speed before applying
+    if (Number.isFinite(this.currentSpeed) && this.currentSpeed > 0) {
+      try {
+        video.playbackRate = this.currentSpeed;
+      } catch (error) {
+        console.error('PlaybackSpeed: Error setting initial playbackRate:', error);
+      }
+    }
 
     if (this.isVideoTracked(video)) {
       return null;
