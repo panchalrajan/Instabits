@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seekbar Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="settingsPage.css">
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <!-- Color Selection & Preview Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Progress Bar Color</h2>
+                <p class="settings-section-description">Choose the color for the seekbar progress indicator</p>
+
+                <div class="color-grid" id="colorGrid">
+                    <!-- Colors will be injected here by JS -->
+                </div>
+
+                <!-- Preview integrated in same section -->
+                <div class="preview-divider"></div>
+
+                <div class="seekbar-preview">
+                    <div class="preview-video-container">
+                        <div class="preview-seekbar">
+                            <div class="preview-seekbar-bg">
+                                <div class="preview-seekbar-progress" id="previewProgress"></div>
+                            </div>
+                        </div>
+                        <div class="preview-label">Hover over to see effect</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="seekbarSettings.js"></script>
+</body>
+</html>

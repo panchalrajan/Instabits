@@ -4,7 +4,7 @@
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
     chrome.tabs.create({
-      url: chrome.runtime.getURL('dashboard/index.html')
+      url: chrome.runtime.getURL('dashboard/view/index.html')
     });
   }
 });
@@ -12,6 +12,6 @@ chrome.runtime.onInstalled.addListener((details) => {
 // Open dashboard when extension icon is clicked
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
-    url: chrome.runtime.getURL('dashboard/index.html')
+    url: chrome.runtime.getURL('dashboard/view/index.html')
   });
 });

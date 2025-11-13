@@ -55,7 +55,11 @@ const FEATURES_DATA = [
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Interactive progress bar to navigate through videos easily',
-        configButton: null,
+        configButton: {
+            text: 'Configure',
+            page: 'seekbarSettings',
+            icon: 'arrow'
+        },
         disabled: false,
         toggleable: true,
         defaultEnabled: true

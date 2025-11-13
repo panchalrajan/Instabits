@@ -22,7 +22,7 @@
   top: 0;
   bottom: 0;
   width: 0%;
-  background: #0095f6;
+  background: var(--instabits-seekbar-color, #0095f6);
   pointer-events: none;
 }
 
