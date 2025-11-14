@@ -61,4 +61,5 @@ class HideDirectMessageSettings extends UIComponents.BaseSettingsPage {
 
 document.addEventListener('DOMContentLoaded', () => {
     new HideDirectMessageSettings();
+    document.getElementById('infoIcon').innerHTML = IconLibrary.get('info');
 });
