@@ -24,6 +24,7 @@
         .register('zenMode', ZenMode, { useVideoObserver: true, priority: 4, defaultEnabled: true })
         .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 3, defaultEnabled: true })
         .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2, defaultEnabled: true })
+        .register('disableDoubleTapLike', DisableDoubleTapLike, { useVideoObserver: false, priority: 2, defaultEnabled: false })
         .register('hideReels', HideReels, { useVideoObserver: false, priority: 1, defaultEnabled: false })
         .register('hideExplore', HideExplore, { useVideoObserver: false, priority: 1, defaultEnabled: false })
         .register('hideStories', HideStories, { useVideoObserver: false, priority: 1, defaultEnabled: false })
