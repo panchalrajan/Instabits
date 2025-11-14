@@ -30,11 +30,7 @@ class ConfirmDialog {
             <div class="confirm-dialog-overlay">
                 <div class="confirm-dialog">
                     <div class="confirm-dialog-icon">
-                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor">
-                            <circle cx="24" cy="24" r="20" stroke-width="2"/>
-                            <path d="M24 14v12" stroke-width="2" stroke-linecap="round"/>
-                            <circle cx="24" cy="32" r="1.5" fill="currentColor"/>
-                        </svg>
+                        ${IconLibrary.get('info')}
                     </div>
                     <h3 class="confirm-dialog-title">${title}</h3>
                     <p class="confirm-dialog-message">${message}</p>

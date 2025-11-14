@@ -196,16 +196,11 @@ class UIComponents {
         return `
             <div class="search-filter-wrapper">
                 <div class="search-container">
-                    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                        <circle cx="8.5" cy="8.5" r="5.5" stroke-width="1.5"/>
-                        <path d="M12.5 12.5L17 17" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
+                    ${IconLibrary.get('search')}
                     <input type="text" id="searchInput" class="search-input" placeholder="${placeholder}">
                 </div>
                 <button class="filter-btn" id="filterBtn" title="Filter by labels">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-                        <path d="M2 4h16M5 10h10M8 16h4" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
+                    ${IconLibrary.get('filter')}
                     <span class="filter-text">Filter</span>
                     <span class="filter-count" id="filterCount" style="display: none;"></span>
                 </button>
@@ -250,11 +245,7 @@ class UIComponents {
     static noResults() {
         return `
             <div id="noResults" class="no-results" style="display: none;">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="currentColor">
-                    <circle cx="20" cy="20" r="10" stroke-width="2"/>
-                    <path d="M28 28L40 40" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M20 15v10M20 30h.01" stroke-width="2" stroke-linecap="round"/>
-                </svg>
+                ${IconLibrary.get('no-results')}
                 <h3>No features found</h3>
                 <p>Try searching with different keywords</p>
             </div>

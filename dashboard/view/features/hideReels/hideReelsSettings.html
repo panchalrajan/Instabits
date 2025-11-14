@@ -33,12 +33,7 @@
                 <div class="settings-divider"></div>
 
                 <div class="info-box">
-                    <div class="info-icon">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                            <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
+                    <div class="info-icon" id="infoIcon"></div>
                     <div class="info-content">
                         <h3 class="info-title">How It Works</h3>
                         <ul class="info-list">
@@ -62,6 +57,10 @@
     <script src="../../../confirmDialog.js"></script>
     <script src="../../../tooltip.js"></script>
     <script src="../../../panicMode.js"></script>
+    <script>
+        // Inject info icon from IconLibrary
+        document.getElementById('infoIcon').innerHTML = IconLibrary.get('info');
+    </script>
     <script src="hideReelsSettings.js"></script>
 </body>
 </html>
