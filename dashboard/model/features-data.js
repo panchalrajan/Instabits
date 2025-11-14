@@ -142,7 +142,7 @@ const FEATURES_DATA = [
     },
     {
         id: 'disableDoubleTapLike',
-        section: 'automation',
+        section: 'distraction',
         name: 'Disable Double Tap to Like',
         searchName: 'disable double tap like heart prevent accidental',
         icon: {
@@ -281,6 +281,27 @@ const FEATURES_DATA = [
         description: 'Hide Threads navigation link from Instagram',
         configButton: null,
         disabled: true,
+        toggleable: true,
+        defaultEnabled: false
+    },
+    {
+        id: 'hideDirectMessage',
+        section: 'distraction',
+        name: 'Hide Direct Messages',
+        searchName: 'hide direct messages dm inbox chat distraction remove block',
+        icon: {
+            name: 'hideDirectMessage',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #10b981, #059669)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Hide Direct Messages navigation link and optionally block Direct page',
+        configButton: {
+            text: 'Configure',
+            page: 'hideDirectMessageSettings',
+            icon: 'arrow'
+        },
+        disabled: false,
         toggleable: true,
         defaultEnabled: false
     },

@@ -68,6 +68,7 @@
         "src/features/distraction/hideStories.js",
         "src/features/distraction/hideSuggestedFollowers.js",
         "src/features/distraction/hideThreads.js",
+        "src/features/distraction/hideDirectMessage.js",
         "src/features/distraction/forceFollowing.js",
         "src/contentScript.js"
       ],

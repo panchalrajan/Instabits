@@ -61,4 +61,5 @@ class HideReelsSettings extends UIComponents.BaseSettingsPage {
 
 document.addEventListener('DOMContentLoaded', () => {
     new HideReelsSettings();
+    document.getElementById('infoIcon').innerHTML = IconLibrary.get('info');
 });

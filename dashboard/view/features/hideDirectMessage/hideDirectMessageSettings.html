@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hide Direct Messages Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../../../tooltip.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <link rel="stylesheet" href="../settingsPage.css">
+</head>
+<body>
+    <div class="container">
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <div class="settings-section">
+                <h2 class="settings-section-title">Block Direct Messages Screen</h2>
+                <p class="settings-section-description">Show a blocked screen when visiting /direct page</p>
+
+                <div class="toggle-option" id="blockDirectScreenOption">
+                    <div class="toggle-option-content">
+                        <h3 class="toggle-option-title">Enable Blocked Screen</h3>
+                        <p class="toggle-option-description">Show a friendly blocked page when you visit /direct</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="blockDirectScreenToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-divider"></div>
+
+                <div class="toggle-option" id="hideFloatingButtonOption">
+                    <div class="toggle-option-content">
+                        <h3 class="toggle-option-title">Hide Floating Chat Button</h3>
+                        <p class="toggle-option-description">Hide the floating chat button that appears on Instagram</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="hideFloatingButtonToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-divider"></div>
+
+                <div class="toggle-option" id="disableMessageButtonOption">
+                    <div class="toggle-option-content">
+                        <h3 class="toggle-option-title">Disable Message Button</h3>
+                        <p class="toggle-option-description">Disable the "Message" button on user profiles</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="disableMessageButtonToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-divider"></div>
+
+                <div class="info-box">
+                    <div class="info-icon" id="infoIcon"></div>
+                    <div class="info-content">
+                        <h3 class="info-title">How It Works</h3>
+                        <ul class="info-list">
+                            <li>Direct Messages navigation links are always hidden when this feature is enabled</li>
+                            <li>Block Direct Screen shows a friendly blocked page when you visit /direct</li>
+                            <li>Hide Floating Chat Button removes the floating chat widget from Instagram</li>
+                            <li>Disable Message Button prevents sending messages from user profiles</li>
+                            <li>Changes apply instantly without page refresh</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../../src/core/utils/StorageService.js"></script>
+    <script src="../../../toast/toast.js"></script>
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../../../confirmDialog.js"></script>
+    <script src="../../../tooltip.js"></script>
+    <script src="../../../panicMode.js"></script>
+    <script src="hideDirectMessageSettings.js"></script>
+</body>
+</html>
