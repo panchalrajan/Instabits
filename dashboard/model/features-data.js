@@ -220,7 +220,11 @@ const FEATURES_DATA = [
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Hide Stories feed on home page and Stories screen',
-        configButton: null,
+        configButton: {
+            text: 'Configure',
+            page: 'hideStoriesSettings',
+            icon: 'arrow'
+        },
         disabled: true,
         toggleable: true,
         defaultEnabled: false

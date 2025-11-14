@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hide Stories Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../../../tooltip.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <link rel="stylesheet" href="../settingsPage.css">
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../../../confirmDialog.js"></script>
+    <script src="../../../tooltip.js"></script>
+    <script src="../../../panicMode.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <div class="settings-section">
+                <h2 class="settings-section-title">Story Blocking Mode</h2>
+                <p class="settings-section-description">Choose how stories should be hidden on Instagram</p>
+
+                <div id="contentContainer">
+                    <div class="mode-options">
+                        <div class="mode-option" data-mode="selective">
+                            <div class="mode-option-header">
+                                <div class="mode-option-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 11l3 3L22 4"></path>
+                                        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                                    </svg>
+                                </div>
+                                <div class="mode-option-content">
+                                    <h3 class="mode-option-title">Selective Hide</h3>
+                                    <p class="mode-option-description">Hide stories only on specific screens (home page and stories screen)</p>
+                                </div>
+                                <div class="mode-option-radio">
+                                    <div class="radio-outer">
+                                        <div class="radio-inner"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mode-option" data-mode="all">
+                            <div class="mode-option-header">
+                                <div class="mode-option-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                    </svg>
+                                </div>
+                                <div class="mode-option-content">
+                                    <h3 class="mode-option-title">Hide All Stories</h3>
+                                    <p class="mode-option-description">Completely hide all stories from all users across Instagram</p>
+                                </div>
+                                <div class="mode-option-radio">
+                                    <div class="radio-outer">
+                                        <div class="radio-inner"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2 class="settings-section-title">How It Works</h2>
+                <div class="info-box">
+                    <div class="info-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                    <div class="info-content">
+                        <ul class="info-list">
+                            <li><strong>Selective Hide:</strong> Stories will be hidden on the home page feed and when you visit the stories screen (/stories)</li>
+                            <li><strong>Hide All Stories:</strong> All story elements will be completely hidden across your entire Instagram experience</li>
+                            <li>You can change this setting anytime from this page</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="hideStoriesSettings.js"></script>
+</body>
+</html>
