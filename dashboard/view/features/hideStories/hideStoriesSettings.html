@@ -20,6 +20,24 @@
         <div id="headerContainer"></div>
 
         <main class="main settings-main">
+            <!-- Block Stories Screen Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Block Stories Screen</h2>
+                <p class="settings-section-description">Show a blocked screen when visiting /stories page</p>
+
+                <div class="toggle-option" id="blockStoriesScreenOption">
+                    <div class="toggle-option-content">
+                        <h3 class="toggle-option-title">Enable Blocked Screen</h3>
+                        <p class="toggle-option-description">Show a friendly blocked page when you visit /stories (like Reels and Explore)</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="blockStoriesScreenToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Story Blocking Mode Section -->
             <div class="settings-section">
                 <h2 class="settings-section-title">Story Blocking Mode</h2>
                 <p class="settings-section-description">Choose how stories should be hidden on Instagram</p>
@@ -36,7 +54,7 @@
                                 </div>
                                 <div class="mode-option-content">
                                     <h3 class="mode-option-title">Selective Hide</h3>
-                                    <p class="mode-option-description">Hide stories only on specific screens (home page and stories screen)</p>
+                                    <p class="mode-option-description">Hide stories only at home page</p>
                                 </div>
                                 <div class="mode-option-radio">
                                     <div class="radio-outer">
@@ -68,23 +86,24 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="settings-section">
-                <h2 class="settings-section-title">How It Works</h2>
+                <!-- How It Works Info Box -->
+                <div class="settings-divider"></div>
+
                 <div class="info-box">
                     <div class="info-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="16" x2="12" y2="12"></line>
-                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                     </div>
                     <div class="info-content">
+                        <h3 class="info-title">How It Works</h3>
                         <ul class="info-list">
-                            <li><strong>Selective Hide:</strong> Stories will be hidden on the home page feed and when you visit the stories screen (/stories)</li>
-                            <li><strong>Hide All Stories:</strong> All story elements will be completely hidden across your entire Instagram experience</li>
-                            <li>You can change this setting anytime from this page</li>
+                            <li>Selective Hide mode removes stories from home feed</li>
+                            <li>Hide All Stories mode completely removes all story elements across Instagram</li>
+                            <li>Block Stories Screen shows a friendly blocked page when you visit /stories</li>
+                            <li>Changes apply instantly without page refresh</li>
                         </ul>
                     </div>
                 </div>

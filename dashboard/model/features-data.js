@@ -219,7 +219,7 @@ const FEATURES_DATA = [
             background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Stories feed on home page and Stories screen',
+        description: 'Hide Stories feed on home page or completely',
         configButton: {
             text: 'Configure',
             page: 'hideStoriesSettings',

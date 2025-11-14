@@ -6,6 +6,7 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
         this.modes = ['selective', 'all'];
         this.selectedMode = 'selective'; // default mode
         this.defaultMode = 'selective';
+        this.blockStoriesScreen = false; // default: don't block stories screen
 
         this.init();
     }
@@ -17,11 +18,13 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
             subtitle: 'Customize how stories are hidden on Instagram'
         });
 
-        // Load saved preference
+        // Load saved preferences
         await this.loadSavedMode();
+        await this.loadBlockStoriesScreenSetting();
 
         // Setup UI
         this.renderModeOptions();
+        this.renderBlockStoriesScreenToggle();
 
         // Setup event listeners
         this.setupEventListeners();
@@ -35,6 +38,29 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
         } catch (error) {
             console.error('Error loading hide stories mode:', error);
             this.selectedMode = this.defaultMode;
+        }
+    }
+
+    async loadBlockStoriesScreenSetting() {
+        try {
+            const result = await chrome.storage.sync.get('pref_blockStoriesScreen');
+            this.blockStoriesScreen = result.pref_blockStoriesScreen || false;
+            console.log('Loaded block stories screen setting:', this.blockStoriesScreen);
+        } catch (error) {
+            console.error('Error loading block stories screen setting:', error);
+            this.blockStoriesScreen = false;
+        }
+    }
+
+    renderBlockStoriesScreenToggle() {
+        const toggle = document.getElementById('blockStoriesScreenToggle');
+        if (toggle) {
+            toggle.checked = this.blockStoriesScreen;
+
+            toggle.addEventListener('change', async (e) => {
+                this.blockStoriesScreen = e.target.checked;
+                await this.saveSettings();
+            });
         }
     }
 
@@ -80,22 +106,27 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
     async saveSettings() {
         try {
             await chrome.storage.sync.set({
-                pref_hideStoriesMode: this.selectedMode
+                pref_hideStoriesMode: this.selectedMode,
+                pref_blockStoriesScreen: this.blockStoriesScreen
             });
 
-            console.log('Hide stories mode saved:', this.selectedMode);
+            console.log('Hide stories settings saved:', {
+                mode: this.selectedMode,
+                blockStoriesScreen: this.blockStoriesScreen
+            });
 
             // Show success toast
             const modeText = this.selectedMode === 'all' ? 'Hide All Stories' : 'Selective Hide';
-            this.showToast('Settings Saved', `Mode set to: ${modeText}`, 'success');
+            this.showToast('Settings Saved', `Mode: ${modeText}`, 'success');
 
             // Notify content scripts to update
-            await this.notifyContentScript('updateHideStoriesMode', {
-                mode: this.selectedMode
+            await this.notifyContentScript('updateHideStoriesSettings', {
+                mode: this.selectedMode,
+                blockStoriesScreen: this.blockStoriesScreen
             });
 
         } catch (error) {
-            console.error('Error saving hide stories mode:', error);
+            console.error('Error saving hide stories settings:', error);
             this.showToast('Error', 'Failed to save settings', 'error');
         }
     }
