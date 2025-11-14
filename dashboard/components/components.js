@@ -414,12 +414,15 @@ class UIComponents {
 
         async load() {
             try {
-                const storageKeys = this.features.map(f => `instabits_feature_${f}`);
-                const result = await chrome.storage.sync.get(storageKeys);
+                const defaultStates = {};
+                this.features.forEach(featureId => {
+                    defaultStates[featureId] = true;
+                });
+
+                const result = await storageService.getAllFeatureStates(this.features, defaultStates);
 
                 this.features.forEach(featureId => {
-                    const storageKey = `instabits_feature_${featureId}`;
-                    const isEnabled = result[storageKey] === undefined ? true : result[storageKey] === true;
+                    const isEnabled = result[featureId] === true;
                     this.states.set(featureId, isEnabled);
                 });
 
@@ -438,8 +441,7 @@ class UIComponents {
                 const currentState = this.states.get(featureId);
                 const newState = !currentState;
 
-                const storageKey = `instabits_feature_${featureId}`;
-                await chrome.storage.sync.set({ [storageKey]: newState });
+                await storageService.setFeatureState(featureId, newState);
 
                 this.states.set(featureId, newState);
                 return newState;

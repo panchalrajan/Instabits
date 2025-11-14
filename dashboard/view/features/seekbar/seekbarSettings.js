@@ -54,8 +54,7 @@ class SeekbarSettings extends UIComponents.BaseSettingsPage {
 
     async loadSavedColor() {
         try {
-            const result = await chrome.storage.sync.get('pref_seekbarProgressColor');
-            this.selectedColor = result.pref_seekbarProgressColor || this.defaultColor;
+            this.selectedColor = await storageService.getUserPreference('seekbarProgressColor', this.defaultColor);
         } catch (error) {
             console.error('Error loading saved color:', error);
             this.selectedColor = this.defaultColor;
@@ -121,9 +120,7 @@ class SeekbarSettings extends UIComponents.BaseSettingsPage {
     async saveSettings() {
         try {
             // Save to storage
-            await chrome.storage.sync.set({
-                pref_seekbarProgressColor: this.selectedColor
-            });
+            await storageService.setUserPreference('seekbarProgressColor', this.selectedColor);
 
             // Show success message using base class method
             this.showToast('Saved', 'Color updated', 'success');

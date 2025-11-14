@@ -13,8 +13,7 @@ class HideExplore extends BaseDistraction {
    */
   async isForceFollowingEnabled() {
     try {
-      const result = await chrome.storage.sync.get('instabits_feature_forceFollowing');
-      return result.instabits_feature_forceFollowing === true;
+      return await storageService.getFeatureState('forceFollowing');
     } catch (error) {
       console.error('HideExplore: Error checking forceFollowing state:', error);
       return false;

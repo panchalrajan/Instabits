@@ -18,9 +18,9 @@ class PlaybackSpeed extends BaseFeature {
 
   async loadEnabledSpeeds() {
     try {
-      const result = await chrome.storage.sync.get('pref_enabledPlaybackSpeeds');
-      if (result.pref_enabledPlaybackSpeeds && Array.isArray(result.pref_enabledPlaybackSpeeds)) {
-        this.speedOptions = result.pref_enabledPlaybackSpeeds;
+      const result = await storageService.getUserPreference('enabledPlaybackSpeeds', this.allSpeedOptions);
+      if (result && Array.isArray(result)) {
+        this.speedOptions = result;
       } else {
         // Default: all speeds enabled
         this.speedOptions = [...this.allSpeedOptions];

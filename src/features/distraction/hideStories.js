@@ -17,9 +17,8 @@ class HideStories extends BaseDistraction {
 
   async loadSettings() {
     try {
-      const result = await chrome.storage.sync.get(['pref_hideStoriesMode', 'pref_blockStoriesScreen']);
-      this.mode = result.pref_hideStoriesMode || 'selective';
-      this.blockStoriesScreen = result.pref_blockStoriesScreen || false;
+      this.mode = await storageService.getUserPreference('hideStoriesMode', 'selective');
+      this.blockStoriesScreen = await storageService.getUserPreference('blockStoriesScreen', false);
     } catch (error) {
       console.error('HideStories: Error loading settings:', error);
     }
@@ -53,8 +52,7 @@ class HideStories extends BaseDistraction {
 
   async isForceFollowingEnabled() {
     try {
-      const result = await chrome.storage.sync.get('instabits_feature_forceFollowing');
-      return result.instabits_feature_forceFollowing === true;
+      return await storageService.getFeatureState('forceFollowing');
     } catch (error) {
       return false;
     }

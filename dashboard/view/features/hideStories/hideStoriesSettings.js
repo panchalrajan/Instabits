@@ -32,8 +32,7 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
 
     async loadSavedMode() {
         try {
-            const result = await chrome.storage.sync.get('pref_hideStoriesMode');
-            this.selectedMode = result.pref_hideStoriesMode || this.defaultMode;
+            this.selectedMode = await storageService.getUserPreference('hideStoriesMode', this.defaultMode);
             console.log('Loaded hide stories mode:', this.selectedMode);
         } catch (error) {
             console.error('Error loading hide stories mode:', error);
@@ -43,8 +42,7 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
 
     async loadBlockStoriesScreenSetting() {
         try {
-            const result = await chrome.storage.sync.get('pref_blockStoriesScreen');
-            this.blockStoriesScreen = result.pref_blockStoriesScreen || false;
+            this.blockStoriesScreen = await storageService.getUserPreference('blockStoriesScreen', false);
             console.log('Loaded block stories screen setting:', this.blockStoriesScreen);
         } catch (error) {
             console.error('Error loading block stories screen setting:', error);
@@ -105,10 +103,8 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
 
     async saveSettings() {
         try {
-            await chrome.storage.sync.set({
-                pref_hideStoriesMode: this.selectedMode,
-                pref_blockStoriesScreen: this.blockStoriesScreen
-            });
+            await storageService.setUserPreference('hideStoriesMode', this.selectedMode);
+            await storageService.setUserPreference('blockStoriesScreen', this.blockStoriesScreen);
 
             console.log('Hide stories settings saved:', {
                 mode: this.selectedMode,
