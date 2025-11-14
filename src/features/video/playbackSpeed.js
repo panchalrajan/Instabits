@@ -336,7 +336,7 @@ class PlaybackSpeed extends BaseFeature {
     return { button, overlay };
   }
 
-  onCleanup() {
+  cleanup() {
     // Remove all buttons and overlays from tracked videos
     this.trackedVideos.forEach((trackedData, video) => {
       if (trackedData) {
