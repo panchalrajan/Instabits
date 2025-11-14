@@ -225,7 +225,7 @@ const FEATURES_DATA = [
             page: 'hideStoriesSettings',
             icon: 'arrow'
         },
-        disabled: true,
+        disabled: false,
         toggleable: true,
         defaultEnabled: false
     },
