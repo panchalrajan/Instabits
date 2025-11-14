@@ -16,8 +16,7 @@ class HideReels extends BaseDistraction {
 
   async loadSettings() {
     try {
-      const result = await chrome.storage.sync.get('pref_blockReelsScreen');
-      this.blockReelsScreen = result.pref_blockReelsScreen !== undefined ? result.pref_blockReelsScreen : true;
+      this.blockReelsScreen = await storageService.getUserPreference('blockReelsScreen', true);
     } catch (error) {
       console.error('HideReels: Error loading settings:', error);
     }
@@ -35,8 +34,7 @@ class HideReels extends BaseDistraction {
 
   async isForceFollowingEnabled() {
     try {
-      const result = await chrome.storage.sync.get('instabits_feature_forceFollowing');
-      return result.instabits_feature_forceFollowing === true;
+      return await storageService.getFeatureState('forceFollowing');
     } catch (error) {
       return false;
     }

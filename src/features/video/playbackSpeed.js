@@ -12,15 +12,18 @@ class PlaybackSpeed extends BaseFeature {
     // Load enabled speeds from storage (will override defaults)
     await this.loadEnabledSpeeds();
 
+    // Load last used speed from storage
+    await this.loadCurrentSpeed();
+
     // Listen for speed preference updates
     this.setupMessageListener();
   }
 
   async loadEnabledSpeeds() {
     try {
-      const result = await chrome.storage.sync.get('pref_enabledPlaybackSpeeds');
-      if (result.pref_enabledPlaybackSpeeds && Array.isArray(result.pref_enabledPlaybackSpeeds)) {
-        this.speedOptions = result.pref_enabledPlaybackSpeeds;
+      const result = await storageService.getUserPreference('enabledPlaybackSpeeds', this.allSpeedOptions);
+      if (result && Array.isArray(result)) {
+        this.speedOptions = result;
       } else {
         // Default: all speeds enabled
         this.speedOptions = [...this.allSpeedOptions];
@@ -65,9 +68,28 @@ class PlaybackSpeed extends BaseFeature {
     });
   }
 
-  saveSpeed(speed) {
-    // Save in memory for current session only
+  async loadCurrentSpeed() {
+    try {
+      const savedSpeed = await storageService.getUserPreference('currentPlaybackSpeed', 1.0);
+      if (Number.isFinite(savedSpeed) && savedSpeed > 0) {
+        this.currentSpeed = savedSpeed;
+      }
+    } catch (error) {
+      console.error('Error loading current speed:', error);
+      this.currentSpeed = 1.0;
+    }
+  }
+
+  async saveSpeed(speed) {
+    // Save to memory
     this.currentSpeed = speed;
+
+    // Persist to storage
+    try {
+      await storageService.setUserPreference('currentPlaybackSpeed', speed);
+    } catch (error) {
+      console.error('Error saving current speed:', error);
+    }
   }
 
   formatSpeed(speed) {

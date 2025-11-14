@@ -32,12 +32,12 @@ class PanicModeHandler {
      * Check panic mode status from storage
      */
     async checkPanicMode() {
-        return new Promise((resolve) => {
-            chrome.storage.sync.get(['instabits_panic_mode'], (result) => {
-                this.isPanicMode = result.instabits_panic_mode === true;
-                resolve();
-            });
-        });
+        try {
+            this.isPanicMode = await storageService.get('instabits_panic_mode', false);
+        } catch (error) {
+            console.error('[Panic Mode] Error checking panic mode:', error);
+            this.isPanicMode = false;
+        }
     }
 
     /**
@@ -116,23 +116,24 @@ class PanicModeHandler {
      * Note: This will reload all Instagram tabs
      */
     async enablePanicMode() {
-        return new Promise((resolve) => {
-            chrome.storage.sync.set({ instabits_panic_mode: true }, () => {
-                if (chrome.runtime.lastError) {
-                    console.error('[Panic Mode] Error enabling:', chrome.runtime.lastError);
-                    resolve(false);
-                    return;
-                }
+        try {
+            const success = await storageService.set('instabits_panic_mode', true);
+            if (!success) {
+                console.error('[Panic Mode] Error enabling panic mode');
+                return false;
+            }
 
-                // Don't call updateUI() here - we're reloading the page anyway
-                // This prevents showing the panic overlay twice
+            // Don't call updateUI() here - we're reloading the page anyway
+            // This prevents showing the panic overlay twice
 
-                // Reload all Instagram tabs (which will reload this dashboard too)
-                this.reloadAllInstagramTabs();
+            // Reload all Instagram tabs (which will reload this dashboard too)
+            this.reloadAllInstagramTabs();
 
-                resolve(true);
-            });
-        });
+            return true;
+        } catch (error) {
+            console.error('[Panic Mode] Error enabling:', error);
+            return false;
+        }
     }
 
     /**
@@ -140,38 +141,39 @@ class PanicModeHandler {
      * Note: This will reload all Instagram tabs to re-initialize features cleanly
      */
     async disablePanicMode() {
-        return new Promise((resolve) => {
-            chrome.storage.sync.set({ instabits_panic_mode: false }, () => {
-                if (chrome.runtime.lastError) {
-                    console.error('[Panic Mode] Error disabling:', chrome.runtime.lastError);
-                    resolve(false);
-                    return;
+        try {
+            const success = await storageService.set('instabits_panic_mode', false);
+            if (!success) {
+                console.error('[Panic Mode] Error disabling panic mode');
+                return false;
+            }
+
+            // Show loading message before reload
+            if (this.overlay) {
+                const content = this.overlay.querySelector('.panic-mode-content');
+                if (content) {
+                    content.innerHTML = `
+                        <div class="panic-mode-icon">
+                            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor">
+                                <circle cx="32" cy="32" r="28" stroke-width="3"/>
+                                <path d="M32 16v16" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="32" cy="44" r="2" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <h2>Reloading...</h2>
+                        <p>Panic Mode disabled. Reloading all Instagram tabs...</p>
+                    `;
                 }
+            }
 
-                // Show loading message before reload
-                if (this.overlay) {
-                    const content = this.overlay.querySelector('.panic-mode-content');
-                    if (content) {
-                        content.innerHTML = `
-                            <div class="panic-mode-icon">
-                                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor">
-                                    <circle cx="32" cy="32" r="28" stroke-width="3"/>
-                                    <path d="M32 16v16" stroke-width="3" stroke-linecap="round"/>
-                                    <circle cx="32" cy="44" r="2" fill="currentColor"/>
-                                </svg>
-                            </div>
-                            <h2>Reloading...</h2>
-                            <p>Panic Mode disabled. Reloading all Instagram tabs...</p>
-                        `;
-                    }
-                }
+            // Reload all Instagram tabs
+            this.reloadAllInstagramTabs();
 
-                // Reload all Instagram tabs
-                this.reloadAllInstagramTabs();
-
-                resolve(true);
-            });
-        });
+            return true;
+        } catch (error) {
+            console.error('[Panic Mode] Error disabling:', error);
+            return false;
+        }
     }
 
     /**
@@ -233,9 +235,7 @@ class PanicModeHandler {
      * Setup storage listener to detect panic mode changes from other pages
      */
     setupStorageListener() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (areaName !== 'sync') return;
-
+        storageService.addChangeListener((changes) => {
             if (changes.instabits_panic_mode) {
                 const newValue = changes.instabits_panic_mode.newValue === true;
                 const oldValue = this.isPanicMode;

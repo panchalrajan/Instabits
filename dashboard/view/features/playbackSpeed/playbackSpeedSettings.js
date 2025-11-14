@@ -42,9 +42,9 @@ class PlaybackSpeedSettings extends UIComponents.BaseSettingsPage {
 
     async loadSavedSpeeds() {
         try {
-            const result = await chrome.storage.sync.get('pref_enabledPlaybackSpeeds');
-            if (result.pref_enabledPlaybackSpeeds && Array.isArray(result.pref_enabledPlaybackSpeeds)) {
-                this.enabledSpeeds = result.pref_enabledPlaybackSpeeds;
+            const result = await storageService.getUserPreference('enabledPlaybackSpeeds', this.defaultEnabledSpeeds);
+            if (result && Array.isArray(result)) {
+                this.enabledSpeeds = result;
             } else {
                 this.enabledSpeeds = [...this.defaultEnabledSpeeds];
             }
@@ -157,9 +157,7 @@ class PlaybackSpeedSettings extends UIComponents.BaseSettingsPage {
     async saveSettings() {
         try {
             // Save to storage
-            await chrome.storage.sync.set({
-                pref_enabledPlaybackSpeeds: this.enabledSpeeds
-            });
+            await storageService.setUserPreference('enabledPlaybackSpeeds', this.enabledSpeeds);
 
             // Show success message using base class method
             this.showToast('Saved', 'Speed options updated', 'success');

@@ -24,8 +24,7 @@ class HideReelsSettings extends UIComponents.BaseSettingsPage {
 
     async loadBlockReelsScreenSetting() {
         try {
-            const result = await chrome.storage.sync.get('pref_blockReelsScreen');
-            this.blockReelsScreen = result.pref_blockReelsScreen !== undefined ? result.pref_blockReelsScreen : true;
+            this.blockReelsScreen = await storageService.getUserPreference('blockReelsScreen', true);
         } catch (error) {
             console.error('Error loading block reels screen setting:', error);
             this.blockReelsScreen = true;
@@ -46,9 +45,7 @@ class HideReelsSettings extends UIComponents.BaseSettingsPage {
 
     async saveSettings() {
         try {
-            await chrome.storage.sync.set({
-                pref_blockReelsScreen: this.blockReelsScreen
-            });
+            await storageService.setUserPreference('blockReelsScreen', this.blockReelsScreen);
 
             this.showToast('Settings Saved', 'Block screen: ' + (this.blockReelsScreen ? 'Enabled' : 'Disabled'), 'success');
 
