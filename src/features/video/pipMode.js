@@ -189,6 +189,20 @@ class PIPMode extends BaseFeature {
     }
   }
 
+  repositionDuration(videoParent) {
+    // After PIP button is added, reposition Duration if it exists
+    requestAnimationFrame(() => {
+      const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
+      const pipButton = videoParent.querySelector('.insta-pip-button');
+      if (durationOverlay && pipButton) {
+        const pipLeft = parseInt(window.getComputedStyle(pipButton).left) || 12;
+        const pipWidth = pipButton.offsetWidth;
+        const gap = 8;
+        durationOverlay.style.left = `${pipLeft + pipWidth + gap}px`;
+      }
+    });
+  }
+
   positionRelativeToSpeedButton(pipButton, videoParent) {
     // Find the speed button in the same parent
     const speedButton = videoParent.querySelector('.insta-speed-button');
@@ -202,6 +216,9 @@ class PIPMode extends BaseFeature {
 
           // Position PIP button 8px to the right of speed button
           pipButton.style.left = `${speedLeft + speedWidth + gap}px`;
+
+          // After positioning PIP, reposition Duration if it exists
+          this.repositionDuration(videoParent);
         });
       };
 
@@ -278,6 +295,9 @@ class PIPMode extends BaseFeature {
 
               // Position PIP button 8px to the right of fullscreen
               pipButton.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
+
+              // After positioning PIP, reposition Duration if it exists
+              this.repositionDuration(videoParent);
             });
           };
 
@@ -303,6 +323,8 @@ class PIPMode extends BaseFeature {
         } else {
           // Fallback: None found - position at 12px from leading edge
           pipButton.style.left = '12px';
+          // Still try to reposition duration
+          this.repositionDuration(videoParent);
         }
       }
     }

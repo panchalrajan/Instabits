@@ -211,6 +211,35 @@ class PlaybackSpeed extends BaseFeature {
     });
   }
 
+  repositionDownstreamButtons(videoParent) {
+    // After speed button is added, reposition PIP and Duration if they exist
+    requestAnimationFrame(() => {
+      const pipButton = videoParent.querySelector('.insta-pip-button');
+      if (pipButton) {
+        // Trigger PIP to reposition relative to speed
+        const speedButton = videoParent.querySelector('.insta-speed-button');
+        if (speedButton) {
+          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
+          const speedWidth = speedButton.offsetWidth;
+          const gap = 8;
+          pipButton.style.left = `${speedLeft + speedWidth + gap}px`;
+        }
+      }
+
+      const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
+      if (durationOverlay && !pipButton) {
+        // Duration exists but PIP doesn't - reposition duration relative to speed
+        const speedButton = videoParent.querySelector('.insta-speed-button');
+        if (speedButton) {
+          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
+          const speedWidth = speedButton.offsetWidth;
+          const gap = 8;
+          durationOverlay.style.left = `${speedLeft + speedWidth + gap}px`;
+        }
+      }
+    });
+  }
+
   positionRelativeToFullscreen(button, overlay, videoParent) {
     // Find the fullscreen button in the same parent
     const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
@@ -226,6 +255,9 @@ class PlaybackSpeed extends BaseFeature {
           const leftPosition = fullscreenLeft + fullscreenWidth + gap;
           button.style.left = `${leftPosition}px`;
           overlay.style.left = `${leftPosition}px`;
+
+          // After positioning speed, reposition downstream buttons
+          this.repositionDownstreamButtons(videoParent);
         });
       };
 
@@ -302,5 +334,37 @@ class PlaybackSpeed extends BaseFeature {
     });
 
     return { button, overlay };
+  }
+
+  onCleanup() {
+    // Remove all buttons and overlays from tracked videos
+    this.trackedVideos.forEach((trackedData, video) => {
+      if (trackedData) {
+        // Remove button
+        if (trackedData.button && trackedData.button.parentNode) {
+          trackedData.button.remove();
+        }
+        // Remove overlay
+        if (trackedData.overlay && trackedData.overlay.parentNode) {
+          trackedData.overlay.remove();
+        }
+      }
+    });
+
+    // Clear tracked videos
+    this.trackedVideos.clear();
+
+    // Clear all videos set
+    this.allVideos.clear();
+
+    // Reset speed to normal for all videos
+    const allVideos = document.querySelectorAll('video');
+    allVideos.forEach(video => {
+      try {
+        video.playbackRate = 1.0;
+      } catch (error) {
+        console.error('PlaybackSpeed: Error resetting playbackRate:', error);
+      }
+    });
   }
 }
