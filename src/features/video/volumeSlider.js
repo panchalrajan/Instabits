@@ -191,6 +191,8 @@ class VolumeSlider extends BaseFeature {
     const percentage = 1 - (clickY / rect.height);
     const volume = Math.max(0, Math.min(1, percentage));
 
+    // Always update video volume, even if muted
+    // This ensures when user unmutes, it uses the selected volume
     video.volume = volume;
     this.saveVolume(volume);
     this.updateSlider(fill, thumb, volume);
@@ -365,5 +367,27 @@ class VolumeSlider extends BaseFeature {
     });
 
     return { container, track, fill, thumb };
+  }
+
+  onCleanup() {
+    // Remove all volume slider containers
+    const allSliders = document.querySelectorAll('.insta-volume-slider-container');
+    allSliders.forEach(slider => {
+      if (slider.parentNode) {
+        slider.remove();
+      }
+    });
+
+    // Set all videos to max volume (1.0) unless they're muted
+    const allVideos = document.querySelectorAll('video');
+    allVideos.forEach(video => {
+      try {
+        // Only set volume if video is not muted
+        // If muted, keep it muted but set volume to max so when unmuted it's at full volume
+        video.volume = 1.0;
+      } catch (error) {
+        // Ignore errors
+      }
+    });
   }
 }
