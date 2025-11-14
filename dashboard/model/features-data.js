@@ -141,6 +141,23 @@ const FEATURES_DATA = [
         defaultEnabled: true
     },
     {
+        id: 'disableDoubleTapLike',
+        section: 'automation',
+        name: 'Disable Double Tap to Like',
+        searchName: 'disable double tap like heart prevent accidental',
+        icon: {
+            name: 'heart',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #ef4444, #dc2626)'
+        },
+        badge: { text: 'New', color: BADGE_COLORS.green },
+        description: 'Prevent accidental likes by disabling double-tap to like on posts',
+        configButton: null,
+        disabled: false,
+        toggleable: true,
+        defaultEnabled: false
+    },
+    {
         id: 'zenMode',
         section: 'video',
         name: 'Zen Mode',
