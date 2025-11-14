@@ -211,6 +211,35 @@ class PlaybackSpeed extends BaseFeature {
     });
   }
 
+  repositionDownstreamButtons(videoParent) {
+    // After speed button is added, reposition PIP and Duration if they exist
+    requestAnimationFrame(() => {
+      const pipButton = videoParent.querySelector('.insta-pip-button');
+      if (pipButton) {
+        // Trigger PIP to reposition relative to speed
+        const speedButton = videoParent.querySelector('.insta-speed-button');
+        if (speedButton) {
+          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
+          const speedWidth = speedButton.offsetWidth;
+          const gap = 8;
+          pipButton.style.left = `${speedLeft + speedWidth + gap}px`;
+        }
+      }
+
+      const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
+      if (durationOverlay && !pipButton) {
+        // Duration exists but PIP doesn't - reposition duration relative to speed
+        const speedButton = videoParent.querySelector('.insta-speed-button');
+        if (speedButton) {
+          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
+          const speedWidth = speedButton.offsetWidth;
+          const gap = 8;
+          durationOverlay.style.left = `${speedLeft + speedWidth + gap}px`;
+        }
+      }
+    });
+  }
+
   positionRelativeToFullscreen(button, overlay, videoParent) {
     // Find the fullscreen button in the same parent
     const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
@@ -226,6 +255,9 @@ class PlaybackSpeed extends BaseFeature {
           const leftPosition = fullscreenLeft + fullscreenWidth + gap;
           button.style.left = `${leftPosition}px`;
           overlay.style.left = `${leftPosition}px`;
+
+          // After positioning speed, reposition downstream buttons
+          this.repositionDownstreamButtons(videoParent);
         });
       };
 
@@ -302,5 +334,97 @@ class PlaybackSpeed extends BaseFeature {
     });
 
     return { button, overlay };
+  }
+
+  onCleanup() {
+    // Store video parents before cleanup for repositioning downstream buttons
+    const videoParents = new Set();
+
+    // Remove all buttons and overlays from tracked videos
+    // Use allVideos Set since WeakMap cannot be iterated
+    this.allVideos.forEach(video => {
+      const trackedData = this.getTrackedData(video);
+      if (trackedData) {
+        // Store parent for later repositioning
+        const videoParent = this.getVideoParent(video);
+        if (videoParent) {
+          videoParents.add(videoParent);
+        }
+
+        // Remove button
+        if (trackedData.button && trackedData.button.parentNode) {
+          trackedData.button.remove();
+        }
+        // Remove overlay
+        if (trackedData.overlay && trackedData.overlay.parentNode) {
+          trackedData.overlay.remove();
+        }
+      }
+
+      // Reset video speed
+      try {
+        video.playbackRate = 1.0;
+      } catch (error) {
+        console.error('PlaybackSpeed: Error resetting playbackRate:', error);
+      }
+    });
+
+    // After removing speed buttons, reposition PIP and Duration to fill the gap
+    requestAnimationFrame(() => {
+      videoParents.forEach(videoParent => {
+        this.repositionDownstreamButtonsAfterRemoval(videoParent);
+      });
+    });
+
+    // Clear all videos set
+    this.allVideos.clear();
+
+    // Also reset any other videos on the page that might have modified speed
+    const allPageVideos = document.querySelectorAll('video');
+    allPageVideos.forEach(video => {
+      try {
+        if (video.playbackRate !== 1.0) {
+          video.playbackRate = 1.0;
+        }
+      } catch (error) {
+        // Ignore errors for videos that don't support playbackRate
+      }
+    });
+  }
+
+  repositionDownstreamButtonsAfterRemoval(videoParent) {
+    // When speed button is removed, reposition PIP and Duration to fill the gap
+    const pipButton = videoParent.querySelector('.insta-pip-button');
+    const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
+    const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
+
+    if (pipButton) {
+      // PIP should now position relative to fullscreen (since speed is gone)
+      if (fullscreenButton) {
+        const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
+        const fullscreenWidth = fullscreenButton.offsetWidth;
+        const gap = 8;
+        pipButton.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
+      } else {
+        pipButton.style.left = '12px';
+      }
+    }
+
+    if (durationOverlay) {
+      // Duration should reposition relative to PIP or fullscreen (since speed is gone)
+      if (pipButton) {
+        const pipLeft = parseInt(window.getComputedStyle(pipButton).left) || 12;
+        const pipWidth = pipButton.offsetWidth;
+        const gap = 8;
+        durationOverlay.style.left = `${pipLeft + pipWidth + gap}px`;
+      } else if (fullscreenButton) {
+        const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
+        const fullscreenWidth = fullscreenButton.offsetWidth;
+        const gap = 8;
+        durationOverlay.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
+      } else {
+        durationOverlay.style.left = '12px';
+      }
+    }
   }
 }
