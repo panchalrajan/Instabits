@@ -1,32 +1,49 @@
 /**
- * HideReels - Hides Reels navigation link and shows blocked screen
+ * HideReels - Hides Reels navigation link and optionally blocks reels page
  */
 class HideReels extends BaseDistraction {
   constructor() {
     super();
+    this.blockReelsScreen = true;
     this.blockedScreenId = 'instabits-reels-blocked-screen';
+    this.setupMessageListener();
   }
 
-  /**
-   * Check if Focus on Following feature is enabled
-   * @returns {Promise<boolean>}
-   */
+  async initialize() {
+    await this.loadSettings();
+    super.initialize();
+  }
+
+  async loadSettings() {
+    try {
+      const result = await chrome.storage.sync.get('pref_blockReelsScreen');
+      this.blockReelsScreen = result.pref_blockReelsScreen !== undefined ? result.pref_blockReelsScreen : true;
+    } catch (error) {
+      console.error('HideReels: Error loading settings:', error);
+    }
+  }
+
+  setupMessageListener() {
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.type === 'updateHideReelsSettings') {
+        if (message.blockReelsScreen !== undefined) {
+          this.blockReelsScreen = message.blockReelsScreen;
+        }
+      }
+    });
+  }
+
   async isForceFollowingEnabled() {
     try {
       const result = await chrome.storage.sync.get('instabits_feature_forceFollowing');
       return result.instabits_feature_forceFollowing === true;
     } catch (error) {
-      console.error('HideReels: Error checking forceFollowing state:', error);
       return false;
     }
   }
 
   async createBlockedScreen() {
-    // Check if Focus on Following is enabled
     const forceFollowingEnabled = await this.isForceFollowingEnabled();
-
-    // If Focus on Following is enabled, redirect to following feed
-    // Otherwise, redirect to homepage
     const buttonText = forceFollowingEnabled ? 'Go to Following Feed' : 'Go to Homepage';
     const buttonUrl = forceFollowingEnabled ? '/?variant=following' : '/';
 
@@ -49,27 +66,38 @@ class HideReels extends BaseDistraction {
   async hideDistraction() {
     const path = this.getCurrentPath();
 
-    // Hide Reels navigation link
     const reelsLinks = document.body?.querySelectorAll('a[href*="/reels/"]');
     this.hideElements(reelsLinks);
 
-    // Show blocked screen if on reels page
     if (path.includes('/reels')) {
-      // Hide main content
-      const mainContent = document.body?.querySelector('[role="main"]');
-      this.hideElements(mainContent);
+      if (this.blockReelsScreen) {
+        const mainContent = document.body?.querySelector('[role="main"]');
+        this.hideElements(mainContent);
 
-      // Show blocked screen if not already present
-      if (!document.getElementById(this.blockedScreenId)) {
-        const blockedScreen = await this.createBlockedScreen();
-        document.body.appendChild(blockedScreen);
+        if (!document.getElementById(this.blockedScreenId)) {
+          const blockedScreen = await this.createBlockedScreen();
+          document.body.appendChild(blockedScreen);
+        }
+      } else {
+        const existingScreen = document.getElementById(this.blockedScreenId);
+        if (existingScreen) {
+          existingScreen.remove();
+        }
       }
     } else {
-      // Remove blocked screen if not on reels page
       const existingScreen = document.getElementById(this.blockedScreenId);
       if (existingScreen) {
         existingScreen.remove();
       }
+    }
+  }
+
+  onCleanup() {
+    super.onCleanup();
+
+    const existingScreen = document.getElementById(this.blockedScreenId);
+    if (existingScreen) {
+      existingScreen.remove();
     }
   }
 }

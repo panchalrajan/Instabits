@@ -185,9 +185,13 @@ const FEATURES_DATA = [
             background: 'linear-gradient(135deg, #ef4444, #dc2626)'
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Reels navigation link and Reels screen for distraction-free browsing',
-        configButton: null,
-        disabled: true,
+        description: 'Hide Reels navigation link and optionally block Reels screen',
+        configButton: {
+            text: 'Configure',
+            page: 'hideReelsSettings',
+            icon: 'arrow'
+        },
+        disabled: false,
         toggleable: true,
         defaultEnabled: false
     },
@@ -219,9 +223,13 @@ const FEATURES_DATA = [
             background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Stories feed on home page and Stories screen',
-        configButton: null,
-        disabled: true,
+        description: 'Hide Stories feed on home page or completely',
+        configButton: {
+            text: 'Configure',
+            page: 'hideStoriesSettings',
+            icon: 'arrow'
+        },
+        disabled: false,
         toggleable: true,
         defaultEnabled: false
     },
