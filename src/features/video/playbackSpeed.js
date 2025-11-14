@@ -336,9 +336,11 @@ class PlaybackSpeed extends BaseFeature {
     return { button, overlay };
   }
 
-  cleanup() {
+  onCleanup() {
     // Remove all buttons and overlays from tracked videos
-    this.trackedVideos.forEach((trackedData, video) => {
+    // Use allVideos Set since WeakMap cannot be iterated
+    this.allVideos.forEach(video => {
+      const trackedData = this.getTrackedData(video);
       if (trackedData) {
         // Remove button
         if (trackedData.button && trackedData.button.parentNode) {
@@ -349,21 +351,27 @@ class PlaybackSpeed extends BaseFeature {
           trackedData.overlay.remove();
         }
       }
-    });
 
-    // Clear tracked videos
-    this.trackedVideos.clear();
-
-    // Clear all videos set
-    this.allVideos.clear();
-
-    // Reset speed to normal for all videos
-    const allVideos = document.querySelectorAll('video');
-    allVideos.forEach(video => {
+      // Reset video speed
       try {
         video.playbackRate = 1.0;
       } catch (error) {
         console.error('PlaybackSpeed: Error resetting playbackRate:', error);
+      }
+    });
+
+    // Clear all videos set
+    this.allVideos.clear();
+
+    // Also reset any other videos on the page that might have modified speed
+    const allPageVideos = document.querySelectorAll('video');
+    allPageVideos.forEach(video => {
+      try {
+        if (video.playbackRate !== 1.0) {
+          video.playbackRate = 1.0;
+        }
+      } catch (error) {
+        // Ignore errors for videos that don't support playbackRate
       }
     });
   }
