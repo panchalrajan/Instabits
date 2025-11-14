@@ -2,6 +2,8 @@ class HideDirectMessageSettings extends UIComponents.BaseSettingsPage {
     constructor() {
         super();
         this.blockDirectScreen = true;
+        this.hideFloatingButton = true;
+        this.disableMessageButton = false;
         this.init();
     }
 
@@ -15,29 +17,53 @@ class HideDirectMessageSettings extends UIComponents.BaseSettingsPage {
 
         console.log('Header rendered');
 
-        await this.loadBlockDirectScreenSetting();
-        this.renderBlockDirectScreenToggle();
+        await this.loadSettings();
+        this.renderToggles();
         this.setupCommonListeners();
 
         console.log('Init complete');
     }
 
-    async loadBlockDirectScreenSetting() {
+    async loadSettings() {
         try {
             this.blockDirectScreen = await storageService.getUserPreference('blockDirectScreen', true);
+            this.hideFloatingButton = await storageService.getUserPreference('hideFloatingButton', true);
+            this.disableMessageButton = await storageService.getUserPreference('disableMessageButton', false);
         } catch (error) {
-            console.error('Error loading block direct screen setting:', error);
+            console.error('Error loading hide direct messages settings:', error);
             this.blockDirectScreen = true;
+            this.hideFloatingButton = true;
+            this.disableMessageButton = false;
         }
     }
 
-    renderBlockDirectScreenToggle() {
-        const toggle = document.getElementById('blockDirectScreenToggle');
-        if (toggle) {
-            toggle.checked = this.blockDirectScreen;
-
-            toggle.addEventListener('change', async (e) => {
+    renderToggles() {
+        // Block Direct Screen Toggle
+        const blockScreenToggle = document.getElementById('blockDirectScreenToggle');
+        if (blockScreenToggle) {
+            blockScreenToggle.checked = this.blockDirectScreen;
+            blockScreenToggle.addEventListener('change', async (e) => {
                 this.blockDirectScreen = e.target.checked;
+                await this.saveSettings();
+            });
+        }
+
+        // Hide Floating Button Toggle
+        const floatingButtonToggle = document.getElementById('hideFloatingButtonToggle');
+        if (floatingButtonToggle) {
+            floatingButtonToggle.checked = this.hideFloatingButton;
+            floatingButtonToggle.addEventListener('change', async (e) => {
+                this.hideFloatingButton = e.target.checked;
+                await this.saveSettings();
+            });
+        }
+
+        // Disable Message Button Toggle
+        const messageButtonToggle = document.getElementById('disableMessageButtonToggle');
+        if (messageButtonToggle) {
+            messageButtonToggle.checked = this.disableMessageButton;
+            messageButtonToggle.addEventListener('change', async (e) => {
+                this.disableMessageButton = e.target.checked;
                 await this.saveSettings();
             });
         }
@@ -46,11 +72,15 @@ class HideDirectMessageSettings extends UIComponents.BaseSettingsPage {
     async saveSettings() {
         try {
             await storageService.setUserPreference('blockDirectScreen', this.blockDirectScreen);
+            await storageService.setUserPreference('hideFloatingButton', this.hideFloatingButton);
+            await storageService.setUserPreference('disableMessageButton', this.disableMessageButton);
 
-            this.showToast('Settings Saved', 'Block screen: ' + (this.blockDirectScreen ? 'Enabled' : 'Disabled'), 'success');
+            this.showToast('Settings Saved', 'Your preferences have been updated', 'success');
 
             await this.notifyContentScript('updateHideDirectMessageSettings', {
-                blockDirectScreen: this.blockDirectScreen
+                blockDirectScreen: this.blockDirectScreen,
+                hideFloatingButton: this.hideFloatingButton,
+                disableMessageButton: this.disableMessageButton
             });
         } catch (error) {
             console.error('Error saving hide direct messages settings:', error);

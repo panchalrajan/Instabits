@@ -5,6 +5,8 @@ class HideDirectMessage extends BaseDistraction {
   constructor() {
     super();
     this.blockDirectScreen = true;
+    this.hideFloatingButton = true;
+    this.disableMessageButton = false;
     this.blockedScreenId = 'instabits-direct-blocked-screen';
     this.setupMessageListener();
   }
@@ -17,6 +19,8 @@ class HideDirectMessage extends BaseDistraction {
   async loadSettings() {
     try {
       this.blockDirectScreen = await storageService.getUserPreference('blockDirectScreen', true);
+      this.hideFloatingButton = await storageService.getUserPreference('hideFloatingButton', true);
+      this.disableMessageButton = await storageService.getUserPreference('disableMessageButton', false);
     } catch (error) {
       console.error('HideDirectMessage: Error loading settings:', error);
     }
@@ -28,6 +32,14 @@ class HideDirectMessage extends BaseDistraction {
         if (message.blockDirectScreen !== undefined) {
           this.blockDirectScreen = message.blockDirectScreen;
         }
+        if (message.hideFloatingButton !== undefined) {
+          this.hideFloatingButton = message.hideFloatingButton;
+        }
+        if (message.disableMessageButton !== undefined) {
+          this.disableMessageButton = message.disableMessageButton;
+        }
+        // Re-run hideDistraction to apply new settings
+        this.hideDistraction();
       }
     });
   }
@@ -67,6 +79,32 @@ class HideDirectMessage extends BaseDistraction {
     const directLinks = document.body?.querySelectorAll('a[href="/direct/inbox/"]');
     this.hideElements(directLinks);
 
+    // Hide floating chat button
+    if (this.hideFloatingButton) {
+      const floatingButton = document.querySelector('[data-pagelet="IGDChatTabsRootContent"]');
+      if (floatingButton) {
+        floatingButton.style.display = "none";
+      }
+    } else {
+      const floatingButton = document.querySelector('[data-pagelet="IGDChatTabsRootContent"]');
+      if (floatingButton) {
+        floatingButton.style.display = "";
+      }
+    }
+
+    // Disable message button on profiles
+    if (this.disableMessageButton) {
+      const messageBtn = Array.from(document.querySelectorAll('[role="button"]'))
+        .find(el => el.textContent.trim() === "Message");
+
+      if (messageBtn) {
+        messageBtn.textContent = "Message Disabled by Instabits";
+        messageBtn.style.pointerEvents = "none";
+        messageBtn.style.opacity = "0.8";
+        messageBtn.style.cursor = "not-allowed";
+      }
+    }
+
     // Check if we're on the direct messages page
     if (path.includes('/direct')) {
       if (this.blockDirectScreen) {
@@ -97,6 +135,12 @@ class HideDirectMessage extends BaseDistraction {
     const existingScreen = document.getElementById(this.blockedScreenId);
     if (existingScreen) {
       existingScreen.remove();
+    }
+
+    // Restore floating button
+    const floatingButton = document.querySelector('[data-pagelet="IGDChatTabsRootContent"]');
+    if (floatingButton) {
+      floatingButton.style.display = "";
     }
   }
 }
