@@ -235,9 +235,7 @@ class PanicModeHandler {
      * Setup storage listener to detect panic mode changes from other pages
      */
     setupStorageListener() {
-        chrome.storage.onChanged.addListener((changes, areaName) => {
-            if (areaName !== 'sync') return;
-
+        storageService.addChangeListener((changes) => {
             if (changes.instabits_panic_mode) {
                 const newValue = changes.instabits_panic_mode.newValue === true;
                 const oldValue = this.isPanicMode;
