@@ -55,11 +55,7 @@ class PanicModeHandler {
             <div id="panicModeOverlay" class="panic-mode-overlay" style="display: none;">
                 <div class="panic-mode-content">
                     <div class="panic-mode-icon">
-                        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor">
-                            <circle cx="32" cy="32" r="28" stroke-width="3"/>
-                            <path d="M32 16v16" stroke-width="3" stroke-linecap="round"/>
-                            <circle cx="32" cy="44" r="2" fill="currentColor"/>
-                        </svg>
+                        ${IconLibrary.get('panic')}
                     </div>
                     <h2>Panic Mode Enabled</h2>
                     <p>The extension is temporarily disabled. All features remain unchanged and will be restored when you disable Panic Mode.</p>
