@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volume Control Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../../../tooltip.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <link rel="stylesheet" href="../settingsPage.css">
+</head>
+<body>
+    <div class="container">
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <div class="settings-section">
+                <h2 class="settings-section-title">Persistence Settings</h2>
+                <p class="settings-section-description">Choose what to remember across videos and browser sessions</p>
+
+                <div class="toggle-option" id="persistVolumeOption">
+                    <div class="toggle-option-content">
+                        <h3 class="toggle-option-title">Remember Volume Level</h3>
+                        <p class="toggle-option-description">Save volume slider position and apply it to all videos across tabs and sessions</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="persistVolumeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-divider"></div>
+
+                <div class="toggle-option" id="persistMuteStateOption">
+                    <div class="toggle-option-content">
+                        <h3 class="toggle-option-title">Remember Mute State</h3>
+                        <p class="toggle-option-description">Sync mute/unmute state across all tabs and remember it when you open Instagram again</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="persistMuteStateToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div class="settings-divider"></div>
+
+                <div class="info-box">
+                    <div class="info-icon" id="infoIcon"></div>
+                    <div class="info-content">
+                        <h3 class="info-title">How It Works</h3>
+                        <ul class="info-list">
+                            <li><strong>Remember Volume Level:</strong> When enabled, your volume slider position is saved and applied to all videos</li>
+                            <li><strong>Remember Mute State:</strong> When enabled, muting/unmuting in one tab instantly syncs to all other Instagram tabs</li>
+                            <li>If disabled, videos use Instagram's default volume (100%) and mute state</li>
+                            <li>Changes apply instantly without page refresh</li>
+                            <li>Perfect for maintaining consistent audio experience across all videos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../../src/core/utils/StorageService.js"></script>
+    <script src="../../../toast/toast.js"></script>
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../../../confirmDialog.js"></script>
+    <script src="../../../tooltip.js"></script>
+    <script src="../../../panicMode.js"></script>
+    <script src="volumeSliderSettings.js"></script>
+</body>
+</html>

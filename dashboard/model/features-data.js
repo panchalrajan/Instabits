@@ -42,7 +42,11 @@ const FEATURES_DATA = [
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Visual volume slider with persistent settings across videos',
-        configButton: null,
+        configButton: {
+            text: 'Configure',
+            page: 'volumeSliderSettings',
+            icon: 'arrow'
+        },
         disabled: false,
         toggleable: true,
         defaultEnabled: true
