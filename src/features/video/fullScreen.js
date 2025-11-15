@@ -1,6 +1,7 @@
 class FullScreen extends BaseFeature {
   constructor() {
     super();
+    this.fullscreenButtons = []; // Track all fullscreen buttons for cleanup
   }
 
   createFullScreenButton() {
@@ -57,6 +58,9 @@ class FullScreen extends BaseFeature {
 
     videoParent.appendChild(button);
 
+    // Track fullscreen button for cleanup
+    this.fullscreenButtons.push(button);
+
     this.addToTrackedVideos(video, { button });
 
     // Click handler
@@ -69,5 +73,42 @@ class FullScreen extends BaseFeature {
     this.setupCleanupObserver(video);
 
     return { button };
+  }
+
+  /**
+   * Override onCleanup to remove all fullscreen buttons and exit fullscreen when feature is disabled
+   */
+  async onCleanup() {
+    // Exit fullscreen mode if active
+    const fullscreenElement = document.fullscreenElement ||
+                             document.webkitFullscreenElement ||
+                             document.mozFullScreenElement ||
+                             document.msFullscreenElement;
+
+    if (fullscreenElement) {
+      try {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          await document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          await document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          await document.msExitFullscreen();
+        }
+      } catch (error) {
+        // Ignore errors when exiting fullscreen
+      }
+    }
+
+    // Remove all fullscreen buttons from DOM
+    this.fullscreenButtons.forEach(button => {
+      if (button && button.parentNode) {
+        button.parentNode.removeChild(button);
+      }
+    });
+
+    // Clear the array
+    this.fullscreenButtons = [];
   }
 }
