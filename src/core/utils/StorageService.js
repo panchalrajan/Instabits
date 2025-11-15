@@ -31,7 +31,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.get(key, (result) => {
           if (chrome.runtime.lastError) {
-            console.warn(`StorageService: Error getting ${key}:`, chrome.runtime.lastError);
+            console.warn(`StorageService: Error getting ${key}:`, chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(defaultValue);
             return;
           }
@@ -42,7 +42,7 @@ class StorageService {
         });
       });
     } catch (error) {
-      console.error(`StorageService: Error getting ${key}:`, error);
+      console.error(`StorageService: Error getting ${key}:`, error.message || error);
       return defaultValue;
     }
   }
@@ -58,7 +58,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.get(keys, (result) => {
           if (chrome.runtime.lastError) {
-            console.warn('StorageService: Error getting multiple keys:', chrome.runtime.lastError);
+            console.warn('StorageService: Error getting multiple keys:', chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(defaults);
             return;
           }
@@ -74,7 +74,7 @@ class StorageService {
         });
       });
     } catch (error) {
-      console.error('StorageService: Error getting multiple keys:', error);
+      console.error('StorageService: Error getting multiple keys:', error.message || error);
       return defaults;
     }
   }
@@ -90,7 +90,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.set({ [key]: value }, () => {
           if (chrome.runtime.lastError) {
-            console.warn(`StorageService: Error setting ${key}:`, chrome.runtime.lastError);
+            console.warn(`StorageService: Error setting ${key}:`, chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(false);
             return;
           }
@@ -100,7 +100,7 @@ class StorageService {
         });
       });
     } catch (error) {
-      console.error(`StorageService: Error setting ${key}:`, error);
+      console.error(`StorageService: Error setting ${key}:`, error.message || error);
       return false;
     }
   }
@@ -115,7 +115,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.set(items, () => {
           if (chrome.runtime.lastError) {
-            console.warn('StorageService: Error setting multiple items:', chrome.runtime.lastError);
+            console.warn('StorageService: Error setting multiple items:', chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(false);
             return;
           }
@@ -129,7 +129,7 @@ class StorageService {
         });
       });
     } catch (error) {
-      console.error('StorageService: Error setting multiple items:', error);
+      console.error('StorageService: Error setting multiple items:', error.message || error);
       return false;
     }
   }
@@ -144,7 +144,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.remove(key, () => {
           if (chrome.runtime.lastError) {
-            console.warn(`StorageService: Error removing ${key}:`, chrome.runtime.lastError);
+            console.warn(`StorageService: Error removing ${key}:`, chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(false);
             return;
           }
@@ -154,9 +154,19 @@ class StorageService {
         });
       });
     } catch (error) {
-      console.error(`StorageService: Error removing ${key}:`, error);
+      console.error(`StorageService: Error removing ${key}:`, error.message || error);
       return false;
     }
+  }
+
+  /**
+   * Remove a user preference
+   * @param {string} key - Preference key
+   * @returns {Promise<boolean>} Success status
+   */
+  async removeUserPreference(key) {
+    const prefKey = `instabits_user_preference_${key}`;
+    return await this.remove(prefKey);
   }
 
   /**
@@ -168,7 +178,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.clear(() => {
           if (chrome.runtime.lastError) {
-            console.warn('StorageService: Error clearing storage:', chrome.runtime.lastError);
+            console.warn('StorageService: Error clearing storage:', chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(false);
             return;
           }
@@ -178,7 +188,7 @@ class StorageService {
         });
       });
     } catch (error) {
-      console.error('StorageService: Error clearing storage:', error);
+      console.error('StorageService: Error clearing storage:', error.message || error);
       return false;
     }
   }
@@ -234,7 +244,7 @@ class StorageService {
     return new Promise((resolve) => {
       this.storage.get(null, (items) => {
         if (chrome.runtime.lastError) {
-          console.warn('StorageService: Error getting all feature states:', chrome.runtime.lastError);
+          console.warn('StorageService: Error getting all feature states:', chrome.runtime.lastError.message || chrome.runtime.lastError);
           resolve({});
           return;
         }
@@ -258,7 +268,7 @@ class StorageService {
    * @returns {Promise<*>} Preference value
    */
   async getUserPreference(key, defaultValue = null) {
-    const prefKey = `pref_${key}`;
+    const prefKey = `instabits_user_preference_${key}`;
     return await this.get(prefKey, defaultValue);
   }
 
@@ -269,7 +279,7 @@ class StorageService {
    * @returns {Promise<boolean>} Success status
    */
   async setUserPreference(key, value) {
-    const prefKey = `pref_${key}`;
+    const prefKey = `instabits_user_preference_${key}`;
     return await this.set(prefKey, value);
   }
 
