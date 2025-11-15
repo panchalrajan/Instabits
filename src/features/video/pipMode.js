@@ -6,6 +6,8 @@ class PIPMode extends BaseFeature {
   initialize() {
     this.currentPIPVideo = null;
     this.isInPIPMode = false;
+    this.pipButtons = []; // Track all PIP buttons for cleanup
+    this.observers = []; // Track all mutation observers for cleanup
     this.setupVideoSwitching();
   }
 
@@ -235,6 +237,9 @@ class PIPMode extends BaseFeature {
         attributeFilter: ['style']
       });
 
+      // Track observer for cleanup
+      this.observers.push(observer);
+
       // Cleanup when PIP button is removed
       const pipObserver = new MutationObserver(() => {
         if (!document.contains(pipButton)) {
@@ -247,6 +252,9 @@ class PIPMode extends BaseFeature {
         childList: true,
         subtree: true
       });
+
+      // Track observer for cleanup
+      this.observers.push(pipObserver);
     } else {
       // Fallback: Speed not found, try to position relative to duration
       const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
@@ -271,6 +279,9 @@ class PIPMode extends BaseFeature {
           attributeFilter: ['style']
         });
 
+        // Track observer for cleanup
+        this.observers.push(observer);
+
         const pipObserver = new MutationObserver(() => {
           if (!document.contains(pipButton)) {
             observer.disconnect();
@@ -282,6 +293,9 @@ class PIPMode extends BaseFeature {
           childList: true,
           subtree: true
         });
+
+        // Track observer for cleanup
+        this.observers.push(pipObserver);
       } else {
         // Fallback: Both speed and duration not found, try fullscreen
         const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
@@ -309,6 +323,9 @@ class PIPMode extends BaseFeature {
             attributeFilter: ['style']
           });
 
+          // Track observer for cleanup
+          this.observers.push(observer);
+
           const pipObserver = new MutationObserver(() => {
             if (!document.contains(pipButton)) {
               observer.disconnect();
@@ -320,6 +337,9 @@ class PIPMode extends BaseFeature {
             childList: true,
             subtree: true
           });
+
+          // Track observer for cleanup
+          this.observers.push(pipObserver);
         } else {
           // Fallback: None found - position at 12px from leading edge
           pipButton.style.left = '12px';
@@ -348,6 +368,9 @@ class PIPMode extends BaseFeature {
 
     const button = this.createPIPButton();
     videoParent.appendChild(button);
+
+    // Track PIP button for cleanup
+    this.pipButtons.push(button);
 
     // Position PIP button relative to speed button
     this.positionRelativeToSpeedButton(button, videoParent);
@@ -384,5 +407,43 @@ class PIPMode extends BaseFeature {
     this.setupCleanupObserver(video);
 
     return { button };
+  }
+
+  /**
+   * Override onCleanup to remove all PIP buttons and exit PIP when feature is disabled
+   */
+  async onCleanup() {
+    // Exit PIP mode if active
+    if (document.pictureInPictureElement) {
+      try {
+        await document.exitPictureInPicture();
+      } catch (error) {
+        // Ignore errors when exiting PIP
+      }
+    }
+
+    // Reset PIP state
+    this.currentPIPVideo = null;
+    this.isInPIPMode = false;
+
+    // Remove all PIP buttons from DOM
+    this.pipButtons.forEach(button => {
+      if (button && button.parentNode) {
+        button.parentNode.removeChild(button);
+      }
+    });
+
+    // Clear the array
+    this.pipButtons = [];
+
+    // Disconnect all mutation observers
+    this.observers.forEach(observer => {
+      if (observer) {
+        observer.disconnect();
+      }
+    });
+
+    // Clear observers array
+    this.observers = [];
   }
 }
