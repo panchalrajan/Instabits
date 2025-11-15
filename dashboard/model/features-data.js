@@ -34,14 +34,14 @@ const FEATURES_DATA = [
         id: 'volumeSlider',
         name: 'Volume Control',
         section: 'video',
-        searchName: 'volume control audio slider',
+        searchName: 'volume control audio slider mute unmute sound',
         icon: {
             name: 'volume',
             color: '#ffffff',
             background: 'linear-gradient(135deg, #10b981, #059669)'
         },
         badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Visual volume slider with persistent settings across videos',
+        description: 'Custom volume slider with auto-sync mute, independent volume & mute states',
         configButton: null,
         disabled: false,
         toggleable: true,

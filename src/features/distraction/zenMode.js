@@ -30,7 +30,8 @@ class ZenMode extends BaseFeature {
         .instabits-zen-hide-controls .insta-speed-button,
         .instabits-zen-hide-controls .insta-pip-button,
         .instabits-zen-hide-controls .insta-video-duration-overlay,
-        .instabits-zen-hide-controls .insta-fullscreen-button {
+        .instabits-zen-hide-controls .insta-fullscreen-button,
+        .instabits-zen-hide-controls .insta-volume-slider-container {
           opacity: 0 !important;
           pointer-events: none !important;
           transition: opacity 0.2s ease !important;
@@ -40,7 +41,8 @@ class ZenMode extends BaseFeature {
         .instabits-zen-show-controls .insta-speed-button,
         .instabits-zen-show-controls .insta-pip-button,
         .instabits-zen-show-controls .insta-video-duration-overlay,
-        .instabits-zen-show-controls .insta-fullscreen-button {
+        .instabits-zen-show-controls .insta-fullscreen-button,
+        .instabits-zen-show-controls .insta-volume-slider-container {
           opacity: 1 !important;
           pointer-events: auto !important;
           transition: opacity 0.2s ease !important;
