@@ -6,6 +6,8 @@ class HideReels extends BaseDistraction {
     super();
     this.blockReelsScreen = true;
     this.blockedScreenId = 'instabits-reels-blocked-screen';
+    this.hiddenReelsLinks = new Set();
+    this.hiddenMainContent = null;
     this.setupMessageListener();
   }
 
@@ -27,6 +29,8 @@ class HideReels extends BaseDistraction {
       if (message.type === 'updateHideReelsSettings') {
         if (message.blockReelsScreen !== undefined) {
           this.blockReelsScreen = message.blockReelsScreen;
+          // Immediately apply the changes without refresh
+          this.hideDistraction();
         }
       }
     });
@@ -64,28 +68,54 @@ class HideReels extends BaseDistraction {
   async hideDistraction() {
     const path = this.getCurrentPath();
 
+    // Hide reels navigation links and track them
     const reelsLinks = document.body?.querySelectorAll('a[href*="/reels/"]');
-    this.hideElements(reelsLinks);
+    if (reelsLinks && reelsLinks.length > 0) {
+      reelsLinks.forEach(link => {
+        if (link.style.display !== 'none') {
+          this.hiddenReelsLinks.add(link);
+          link.style.display = 'none';
+        }
+      });
+    }
 
     if (path.includes('/reels')) {
       if (this.blockReelsScreen) {
+        // Block reels screen is enabled - hide main content and show blocked screen
         const mainContent = document.body?.querySelector('[role="main"]');
-        this.hideElements(mainContent);
+        if (mainContent && mainContent.style.display !== 'none') {
+          this.hiddenMainContent = mainContent;
+          this.hideElements(mainContent);
+        }
 
         if (!document.getElementById(this.blockedScreenId)) {
           const blockedScreen = await this.createBlockedScreen();
           document.body.appendChild(blockedScreen);
         }
       } else {
+        // Block reels screen is disabled - remove blocked screen and restore main content
         const existingScreen = document.getElementById(this.blockedScreenId);
         if (existingScreen) {
           existingScreen.remove();
         }
+
+        // Restore main content
+        if (this.hiddenMainContent) {
+          this.showElements(this.hiddenMainContent);
+          this.hiddenMainContent = null;
+        }
       }
     } else {
+      // Not on reels page - remove blocked screen if it exists
       const existingScreen = document.getElementById(this.blockedScreenId);
       if (existingScreen) {
         existingScreen.remove();
+      }
+
+      // Restore main content if it was hidden
+      if (this.hiddenMainContent) {
+        this.showElements(this.hiddenMainContent);
+        this.hiddenMainContent = null;
       }
     }
   }
@@ -93,9 +123,26 @@ class HideReels extends BaseDistraction {
   onCleanup() {
     super.onCleanup();
 
+    // Remove blocked screen
     const existingScreen = document.getElementById(this.blockedScreenId);
     if (existingScreen) {
       existingScreen.remove();
+    }
+
+    // Restore all hidden reels links
+    if (this.hiddenReelsLinks.size > 0) {
+      this.hiddenReelsLinks.forEach(link => {
+        if (link && link.style) {
+          link.style.display = '';
+        }
+      });
+      this.hiddenReelsLinks.clear();
+    }
+
+    // Restore main content if it was hidden
+    if (this.hiddenMainContent) {
+      this.showElements(this.hiddenMainContent);
+      this.hiddenMainContent = null;
     }
   }
 }
