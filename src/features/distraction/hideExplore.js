@@ -9,6 +9,10 @@ class HideExplore extends BaseDistraction {
     this.hiddenMainContent = null;
   }
 
+  async initialize() {
+    super.initialize();
+  }
+
   /**
    * Check if Focus on Following feature is enabled
    * @returns {Promise<boolean>}
