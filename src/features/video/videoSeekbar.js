@@ -3,6 +3,7 @@ class VideoSeekbar extends BaseFeature {
     super();
     this.progressColor = '#0095f6'; // Default color
     this.styleElementId = 'instabits-seekbar-style';
+    this.seekbarElements = []; // Track all seekbar elements for cleanup
     this.initializeColor();
     this.setupMessageListener();
   }
@@ -20,7 +21,7 @@ class VideoSeekbar extends BaseFeature {
     // Listen for color updates from settings page
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.type === 'updateSeekbarColor') {
-        this.progressColor = message.color;
+        this.progressColor = message.seekbarProgressColor;
         this.injectColorStyles();
       }
     });
@@ -83,6 +84,9 @@ class VideoSeekbar extends BaseFeature {
 
     videoParent.appendChild(seekbarContainer);
 
+    // Track seekbar element for cleanup
+    this.seekbarElements.push(seekbarContainer);
+
     let animationFrameId = null;
     const smoothUpdate = () => {
       if (video.duration > 0) {
@@ -139,5 +143,26 @@ class VideoSeekbar extends BaseFeature {
     });
 
     return { seekbarContainer, progressBar };
+  }
+
+  /**
+   * Override onCleanup to remove all seekbar elements when feature is disabled
+   */
+  onCleanup() {
+    // Remove all seekbar elements from DOM
+    this.seekbarElements.forEach(element => {
+      if (element && element.parentNode) {
+        element.parentNode.removeChild(element);
+      }
+    });
+
+    // Clear the array
+    this.seekbarElements = [];
+
+    // Remove style element
+    const styleElement = document.getElementById(this.styleElementId);
+    if (styleElement && styleElement.parentNode) {
+      styleElement.parentNode.removeChild(styleElement);
+    }
   }
 }
