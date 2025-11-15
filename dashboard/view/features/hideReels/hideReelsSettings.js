@@ -1,4 +1,4 @@
-class HideReelsSettings extends UIComponents.BaseSettingsPage {
+class HideReelsSettings extends BaseSettingsPage {
     constructor() {
         super();
         this.blockReelsScreen = true;
@@ -15,47 +15,30 @@ class HideReelsSettings extends UIComponents.BaseSettingsPage {
 
         console.log('Header rendered');
 
-        await this.loadBlockReelsScreenSetting();
-        this.renderBlockReelsScreenToggle();
+        await this.loadSettings();
+        this.renderUI();
         this.setupCommonListeners();
 
         console.log('Init complete');
     }
 
-    async loadBlockReelsScreenSetting() {
-        try {
-            this.blockReelsScreen = await storageService.getUserPreference('blockReelsScreen', true);
-        } catch (error) {
-            console.error('Error loading block reels screen setting:', error);
-            this.blockReelsScreen = true;
-        }
+    async loadSettings() {
+        this.blockReelsScreen = await this.loadSetting('blockReelsScreen', true);
     }
 
-    renderBlockReelsScreenToggle() {
-        const toggle = document.getElementById('blockReelsScreenToggle');
-        if (toggle) {
-            toggle.checked = this.blockReelsScreen;
-
-            toggle.addEventListener('change', async (e) => {
-                this.blockReelsScreen = e.target.checked;
-                await this.saveSettings();
-            });
-        }
+    renderUI() {
+        this.renderToggle('blockReelsScreenToggle', this.blockReelsScreen, async (checked) => {
+            this.blockReelsScreen = checked;
+            await this.saveSettings();
+        });
     }
 
     async saveSettings() {
-        try {
-            await storageService.setUserPreference('blockReelsScreen', this.blockReelsScreen);
-
-            this.showToast('Settings Saved', 'Block screen: ' + (this.blockReelsScreen ? 'Enabled' : 'Disabled'), 'success');
-
-            await this.notifyContentScript('updateHideReelsSettings', {
-                blockReelsScreen: this.blockReelsScreen
-            });
-        } catch (error) {
-            console.error('Error saving hide reels settings:', error);
-            this.showToast('Error', 'Failed to save settings', 'error');
-        }
+        await this.saveAndNotify(
+            { blockReelsScreen: this.blockReelsScreen },
+            'updateHideReelsSettings',
+            'Block screen: ' + (this.blockReelsScreen ? 'Enabled' : 'Disabled')
+        );
     }
 }
 

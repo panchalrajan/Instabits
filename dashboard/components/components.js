@@ -254,62 +254,6 @@ class UIComponents {
 
     // ========== SETTINGS PAGE COMPONENTS ==========
 
-    /**
-     * Base Settings Page Class
-     */
-    static BaseSettingsPage = class {
-        constructor() {
-            this.toastManager = new Toast('toast');
-        }
-
-        renderHeader(config) {
-            try {
-                const { title, subtitle, backUrl = '../../index.html' } = config;
-                const headerContainer = document.getElementById('headerContainer');
-                if (headerContainer) {
-                    headerContainer.innerHTML = UIComponents.header({
-                        icon: null,
-                        title,
-                        subtitle,
-                        buttons: null,
-                        showBackButton: true,
-                        backButtonUrl: backUrl
-                    });
-                }
-            } catch (error) {
-                console.error('[InstaBits Settings] Error rendering header:', error);
-            }
-        }
-
-        setupCommonListeners() {
-            const backBtn = document.getElementById('backBtn');
-            if (backBtn) {
-                backBtn.addEventListener('click', () => {
-                    const backUrl = backBtn.getAttribute('data-back-url') || '../../index.html';
-                    window.location.href = backUrl;
-                });
-            }
-        }
-
-        showToast(title, message, type = 'success') {
-            this.toastManager.show(title, message, type);
-        }
-
-        async notifyContentScript(messageType, data) {
-            try {
-                const tabs = await chrome.tabs.query({ url: '*://*.instagram.com/*' });
-                tabs.forEach(tab => {
-                    chrome.tabs.sendMessage(tab.id, {
-                        type: messageType,
-                        ...data
-                    }).catch(() => {});
-                });
-            } catch (error) {
-                console.log('Could not notify content script:', error);
-            }
-        }
-    };
-
     static settingsSection(config) {
         const { title, description, content, className = '' } = config;
         return `

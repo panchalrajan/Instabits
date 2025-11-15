@@ -1,4 +1,4 @@
-class HideDirectMessageSettings extends UIComponents.BaseSettingsPage {
+class HideDirectMessageSettings extends BaseSettingsPage {
     constructor() {
         super();
         this.blockDirectScreen = true;
@@ -18,74 +18,48 @@ class HideDirectMessageSettings extends UIComponents.BaseSettingsPage {
         console.log('Header rendered');
 
         await this.loadSettings();
-        this.renderToggles();
+        this.renderUI();
         this.setupCommonListeners();
 
         console.log('Init complete');
     }
 
     async loadSettings() {
-        try {
-            this.blockDirectScreen = await storageService.getUserPreference('blockDirectScreen', true);
-            this.hideFloatingButton = await storageService.getUserPreference('hideFloatingButton', true);
-            this.disableMessageButton = await storageService.getUserPreference('disableMessageButton', false);
-        } catch (error) {
-            console.error('Error loading hide direct messages settings:', error);
-            this.blockDirectScreen = true;
-            this.hideFloatingButton = true;
-            this.disableMessageButton = false;
-        }
+        this.blockDirectScreen = await this.loadSetting('blockDirectScreen', true);
+        this.hideFloatingButton = await this.loadSetting('hideFloatingButton', true);
+        this.disableMessageButton = await this.loadSetting('disableMessageButton', false);
     }
 
-    renderToggles() {
+    renderUI() {
         // Block Direct Screen Toggle
-        const blockScreenToggle = document.getElementById('blockDirectScreenToggle');
-        if (blockScreenToggle) {
-            blockScreenToggle.checked = this.blockDirectScreen;
-            blockScreenToggle.addEventListener('change', async (e) => {
-                this.blockDirectScreen = e.target.checked;
-                await this.saveSettings();
-            });
-        }
+        this.renderToggle('blockDirectScreenToggle', this.blockDirectScreen, async (checked) => {
+            this.blockDirectScreen = checked;
+            await this.saveSettings();
+        });
 
         // Hide Floating Button Toggle
-        const floatingButtonToggle = document.getElementById('hideFloatingButtonToggle');
-        if (floatingButtonToggle) {
-            floatingButtonToggle.checked = this.hideFloatingButton;
-            floatingButtonToggle.addEventListener('change', async (e) => {
-                this.hideFloatingButton = e.target.checked;
-                await this.saveSettings();
-            });
-        }
+        this.renderToggle('hideFloatingButtonToggle', this.hideFloatingButton, async (checked) => {
+            this.hideFloatingButton = checked;
+            await this.saveSettings();
+        });
 
         // Disable Message Button Toggle
-        const messageButtonToggle = document.getElementById('disableMessageButtonToggle');
-        if (messageButtonToggle) {
-            messageButtonToggle.checked = this.disableMessageButton;
-            messageButtonToggle.addEventListener('change', async (e) => {
-                this.disableMessageButton = e.target.checked;
-                await this.saveSettings();
-            });
-        }
+        this.renderToggle('disableMessageButtonToggle', this.disableMessageButton, async (checked) => {
+            this.disableMessageButton = checked;
+            await this.saveSettings();
+        });
     }
 
     async saveSettings() {
-        try {
-            await storageService.setUserPreference('blockDirectScreen', this.blockDirectScreen);
-            await storageService.setUserPreference('hideFloatingButton', this.hideFloatingButton);
-            await storageService.setUserPreference('disableMessageButton', this.disableMessageButton);
-
-            this.showToast('Settings Saved', 'Your preferences have been updated', 'success');
-
-            await this.notifyContentScript('updateHideDirectMessageSettings', {
+        await this.saveAndNotify(
+            {
                 blockDirectScreen: this.blockDirectScreen,
                 hideFloatingButton: this.hideFloatingButton,
                 disableMessageButton: this.disableMessageButton
-            });
-        } catch (error) {
-            console.error('Error saving hide direct messages settings:', error);
-            this.showToast('Error', 'Failed to save settings', 'error');
-        }
+            },
+            'updateHideDirectMessageSettings',
+            'Your preferences have been updated'
+        );
     }
 }
 

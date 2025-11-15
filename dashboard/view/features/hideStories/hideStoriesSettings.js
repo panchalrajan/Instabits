@@ -1,11 +1,10 @@
-class HideStoriesSettings extends UIComponents.BaseSettingsPage {
+class HideStoriesSettings extends BaseSettingsPage {
     constructor() {
         super();
 
         // Settings modes
         this.modes = ['selective', 'all'];
         this.selectedMode = 'selective'; // default mode
-        this.defaultMode = 'selective';
         this.blockStoriesScreen = false; // default: don't block stories screen
 
         this.init();
@@ -19,47 +18,34 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
         });
 
         // Load saved preferences
-        await this.loadSavedMode();
-        await this.loadBlockStoriesScreenSetting();
+        await this.loadSettings();
 
         // Setup UI
-        this.renderModeOptions();
-        this.renderBlockStoriesScreenToggle();
+        this.renderUI();
 
         // Setup event listeners
-        this.setupEventListeners();
+        this.setupCommonListeners();
     }
 
-    async loadSavedMode() {
-        try {
-            this.selectedMode = await storageService.getUserPreference('hideStoriesMode', this.defaultMode);
-            console.log('Loaded hide stories mode:', this.selectedMode);
-        } catch (error) {
-            console.error('Error loading hide stories mode:', error);
-            this.selectedMode = this.defaultMode;
-        }
+    async loadSettings() {
+        this.selectedMode = await this.loadSetting('hideStoriesMode', 'selective');
+        this.blockStoriesScreen = await this.loadSetting('blockStoriesScreen', false);
+
+        console.log('Loaded settings:', {
+            mode: this.selectedMode,
+            blockStoriesScreen: this.blockStoriesScreen
+        });
     }
 
-    async loadBlockStoriesScreenSetting() {
-        try {
-            this.blockStoriesScreen = await storageService.getUserPreference('blockStoriesScreen', false);
-            console.log('Loaded block stories screen setting:', this.blockStoriesScreen);
-        } catch (error) {
-            console.error('Error loading block stories screen setting:', error);
-            this.blockStoriesScreen = false;
-        }
-    }
+    renderUI() {
+        // Render block screen toggle
+        this.renderToggle('blockStoriesScreenToggle', this.blockStoriesScreen, async (checked) => {
+            this.blockStoriesScreen = checked;
+            await this.saveSettings();
+        });
 
-    renderBlockStoriesScreenToggle() {
-        const toggle = document.getElementById('blockStoriesScreenToggle');
-        if (toggle) {
-            toggle.checked = this.blockStoriesScreen;
-
-            toggle.addEventListener('change', async (e) => {
-                this.blockStoriesScreen = e.target.checked;
-                await this.saveSettings();
-            });
-        }
+        // Render mode options
+        this.renderModeOptions();
     }
 
     renderModeOptions() {
@@ -102,34 +88,16 @@ class HideStoriesSettings extends UIComponents.BaseSettingsPage {
     }
 
     async saveSettings() {
-        try {
-            await storageService.setUserPreference('hideStoriesMode', this.selectedMode);
-            await storageService.setUserPreference('blockStoriesScreen', this.blockStoriesScreen);
+        const modeText = this.selectedMode === 'all' ? 'Hide All Stories' : 'Selective Hide';
 
-            console.log('Hide stories settings saved:', {
-                mode: this.selectedMode,
+        await this.saveAndNotify(
+            {
+                hideStoriesMode: this.selectedMode,
                 blockStoriesScreen: this.blockStoriesScreen
-            });
-
-            // Show success toast
-            const modeText = this.selectedMode === 'all' ? 'Hide All Stories' : 'Selective Hide';
-            this.showToast('Settings Saved', `Mode: ${modeText}`, 'success');
-
-            // Notify content scripts to update
-            await this.notifyContentScript('updateHideStoriesSettings', {
-                mode: this.selectedMode,
-                blockStoriesScreen: this.blockStoriesScreen
-            });
-
-        } catch (error) {
-            console.error('Error saving hide stories settings:', error);
-            this.showToast('Error', 'Failed to save settings', 'error');
-        }
-    }
-
-    setupEventListeners() {
-        // Setup common listeners (back button, etc.)
-        this.setupCommonListeners();
+            },
+            'updateHideStoriesSettings',
+            `Mode: ${modeText}`
+        );
     }
 }
 

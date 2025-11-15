@@ -1,5 +1,5 @@
 // Seekbar Settings Page
-class SeekbarSettings extends UIComponents.BaseSettingsPage {
+class SeekbarSettings extends BaseSettingsPage {
     constructor() {
         super();
 
@@ -27,7 +27,6 @@ class SeekbarSettings extends UIComponents.BaseSettingsPage {
         ];
 
         this.selectedColor = '#0095f6'; // Default Instagram blue
-        this.defaultColor = '#0095f6';
 
         this.init();
     }
@@ -40,25 +39,22 @@ class SeekbarSettings extends UIComponents.BaseSettingsPage {
         });
 
         // Load saved color preference
-        await this.loadSavedColor();
+        await this.loadSettings();
 
-        // Render color options
-        this.renderColorGrid();
-
-        // Update preview
-        this.updatePreview();
+        // Render UI
+        this.renderUI();
 
         // Setup event listeners
-        this.setupEventListeners();
+        this.setupCommonListeners();
     }
 
-    async loadSavedColor() {
-        try {
-            this.selectedColor = await storageService.getUserPreference('seekbarProgressColor', this.defaultColor);
-        } catch (error) {
-            console.error('Error loading saved color:', error);
-            this.selectedColor = this.defaultColor;
-        }
+    async loadSettings() {
+        this.selectedColor = await this.loadSetting('seekbarProgressColor', '#0095f6');
+    }
+
+    renderUI() {
+        this.renderColorGrid();
+        this.updatePreview();
     }
 
     renderColorGrid() {
@@ -112,28 +108,12 @@ class SeekbarSettings extends UIComponents.BaseSettingsPage {
         }
     }
 
-    setupEventListeners() {
-        // Setup common listeners (back button) from base class
-        this.setupCommonListeners();
-    }
-
     async saveSettings() {
-        try {
-            // Save to storage
-            await storageService.setUserPreference('seekbarProgressColor', this.selectedColor);
-
-            // Show success message using base class method
-            this.showToast('Saved', 'Color updated', 'success');
-
-            // Notify content script using base class method
-            await this.notifyContentScript('updateSeekbarColor', {
-                color: this.selectedColor
-            });
-
-        } catch (error) {
-            console.error('Error saving settings:', error);
-            this.showToast('Error', 'Failed to save', 'error');
-        }
+        await this.saveAndNotify(
+            { seekbarProgressColor: this.selectedColor },
+            'updateSeekbarColor',
+            'Color updated'
+        );
     }
 }
 
