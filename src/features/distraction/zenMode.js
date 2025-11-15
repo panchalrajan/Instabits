@@ -41,8 +41,7 @@ class ZenMode extends BaseFeature {
         .instabits-zen-show-controls .insta-speed-button,
         .instabits-zen-show-controls .insta-pip-button,
         .instabits-zen-show-controls .insta-video-duration-overlay,
-        .instabits-zen-show-controls .insta-fullscreen-button,
-        .instabits-zen-show-controls .insta-volume-slider-container {
+        .instabits-zen-show-controls .insta-fullscreen-button {
           opacity: 1 !important;
           pointer-events: auto !important;
           transition: opacity 0.2s ease !important;
