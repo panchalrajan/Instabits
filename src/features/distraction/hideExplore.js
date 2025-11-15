@@ -71,4 +71,14 @@ class HideExplore extends BaseDistraction {
       }
     }
   }
+
+  onCleanup() {
+    super.onCleanup();
+
+    // Remove blocker screen if present
+    const existingScreen = document.getElementById(this.blockedScreenId);
+    if (existingScreen) {
+      existingScreen.remove();
+    }
+  }
 }

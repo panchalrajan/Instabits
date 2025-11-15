@@ -8,6 +8,7 @@ class HideDirectMessage extends BaseDistraction {
     this.hideFloatingButton = true;
     this.disableMessageButton = false;
     this.blockedScreenId = 'instabits-direct-blocked-screen';
+    this.modifiedMessageButtons = new Map(); // Track modified message buttons and their original state
     this.setupMessageListener();
   }
 
@@ -97,7 +98,16 @@ class HideDirectMessage extends BaseDistraction {
       const messageBtn = Array.from(document.querySelectorAll('[role="button"]'))
         .find(el => el.textContent.trim() === "Message");
 
-      if (messageBtn) {
+      if (messageBtn && !this.modifiedMessageButtons.has(messageBtn)) {
+        // Store original state
+        this.modifiedMessageButtons.set(messageBtn, {
+          textContent: messageBtn.textContent,
+          pointerEvents: messageBtn.style.pointerEvents,
+          opacity: messageBtn.style.opacity,
+          cursor: messageBtn.style.cursor
+        });
+
+        // Modify button
         messageBtn.textContent = "Message Disabled by Instabits";
         messageBtn.style.pointerEvents = "none";
         messageBtn.style.opacity = "0.8";
@@ -142,5 +152,18 @@ class HideDirectMessage extends BaseDistraction {
     if (floatingButton) {
       floatingButton.style.display = "";
     }
+
+    // Restore all modified message buttons
+    this.modifiedMessageButtons.forEach((originalState, button) => {
+      if (button && document.contains(button)) {
+        button.textContent = originalState.textContent;
+        button.style.pointerEvents = originalState.pointerEvents;
+        button.style.opacity = originalState.opacity;
+        button.style.cursor = originalState.cursor;
+      }
+    });
+
+    // Clear the map
+    this.modifiedMessageButtons.clear();
   }
 }

@@ -6,6 +6,7 @@ class BaseDistraction extends BaseFeature {
   constructor() {
     super();
     this.observer = null;
+    this.hiddenElements = new Set(); // Track all hidden elements for restoration
   }
 
   /**
@@ -19,12 +20,18 @@ class BaseDistraction extends BaseFeature {
 
     try {
       if (elements instanceof Node) {
-        elements.style.display = 'none';
+        if (elements.style.display !== 'none') {
+          elements.style.display = 'none';
+          this.hiddenElements.add(elements);
+        }
       } else if (elements instanceof NodeList || Array.isArray(elements)) {
         elements.forEach((element) => {
           if (element) {
             try {
-              element.style.display = 'none';
+              if (element.style.display !== 'none') {
+                element.style.display = 'none';
+                this.hiddenElements.add(element);
+              }
             } catch (error) {
               console.error(`${this.featureName}: Error hiding element:`, error);
             }
@@ -209,9 +216,24 @@ class BaseDistraction extends BaseFeature {
    * Cleanup when feature is disabled
    */
   onCleanup() {
+    // Disconnect observer first
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
     }
+
+    // Restore all hidden elements
+    this.hiddenElements.forEach(element => {
+      if (element && element.style) {
+        try {
+          element.style.display = '';
+        } catch (error) {
+          // Element might have been removed from DOM
+        }
+      }
+    });
+
+    // Clear the set
+    this.hiddenElements.clear();
   }
 }

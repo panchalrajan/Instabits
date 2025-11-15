@@ -7,6 +7,7 @@ class HideStories extends BaseDistraction {
     this.mode = 'selective';
     this.blockStoriesScreen = false;
     this.blockedScreenId = 'instabits-stories-blocked-screen';
+    this.modifiedStoryRings = new Map(); // Track modified story rings and their original state
     this.setupMessageListener();
   }
 
@@ -42,7 +43,16 @@ class HideStories extends BaseDistraction {
       const canvas = btn.querySelector('canvas');
       const profileImg = btn.querySelector('img[alt*="profile picture"]');
 
-      if (canvas && profileImg) {
+      if (canvas && profileImg && !this.modifiedStoryRings.has(btn)) {
+        // Store original state
+        this.modifiedStoryRings.set(btn, {
+          canvasDisplay: canvas.style.display,
+          pointerEvents: btn.style.pointerEvents,
+          cursor: btn.style.cursor,
+          canvas: canvas
+        });
+
+        // Modify elements
         canvas.style.display = 'none';
         btn.style.pointerEvents = 'none';
         btn.style.cursor = 'default';
@@ -122,5 +132,19 @@ class HideStories extends BaseDistraction {
     if (existingScreen) {
       existingScreen.remove();
     }
+
+    // Restore all modified story rings
+    this.modifiedStoryRings.forEach((originalState, btn) => {
+      if (btn && document.contains(btn)) {
+        if (originalState.canvas && document.contains(originalState.canvas)) {
+          originalState.canvas.style.display = originalState.canvasDisplay;
+        }
+        btn.style.pointerEvents = originalState.pointerEvents;
+        btn.style.cursor = originalState.cursor;
+      }
+    });
+
+    // Clear the map
+    this.modifiedStoryRings.clear();
   }
 }
