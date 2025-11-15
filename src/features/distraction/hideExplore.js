@@ -54,6 +54,11 @@ class HideExplore extends BaseDistraction {
   async hideDistraction() {
     const path = this.getCurrentPath();
 
+    // Ensure Set is initialized (safety check)
+    if (!this.hiddenExploreLinks) {
+      this.hiddenExploreLinks = new Set();
+    }
+
     // Hide Explore navigation links and track them
     const exploreLinks = document.body?.querySelectorAll('a[href*="/explore/"]');
     if (exploreLinks && exploreLinks.length > 0) {
@@ -104,7 +109,7 @@ class HideExplore extends BaseDistraction {
     }
 
     // Restore all hidden explore links
-    if (this.hiddenExploreLinks.size > 0) {
+    if (this.hiddenExploreLinks && this.hiddenExploreLinks.size > 0) {
       this.hiddenExploreLinks.forEach(link => {
         if (link && link.style) {
           link.style.display = '';

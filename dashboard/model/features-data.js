@@ -225,7 +225,7 @@ const FEATURES_DATA = [
         badge: { text: 'New', color: BADGE_COLORS.green },
         description: 'Hide Explore navigation link and Explore screen to reduce distractions',
         configButton: null,
-        disabled: false,
+        disabled: true,
         toggleable: true,
         defaultEnabled: false
     },
