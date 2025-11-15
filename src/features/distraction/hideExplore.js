@@ -5,6 +5,8 @@ class HideExplore extends BaseDistraction {
   constructor() {
     super();
     this.blockedScreenId = 'instabits-explore-blocked-screen';
+    this.hiddenExploreLinks = new Set();
+    this.hiddenMainContent = null;
   }
 
   /**
@@ -48,15 +50,25 @@ class HideExplore extends BaseDistraction {
   async hideDistraction() {
     const path = this.getCurrentPath();
 
-    // Hide Explore navigation link
+    // Hide Explore navigation links and track them
     const exploreLinks = document.body?.querySelectorAll('a[href*="/explore/"]');
-    this.hideElements(exploreLinks);
+    if (exploreLinks && exploreLinks.length > 0) {
+      exploreLinks.forEach(link => {
+        if (link.style.display !== 'none') {
+          this.hiddenExploreLinks.add(link);
+          link.style.display = 'none';
+        }
+      });
+    }
 
     // Show blocked screen if on explore page
     if (path.includes('/explore')) {
-      // Hide main content
+      // Hide main content and track it
       const mainContent = document.body?.querySelector('[role="main"]');
-      this.hideElements(mainContent);
+      if (mainContent && mainContent.style.display !== 'none') {
+        this.hiddenMainContent = mainContent;
+        this.hideElements(mainContent);
+      }
 
       // Show blocked screen if not already present
       if (!document.getElementById(this.blockedScreenId)) {
@@ -69,6 +81,38 @@ class HideExplore extends BaseDistraction {
       if (existingScreen) {
         existingScreen.remove();
       }
+
+      // Restore main content if it was hidden
+      if (this.hiddenMainContent) {
+        this.showElements(this.hiddenMainContent);
+        this.hiddenMainContent = null;
+      }
+    }
+  }
+
+  onCleanup() {
+    super.onCleanup();
+
+    // Remove blocked screen
+    const existingScreen = document.getElementById(this.blockedScreenId);
+    if (existingScreen) {
+      existingScreen.remove();
+    }
+
+    // Restore all hidden explore links
+    if (this.hiddenExploreLinks.size > 0) {
+      this.hiddenExploreLinks.forEach(link => {
+        if (link && link.style) {
+          link.style.display = '';
+        }
+      });
+      this.hiddenExploreLinks.clear();
+    }
+
+    // Restore main content if it was hidden
+    if (this.hiddenMainContent) {
+      this.showElements(this.hiddenMainContent);
+      this.hiddenMainContent = null;
     }
   }
 }
