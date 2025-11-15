@@ -3,7 +3,6 @@ class VideoDuration extends BaseFeature {
     super();
     this.durationElements = []; // Track all duration overlays for cleanup
     this.eventListeners = new WeakMap(); // Track event listeners per video
-    this.observers = []; // Track all mutation observers for cleanup
   }
 
   formatTime(seconds) {
@@ -48,10 +47,8 @@ class VideoDuration extends BaseFeature {
 
     const timeDisplay = this.createDurationOverlay();
 
-    // Position relative to PIP button
-    this.positionRelativeToPIP(timeDisplay, videoParent);
-
-    videoParent.appendChild(timeDisplay);
+    // Register with VideoControlsManager for unified layout
+    videoControlsManager.registerElement(video, 'videoDuration', timeDisplay);
 
     // Track duration element for cleanup
     this.durationElements.push(timeDisplay);
@@ -82,151 +79,12 @@ class VideoDuration extends BaseFeature {
         video.removeEventListener('durationchange', videoListeners.durationchange);
         this.eventListeners.delete(video);
       }
+      videoControlsManager.unregisterElement(video, 'videoDuration');
     });
 
     return timeDisplay;
   }
 
-  positionRelativeToPIP(timeDisplay, videoParent) {
-    // Find PIP button in the same parent
-    const pipButton = videoParent.querySelector('.insta-pip-button');
-
-    if (pipButton) {
-      const updatePosition = () => {
-        requestAnimationFrame(() => {
-          const pipLeft = parseInt(window.getComputedStyle(pipButton).left) || 12;
-          const pipWidth = pipButton.offsetWidth;
-          const gap = 8; // 8px gap
-
-          // Position duration 8px to the right of PIP button
-          timeDisplay.style.top = '12px';
-          timeDisplay.style.left = `${pipLeft + pipWidth + gap}px`;
-        });
-      };
-
-      // Initial position
-      updatePosition();
-
-      // Watch for PIP button changes
-      const observer = new MutationObserver(updatePosition);
-      observer.observe(pipButton, {
-        attributes: true,
-        attributeFilter: ['style']
-      });
-
-      // Track observer for cleanup
-      this.observers.push(observer);
-
-      // Cleanup when duration is removed
-      const durationObserver = new MutationObserver(() => {
-        if (!document.contains(timeDisplay)) {
-          observer.disconnect();
-          durationObserver.disconnect();
-        }
-      });
-
-      durationObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-
-      // Track observer for cleanup
-      this.observers.push(durationObserver);
-    } else {
-      // Fallback: PIP not found, try speed button
-      const speedButton = videoParent.querySelector('.insta-speed-button');
-
-      if (speedButton) {
-        const updatePosition = () => {
-          requestAnimationFrame(() => {
-            const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
-            const speedWidth = speedButton.offsetWidth;
-            const gap = 8;
-
-            // Position duration 8px to the right of speed button
-            timeDisplay.style.top = '12px';
-            timeDisplay.style.left = `${speedLeft + speedWidth + gap}px`;
-          });
-        };
-
-        updatePosition();
-
-        const observer = new MutationObserver(updatePosition);
-        observer.observe(speedButton, {
-          childList: true,
-          characterData: true,
-          subtree: true,
-          attributes: true,
-          attributeFilter: ['style']
-        });
-
-        // Track observer for cleanup
-        this.observers.push(observer);
-
-        const durationObserver = new MutationObserver(() => {
-          if (!document.contains(timeDisplay)) {
-            observer.disconnect();
-            durationObserver.disconnect();
-          }
-        });
-
-        durationObserver.observe(document.body, {
-          childList: true,
-          subtree: true
-        });
-
-        // Track observer for cleanup
-        this.observers.push(durationObserver);
-      } else {
-        // Fallback: Both PIP and speed not found, try fullscreen
-        const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
-
-        if (fullscreenButton) {
-          const updatePosition = () => {
-            requestAnimationFrame(() => {
-              const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
-              const fullscreenWidth = fullscreenButton.offsetWidth;
-              const gap = 8;
-
-              // Position duration 8px to the right of fullscreen button
-              timeDisplay.style.top = '12px';
-              timeDisplay.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
-            });
-          };
-
-          updatePosition();
-
-          const observer = new MutationObserver(updatePosition);
-          observer.observe(fullscreenButton, {
-            attributes: true,
-            attributeFilter: ['style']
-          });
-
-          // Track observer for cleanup
-          this.observers.push(observer);
-
-          const durationObserver = new MutationObserver(() => {
-            if (!document.contains(timeDisplay)) {
-              observer.disconnect();
-              durationObserver.disconnect();
-            }
-          });
-
-          durationObserver.observe(document.body, {
-            childList: true,
-            subtree: true
-          });
-
-          // Track observer for cleanup
-          this.observers.push(durationObserver);
-        } else {
-          // Fallback: None found - position at top-left
-          timeDisplay.style.top = '12px';
-          timeDisplay.style.left = '12px';
-        }
-      }
-    }
-  }
 
   /**
    * Override onCleanup to remove all duration overlays when feature is disabled
@@ -241,16 +99,6 @@ class VideoDuration extends BaseFeature {
 
     // Clear the array
     this.durationElements = [];
-
-    // Disconnect all mutation observers
-    this.observers.forEach(observer => {
-      if (observer) {
-        observer.disconnect();
-      }
-    });
-
-    // Clear observers array
-    this.observers = [];
 
     // Remove event listeners from all tracked videos
     const videos = document.querySelectorAll('video');

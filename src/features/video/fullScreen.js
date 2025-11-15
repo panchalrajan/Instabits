@@ -52,11 +52,8 @@ class FullScreen extends BaseFeature {
 
     const button = this.createFullScreenButton();
 
-    // Fullscreen is always at top-left corner
-    button.style.top = '12px';
-    button.style.left = '12px';
-
-    videoParent.appendChild(button);
+    // Register with VideoControlsManager for unified layout
+    videoControlsManager.registerElement(video, 'fullscreen', button);
 
     // Track fullscreen button for cleanup
     this.fullscreenButtons.push(button);
@@ -70,7 +67,9 @@ class FullScreen extends BaseFeature {
     });
 
     // Cleanup on video removal
-    this.setupCleanupObserver(video);
+    this.setupCleanupObserver(video, () => {
+      videoControlsManager.unregisterElement(video, 'fullscreen');
+    });
 
     return { button };
   }

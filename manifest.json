@@ -38,6 +38,7 @@
         "https://*.instagram.com/*"
       ],
       "css": [
+        "src/features/css/videoControls.css",
         "src/features/css/videoDuration.css",
         "src/features/css/videoSeekbar.css",
         "src/features/css/volumeSlider.css",
@@ -50,6 +51,7 @@
         "src/core/utils/StorageService.js",
         "src/core/BaseFeature.js",
         "src/core/VideoObserver.js",
+        "src/core/VideoControlsManager.js",
         "src/core/FeatureManager.js",
         "src/core/utils/utils.js",
         "src/features/video/videoDuration.js",

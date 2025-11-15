@@ -1,0 +1,32 @@
+/* Video Controls Container - Unified UI management with Flexbox */
+
+.insta-video-controls-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: row; /* Left to right layout */
+  align-items: flex-start;
+  gap: 8px; /* Consistent spacing between all elements */
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: 9998;
+}
+
+/* Child elements should have pointer-events and relative positioning */
+.insta-video-controls-container > * {
+  pointer-events: auto;
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  left: auto !important;
+  bottom: auto !important;
+  margin: 0 !important;
+}
+
+/* Override individual element positioning */
+.insta-video-controls-container .insta-speed-button,
+.insta-video-controls-container .insta-pip-button,
+.insta-video-controls-container .insta-fullscreen-button,
+.insta-video-controls-container .insta-video-duration-overlay {
+  position: relative !important;
+}

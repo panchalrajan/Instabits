@@ -211,85 +211,6 @@ class PlaybackSpeed extends BaseFeature {
     });
   }
 
-  repositionDownstreamButtons(videoParent) {
-    // After speed button is added, reposition PIP and Duration if they exist
-    requestAnimationFrame(() => {
-      const pipButton = videoParent.querySelector('.insta-pip-button');
-      if (pipButton) {
-        // Trigger PIP to reposition relative to speed
-        const speedButton = videoParent.querySelector('.insta-speed-button');
-        if (speedButton) {
-          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
-          const speedWidth = speedButton.offsetWidth;
-          const gap = 8;
-          pipButton.style.left = `${speedLeft + speedWidth + gap}px`;
-        }
-      }
-
-      const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
-      if (durationOverlay && !pipButton) {
-        // Duration exists but PIP doesn't - reposition duration relative to speed
-        const speedButton = videoParent.querySelector('.insta-speed-button');
-        if (speedButton) {
-          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
-          const speedWidth = speedButton.offsetWidth;
-          const gap = 8;
-          durationOverlay.style.left = `${speedLeft + speedWidth + gap}px`;
-        }
-      }
-    });
-  }
-
-  positionRelativeToFullscreen(button, overlay, videoParent) {
-    // Find the fullscreen button in the same parent
-    const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
-
-    if (fullscreenButton) {
-      const updatePosition = () => {
-        requestAnimationFrame(() => {
-          const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
-          const fullscreenWidth = fullscreenButton.offsetWidth;
-          const gap = 8; // 8px gap
-
-          // Position speed button 8px to the right of fullscreen
-          const leftPosition = fullscreenLeft + fullscreenWidth + gap;
-          button.style.left = `${leftPosition}px`;
-          overlay.style.left = `${leftPosition}px`;
-
-          // After positioning speed, reposition downstream buttons
-          this.repositionDownstreamButtons(videoParent);
-        });
-      };
-
-      // Initial position
-      updatePosition();
-
-      // Watch for fullscreen button changes
-      const observer = new MutationObserver(updatePosition);
-      observer.observe(fullscreenButton, {
-        attributes: true,
-        attributeFilter: ['style']
-      });
-
-      // Cleanup when button is removed
-      const cleanupObserver = new MutationObserver(() => {
-        if (!document.contains(button)) {
-          observer.disconnect();
-          cleanupObserver.disconnect();
-        }
-      });
-
-      cleanupObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-    } else {
-      // Fallback: Fullscreen not found
-      // Position at 12px from left edge
-      button.style.left = '12px';
-      overlay.style.left = '12px';
-    }
-  }
 
   processVideo(video) {
     if (!video) return null;
@@ -316,11 +237,14 @@ class PlaybackSpeed extends BaseFeature {
     const button = this.createSpeedButton();
     const overlay = this.createSpeedOverlay();
 
-    videoParent.appendChild(button);
+    // Register button with VideoControlsManager for unified layout
+    videoControlsManager.registerElement(video, 'playbackSpeed', button);
+
+    // Append overlay to videoParent (not managed by VideoControlsManager)
     videoParent.appendChild(overlay);
 
-    // Position speed button relative to fullscreen button
-    this.positionRelativeToFullscreen(button, overlay, videoParent);
+    // Position overlay relative to button
+    this.positionOverlay(button, overlay);
 
     this.addToTrackedVideos(video, { button, overlay });
     this.allVideos.add(video); // Track for bulk speed updates
@@ -331,26 +255,65 @@ class PlaybackSpeed extends BaseFeature {
     // Cleanup on video removal
     this.setupCleanupObserver(video, () => {
       this.allVideos.delete(video);
+      videoControlsManager.unregisterElement(video, 'playbackSpeed');
     });
 
     return { button, overlay };
   }
 
-  onCleanup() {
-    // Store video parents before cleanup for repositioning downstream buttons
-    const videoParents = new Set();
+  positionOverlay(button, overlay) {
+    // Position overlay below the button
+    const updatePosition = () => {
+      requestAnimationFrame(() => {
+        // Get the container (button's parent) and video parent
+        const container = button.parentElement;
+        const videoParent = container ? container.parentElement : null;
 
+        if (!container || !videoParent) return;
+
+        // Get button's position within the container
+        const buttonRect = button.getBoundingClientRect();
+        const videoParentRect = videoParent.getBoundingClientRect();
+
+        // Position overlay below button with same left alignment relative to videoParent
+        overlay.style.left = `${buttonRect.left - videoParentRect.left}px`;
+      });
+    };
+
+    // Initial position
+    updatePosition();
+
+    // Watch for container changes (when elements are added/removed, flexbox reflows)
+    const container = button.parentElement;
+    if (container) {
+      const observer = new MutationObserver(updatePosition);
+      observer.observe(container, {
+        childList: true,
+        attributes: true,
+        subtree: true
+      });
+
+      // Cleanup when button is removed
+      const cleanupObserver = new MutationObserver(() => {
+        if (!document.contains(button)) {
+          observer.disconnect();
+          cleanupObserver.disconnect();
+        }
+      });
+
+      cleanupObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  onCleanup() {
     // Remove all buttons and overlays from tracked videos
     // Use allVideos Set since WeakMap cannot be iterated
     this.allVideos.forEach(video => {
       const trackedData = this.getTrackedData(video);
       if (trackedData) {
-        // Store parent for later repositioning
-        const videoParent = this.getVideoParent(video);
-        if (videoParent) {
-          videoParents.add(videoParent);
-        }
-
         // Remove button
         if (trackedData.button && trackedData.button.parentNode) {
           trackedData.button.remove();
@@ -369,13 +332,6 @@ class PlaybackSpeed extends BaseFeature {
       }
     });
 
-    // After removing speed buttons, reposition PIP and Duration to fill the gap
-    requestAnimationFrame(() => {
-      videoParents.forEach(videoParent => {
-        this.repositionDownstreamButtonsAfterRemoval(videoParent);
-      });
-    });
-
     // Clear all videos set
     this.allVideos.clear();
 
@@ -390,41 +346,5 @@ class PlaybackSpeed extends BaseFeature {
         // Ignore errors for videos that don't support playbackRate
       }
     });
-  }
-
-  repositionDownstreamButtonsAfterRemoval(videoParent) {
-    // When speed button is removed, reposition PIP and Duration to fill the gap
-    const pipButton = videoParent.querySelector('.insta-pip-button');
-    const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
-    const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
-
-    if (pipButton) {
-      // PIP should now position relative to fullscreen (since speed is gone)
-      if (fullscreenButton) {
-        const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
-        const fullscreenWidth = fullscreenButton.offsetWidth;
-        const gap = 8;
-        pipButton.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
-      } else {
-        pipButton.style.left = '12px';
-      }
-    }
-
-    if (durationOverlay) {
-      // Duration should reposition relative to PIP or fullscreen (since speed is gone)
-      if (pipButton) {
-        const pipLeft = parseInt(window.getComputedStyle(pipButton).left) || 12;
-        const pipWidth = pipButton.offsetWidth;
-        const gap = 8;
-        durationOverlay.style.left = `${pipLeft + pipWidth + gap}px`;
-      } else if (fullscreenButton) {
-        const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
-        const fullscreenWidth = fullscreenButton.offsetWidth;
-        const gap = 8;
-        durationOverlay.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
-      } else {
-        durationOverlay.style.left = '12px';
-      }
-    }
   }
 }
