@@ -36,10 +36,14 @@ class PlaybackSpeed extends BaseFeature {
 
   setupMessageListener() {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.type === 'updatePlaybackSpeeds' && message.speeds) {
-        this.speedOptions = message.speeds;
-        // Refresh all overlays with new speed options
-        this.refreshAllOverlays();
+      if (message.type === 'updatePlaybackSpeeds') {
+        // Handle the speed data from settings page
+        const speeds = message.enabledPlaybackSpeeds || message.speeds;
+        if (speeds && Array.isArray(speeds)) {
+          this.speedOptions = speeds;
+          // Refresh all overlays with new speed options
+          this.refreshAllOverlays();
+        }
       }
     });
   }
@@ -61,6 +65,9 @@ class PlaybackSpeed extends BaseFeature {
 
           // Reattach event listeners
           this.attachOverlayListeners(tracked.button, newOverlay, video);
+
+          // Reposition the overlay relative to the button
+          this.positionOverlay(tracked.button, newOverlay);
         }
       } else {
         this.allVideos.delete(video);
