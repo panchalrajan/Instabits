@@ -4,8 +4,7 @@
 // Section definitions - add new sections here
 const SECTIONS = [
     { id: 'video', name: 'Video' },
-    { id: 'automation', name: 'Automation' },
-    { id: 'distraction', name: 'Distraction' }
+    { id: 'automation', name: 'Automation' }
 ];
 
 const FEATURES_DATA = [
@@ -141,23 +140,6 @@ const FEATURES_DATA = [
         defaultEnabled: true
     },
     {
-        id: 'disableDoubleTapLike',
-        section: 'distraction',
-        name: 'Disable Double Tap to Like',
-        searchName: 'disable double tap like heart prevent accidental',
-        icon: {
-            name: 'heart',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #ef4444, #dc2626)'
-        },
-        badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Prevent accidental likes by disabling double-tap to like on posts',
-        configButton: null,
-        disabled: false,
-        toggleable: true,
-        defaultEnabled: false
-    },
-    {
         id: 'zenMode',
         section: 'video',
         name: 'Zen Mode',
@@ -191,137 +173,6 @@ const FEATURES_DATA = [
         toggleable: true,
         defaultEnabled: true
     },
-    {
-        id: 'hideReels',
-        section: 'distraction',
-        name: 'Hide Reels',
-        searchName: 'hide reels distraction remove block',
-        icon: {
-            name: 'hideReels',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #ef4444, #dc2626)'
-        },
-        badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Reels navigation link and optionally block Reels screen',
-        configButton: {
-            text: 'Configure',
-            page: 'hideReelsSettings',
-            icon: 'arrow'
-        },
-        disabled: false,
-        toggleable: true,
-        defaultEnabled: false
-    },
-    {
-        id: 'hideExplore',
-        section: 'distraction',
-        name: 'Hide Explore',
-        searchName: 'hide explore distraction remove block',
-        icon: {
-            name: 'hideExplore',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #f59e0b, #d97706)'
-        },
-        badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Explore navigation link and Explore screen to reduce distractions',
-        configButton: null,
-        disabled: true,
-        toggleable: true,
-        defaultEnabled: false
-    },
-    {
-        id: 'hideStories',
-        section: 'distraction',
-        name: 'Hide Stories',
-        searchName: 'hide stories distraction remove block',
-        icon: {
-            name: 'hideStories',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
-        },
-        badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Stories feed on home page or completely',
-        configButton: {
-            text: 'Configure',
-            page: 'hideStoriesSettings',
-            icon: 'arrow'
-        },
-        disabled: false,
-        toggleable: true,
-        defaultEnabled: false
-    },
-    {
-        id: 'hideSuggestedFollowers',
-        section: 'distraction',
-        name: 'Hide Suggested Followers',
-        searchName: 'hide suggested followers recommendations distraction remove block',
-        icon: {
-            name: 'hideSuggestedFollowers',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #06b6d4, #0891b2)'
-        },
-        badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide the "Suggested for you" section on home page',
-        configButton: null,
-        disabled: true,
-        toggleable: true,
-        defaultEnabled: false
-    },
-    {
-        id: 'hideThreads',
-        section: 'distraction',
-        name: 'Hide Threads',
-        searchName: 'hide threads distraction remove block',
-        icon: {
-            name: 'hideThreads',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #64748b, #475569)'
-        },
-        badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Threads navigation link from Instagram',
-        configButton: null,
-        disabled: true,
-        toggleable: true,
-        defaultEnabled: false
-    },
-    {
-        id: 'hideDirectMessage',
-        section: 'distraction',
-        name: 'Hide Direct Messages',
-        searchName: 'hide direct messages dm inbox chat distraction remove block',
-        icon: {
-            name: 'hideDirectMessage',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #10b981, #059669)'
-        },
-        badge: { text: 'New', color: BADGE_COLORS.green },
-        description: 'Hide Direct Messages navigation link and optionally block Direct page',
-        configButton: {
-            text: 'Configure',
-            page: 'hideDirectMessageSettings',
-            icon: 'arrow'
-        },
-        disabled: false,
-        toggleable: true,
-        defaultEnabled: false
-    },
-    {
-        id: 'forceFollowing',
-        section: 'distraction',
-        name: 'Focus on Following',
-        searchName: 'force following focus feed distraction productivity homepage',
-        icon: {
-            name: 'forceFollowing',
-            color: '#ffffff',
-            background: 'linear-gradient(135deg, #14b8a6, #0d9488)'
-        },
-        badge: { text: 'Experimental', color: BADGE_COLORS.orange },
-        description: 'Block Instagram Homepage. Redirects to Following feed. Works with Hide Reels and Hide Explore for smart CTAs.',
-        configButton: null,
-        disabled: false,
-        toggleable: true,
-        defaultEnabled: false
-    }
 ];
 
 // Export for use in other files

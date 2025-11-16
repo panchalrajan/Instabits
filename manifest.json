@@ -44,8 +44,7 @@
         "src/features/css/volumeSlider.css",
         "src/features/css/playbackSpeed.css",
         "src/features/css/pipMode.css",
-        "src/features/css/fullScreen.css",
-        "src/features/css/distractionBlock.css"
+        "src/features/css/fullScreen.css"
       ],
       "js": [
         "src/core/utils/StorageService.js",
@@ -61,17 +60,8 @@
         "src/features/video/pipMode.js",
         "src/features/video/backgroundPlay.js",
         "src/features/automation/autoScroll.js",
-        "src/features/distraction/disableDoubleTapLike.js",
-        "src/features/distraction/zenMode.js",
+        "src/features/video/zenMode.js",
         "src/features/video/fullScreen.js",
-        "src/features/distraction/BaseDistraction.js",
-        "src/features/distraction/hideReels.js",
-        "src/features/distraction/hideExplore.js",
-        "src/features/distraction/hideStories.js",
-        "src/features/distraction/hideSuggestedFollowers.js",
-        "src/features/distraction/hideThreads.js",
-        "src/features/distraction/hideDirectMessage.js",
-        "src/features/distraction/forceFollowing.js",
         "src/contentScript.js"
       ],
       "run_at": "document_end"
