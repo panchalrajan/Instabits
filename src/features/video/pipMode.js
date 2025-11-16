@@ -6,6 +6,7 @@ class PIPMode extends BaseFeature {
   initialize() {
     this.currentPIPVideo = null;
     this.isInPIPMode = false;
+    this.pipButtons = []; // Track all PIP buttons for cleanup
     this.setupVideoSwitching();
   }
 
@@ -189,124 +190,6 @@ class PIPMode extends BaseFeature {
     }
   }
 
-  positionRelativeToSpeedButton(pipButton, videoParent) {
-    // Find the speed button in the same parent
-    const speedButton = videoParent.querySelector('.insta-speed-button');
-
-    if (speedButton) {
-      const updatePosition = () => {
-        requestAnimationFrame(() => {
-          const speedLeft = parseInt(window.getComputedStyle(speedButton).left) || 12;
-          const speedWidth = speedButton.offsetWidth;
-          const gap = 8; // 8px gap
-
-          // Position PIP button 8px to the right of speed button
-          pipButton.style.left = `${speedLeft + speedWidth + gap}px`;
-        });
-      };
-
-      // Initial position
-      updatePosition();
-
-      // Watch for speed button changes
-      const observer = new MutationObserver(updatePosition);
-      observer.observe(speedButton, {
-        childList: true,
-        characterData: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['style']
-      });
-
-      // Cleanup when PIP button is removed
-      const pipObserver = new MutationObserver(() => {
-        if (!document.contains(pipButton)) {
-          observer.disconnect();
-          pipObserver.disconnect();
-        }
-      });
-
-      pipObserver.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-    } else {
-      // Fallback: Speed not found, try to position relative to duration
-      const durationOverlay = videoParent.querySelector('.insta-video-duration-overlay');
-
-      if (durationOverlay) {
-        const updatePosition = () => {
-          requestAnimationFrame(() => {
-            const durationLeft = parseInt(window.getComputedStyle(durationOverlay).left) || 12;
-            const durationWidth = durationOverlay.offsetWidth;
-            const gap = 8;
-
-            // Position PIP button 8px to the right of duration
-            pipButton.style.left = `${durationLeft + durationWidth + gap}px`;
-          });
-        };
-
-        updatePosition();
-
-        const observer = new MutationObserver(updatePosition);
-        observer.observe(durationOverlay, {
-          attributes: true,
-          attributeFilter: ['style']
-        });
-
-        const pipObserver = new MutationObserver(() => {
-          if (!document.contains(pipButton)) {
-            observer.disconnect();
-            pipObserver.disconnect();
-          }
-        });
-
-        pipObserver.observe(document.body, {
-          childList: true,
-          subtree: true
-        });
-      } else {
-        // Fallback: Both speed and duration not found, try fullscreen
-        const fullscreenButton = videoParent.querySelector('.insta-fullscreen-button');
-
-        if (fullscreenButton) {
-          const updatePosition = () => {
-            requestAnimationFrame(() => {
-              const fullscreenLeft = parseInt(window.getComputedStyle(fullscreenButton).left) || 12;
-              const fullscreenWidth = fullscreenButton.offsetWidth;
-              const gap = 8;
-
-              // Position PIP button 8px to the right of fullscreen
-              pipButton.style.left = `${fullscreenLeft + fullscreenWidth + gap}px`;
-            });
-          };
-
-          updatePosition();
-
-          const observer = new MutationObserver(updatePosition);
-          observer.observe(fullscreenButton, {
-            attributes: true,
-            attributeFilter: ['style']
-          });
-
-          const pipObserver = new MutationObserver(() => {
-            if (!document.contains(pipButton)) {
-              observer.disconnect();
-              pipObserver.disconnect();
-            }
-          });
-
-          pipObserver.observe(document.body, {
-            childList: true,
-            subtree: true
-          });
-        } else {
-          // Fallback: None found - position at 12px from leading edge
-          pipButton.style.left = '12px';
-        }
-      }
-    }
-  }
 
   processVideo(video) {
     if (!video) return null;
@@ -325,10 +208,12 @@ class PIPMode extends BaseFeature {
     this.ensureParentPositioned(videoParent);
 
     const button = this.createPIPButton();
-    videoParent.appendChild(button);
 
-    // Position PIP button relative to speed button
-    this.positionRelativeToSpeedButton(button, videoParent);
+    // Register with VideoControlsManager for unified layout
+    videoControlsManager.registerElement(video, 'pipMode', button);
+
+    // Track PIP button for cleanup
+    this.pipButtons.push(button);
 
     this.addToTrackedVideos(video, { button });
 
@@ -359,8 +244,38 @@ class PIPMode extends BaseFeature {
     });
 
     // Cleanup on video removal
-    this.setupCleanupObserver(video);
+    this.setupCleanupObserver(video, () => {
+      videoControlsManager.unregisterElement(video, 'pipMode');
+    });
 
     return { button };
+  }
+
+  /**
+   * Override onCleanup to remove all PIP buttons and exit PIP when feature is disabled
+   */
+  async onCleanup() {
+    // Exit PIP mode if active
+    if (document.pictureInPictureElement) {
+      try {
+        await document.exitPictureInPicture();
+      } catch (error) {
+        // Ignore errors when exiting PIP
+      }
+    }
+
+    // Reset PIP state
+    this.currentPIPVideo = null;
+    this.isInPIPMode = false;
+
+    // Remove all PIP buttons from DOM
+    this.pipButtons.forEach(button => {
+      if (button && button.parentNode) {
+        button.parentNode.removeChild(button);
+      }
+    });
+
+    // Clear the array
+    this.pipButtons = [];
   }
 }

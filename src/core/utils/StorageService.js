@@ -31,7 +31,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.get(key, (result) => {
           if (chrome.runtime.lastError) {
-            console.warn(`StorageService: Error getting ${key}:`, chrome.runtime.lastError);
+            console.warn(`StorageService: Error getting ${key}:`, chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(defaultValue);
             return;
           }
@@ -90,7 +90,7 @@ class StorageService {
       return new Promise((resolve) => {
         this.storage.set({ [key]: value }, () => {
           if (chrome.runtime.lastError) {
-            console.warn(`StorageService: Error setting ${key}:`, chrome.runtime.lastError);
+            console.warn(`StorageService: Error setting ${key}:`, chrome.runtime.lastError.message || chrome.runtime.lastError);
             resolve(false);
             return;
           }

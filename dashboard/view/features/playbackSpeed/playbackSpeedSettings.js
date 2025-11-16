@@ -1,5 +1,5 @@
 // Playback Speed Settings Page
-class PlaybackSpeedSettings extends UIComponents.BaseSettingsPage {
+class PlaybackSpeedSettings extends BaseSettingsPage {
     constructor() {
         super();
 
@@ -31,27 +31,26 @@ class PlaybackSpeedSettings extends UIComponents.BaseSettingsPage {
         });
 
         // Load saved speed preferences
-        await this.loadSavedSpeeds();
+        await this.loadSettings();
 
         // Render speed options
-        this.renderSpeedOptions();
+        this.renderUI();
 
         // Setup event listeners
-        this.setupEventListeners();
+        this.setupCommonListeners();
     }
 
-    async loadSavedSpeeds() {
-        try {
-            const result = await storageService.getUserPreference('enabledPlaybackSpeeds', this.defaultEnabledSpeeds);
-            if (result && Array.isArray(result)) {
-                this.enabledSpeeds = result;
-            } else {
-                this.enabledSpeeds = [...this.defaultEnabledSpeeds];
-            }
-        } catch (error) {
-            console.error('Error loading saved speeds:', error);
+    async loadSettings() {
+        const result = await this.loadSetting('enabledPlaybackSpeeds', this.defaultEnabledSpeeds);
+        if (result && Array.isArray(result)) {
+            this.enabledSpeeds = result;
+        } else {
             this.enabledSpeeds = [...this.defaultEnabledSpeeds];
         }
+    }
+
+    renderUI() {
+        this.renderSpeedOptions();
     }
 
     renderSpeedOptions() {
@@ -149,28 +148,12 @@ class PlaybackSpeedSettings extends UIComponents.BaseSettingsPage {
         this.saveSettings();
     }
 
-    setupEventListeners() {
-        // Setup common listeners (back button) from base class
-        this.setupCommonListeners();
-    }
-
     async saveSettings() {
-        try {
-            // Save to storage
-            await storageService.setUserPreference('enabledPlaybackSpeeds', this.enabledSpeeds);
-
-            // Show success message using base class method
-            this.showToast('Saved', 'Speed options updated', 'success');
-
-            // Notify content script using base class method
-            await this.notifyContentScript('updatePlaybackSpeeds', {
-                speeds: this.enabledSpeeds
-            });
-
-        } catch (error) {
-            console.error('Error saving settings:', error);
-            this.showToast('Error', 'Failed to save', 'error');
-        }
+        await this.saveAndNotify(
+            { enabledPlaybackSpeeds: this.enabledSpeeds },
+            'updatePlaybackSpeeds',
+            'Speed options updated'
+        );
     }
 }
 

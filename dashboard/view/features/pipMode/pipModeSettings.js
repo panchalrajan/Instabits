@@ -1,5 +1,5 @@
 // PIP Mode Settings Page
-class PIPModeSettings extends UIComponents.BaseSettingsPage {
+class PIPModeSettings extends BaseSettingsPage {
     constructor() {
         super();
 
@@ -36,14 +36,16 @@ class PIPModeSettings extends UIComponents.BaseSettingsPage {
         // Load feature states
         await this.featureStateManager.load();
 
-        // Render status grid
-        this.renderStatusGrid();
-
-        // Render tips section
-        this.renderTipsSection();
+        // Render UI
+        this.renderUI();
 
         // Setup event listeners
-        this.setupEventListeners();
+        this.setupCommonListeners();
+    }
+
+    renderUI() {
+        this.renderStatusGrid();
+        this.renderTipsSection();
     }
 
     renderTipsSection() {
@@ -133,11 +135,6 @@ class PIPModeSettings extends UIComponents.BaseSettingsPage {
             console.error('Error toggling feature:', error);
             this.showToast('Error', 'Failed to update feature', 'error');
         }
-    }
-
-    setupEventListeners() {
-        // Setup common listeners (back button)
-        this.setupCommonListeners();
     }
 }
 
