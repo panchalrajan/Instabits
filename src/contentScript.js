@@ -23,15 +23,7 @@
         .register('volumeSlider', VolumeSlider, { useVideoObserver: true, priority: 5, defaultEnabled: true })
         .register('zenMode', ZenMode, { useVideoObserver: true, priority: 4, defaultEnabled: true })
         .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 3, defaultEnabled: true })
-        .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2, defaultEnabled: true })
-        .register('disableDoubleTapLike', DisableDoubleTapLike, { useVideoObserver: false, priority: 2, defaultEnabled: false })
-        .register('hideReels', HideReels, { useVideoObserver: false, priority: 1, defaultEnabled: false })
-        .register('hideExplore', HideExplore, { useVideoObserver: false, priority: 1, defaultEnabled: false })
-        .register('hideStories', HideStories, { useVideoObserver: false, priority: 1, defaultEnabled: false })
-        .register('hideSuggestedFollowers', HideSuggestedFollowers, { useVideoObserver: false, priority: 1, defaultEnabled: false })
-        .register('hideThreads', HideThreads, { useVideoObserver: false, priority: 1, defaultEnabled: false })
-        .register('hideDirectMessage', HideDirectMessage, { useVideoObserver: false, priority: 1, defaultEnabled: false })
-        .register('forceFollowing', ForceFollowing, { useVideoObserver: false, priority: 1, defaultEnabled: false });
+        .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2, defaultEnabled: true });
       return true;
     } catch (error) {
       console.error('[InstaBits] Error registering features:', error);

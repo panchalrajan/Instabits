@@ -157,51 +157,6 @@ IconLibrary.icons = {
         <path d="M3 3L21 21" stroke-width="2" stroke-linecap="round"/>
     </svg>`,
 
-    'hideReels': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="4" y="2" width="16" height="20" rx="2" stroke-width="2"/>
-        <path d="M4 8h16M12 8v12" stroke-width="2"/>
-        <path d="M3 3L21 21" stroke-width="2" stroke-linecap="round"/>
-    </svg>`,
-
-    'hideExplore': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="10" stroke-width="2"/>
-        <path d="M16.24 7.76l-8.48 8.48M7.76 7.76l8.48 8.48" stroke-width="2" stroke-linecap="round"/>
-    </svg>`,
-
-    'hideStories': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="12" r="10" stroke-width="2"/>
-        <circle cx="12" cy="12" r="6" stroke-width="2"/>
-        <path d="M3 3L21 21" stroke-width="2" stroke-linecap="round"/>
-    </svg>`,
-
-    'hideSuggestedFollowers': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M3 3L21 21" stroke-width="2" stroke-linecap="round"/>
-    </svg>`,
-
-    'hideThreads': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M3 3L21 21" stroke-width="2" stroke-linecap="round"/>
-    </svg>`,
-
-    'hideDirectMessage': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M3 3L21 21" stroke-width="2" stroke-linecap="round"/>
-    </svg>`,
-
-    'forceFollowing': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="9" cy="7" r="4" stroke-width="2"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="12" cy="12" r="10" stroke-width="1.5" opacity="0.3"/>
-        <path d="M12 8v8M8 12h8" stroke-width="2" stroke-linecap="round"/>
-    </svg>`,
-
-    'heart': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`,
-
     // ========== TIPS & INFO ICONS ==========
     'check': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
