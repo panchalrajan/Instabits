@@ -78,20 +78,21 @@ class UIComponents {
         const {
             id,
             name,
-            searchName,
+            keywords = [],
             icon,
-            badge,
+            badges = [],
             description,
-            configButton = null,
-            disabled = false,
-            toggleable = true
+            configPage = { show: false },
+            control = { showToggle: true, disabled: false }
         } = feature;
 
-        // Badge HTML
-        const badgeHtml = badge ? this.badge(badge.text, badge.color) : '';
+        // Badges HTML - support multiple badges
+        const badgesHtml = badges.map(badge =>
+            this.badge(badge.text, badge.color)
+        ).join('');
 
-        // Toggle HTML - only show if toggleable is true
-        const toggleHtml = toggleable ? `
+        // Toggle HTML - only show if control.showToggle is true
+        const toggleHtml = control.showToggle ? `
             <label class="toggle">
                 <input type="checkbox" data-feature="${id}">
                 <span class="toggle-slider"></span>
@@ -100,11 +101,11 @@ class UIComponents {
 
         // Configure button
         let configButtonHtml = '';
-        if (configButton) {
-            const buttonText = configButton.text || 'Configure';
-            const buttonPage = configButton.page;
-            const buttonIcon = configButton.icon || 'arrow';
-            const disabledClass = disabled ? 'disabled' : '';
+        if (configPage && configPage.show) {
+            const buttonText = configPage.text || 'Configure';
+            const buttonPage = configPage.page;
+            const buttonIcon = configPage.icon || 'arrow';
+            const disabledClass = control.disabled ? 'disabled' : '';
 
             configButtonHtml = `
                 <a href="#" class="feature-link ${disabledClass}" data-page="${buttonPage}">
@@ -117,8 +118,11 @@ class UIComponents {
         // Icon HTML using squareIcon
         const iconHtml = this.squareIcon(icon);
 
+        // Build searchable string from keywords
+        const searchString = keywords.join(' ');
+
         return `
-            <div class="feature-card" data-feature-name="${searchName || name.toLowerCase()}">
+            <div class="feature-card" data-feature-name="${searchString}">
                 ${iconHtml}
                 <div class="feature-content">
                     <div class="feature-header">
@@ -128,7 +132,7 @@ class UIComponents {
                     <p class="feature-description">${description}</p>
                     <div class="feature-footer">
                         <div class="feature-footer-left">
-                            ${badgeHtml}
+                            ${badgesHtml}
                         </div>
                         ${configButtonHtml}
                     </div>
@@ -196,7 +200,7 @@ class UIComponents {
         return `
             <div class="search-filter-wrapper">
                 <div class="search-container">
-                    ${IconLibrary.get('search')}
+                    <div class="search-icon">${IconLibrary.get('search')}</div>
                     <input type="text" id="searchInput" class="search-input" placeholder="${placeholder}">
                 </div>
                 <button class="filter-btn" id="filterBtn" title="Filter by labels">

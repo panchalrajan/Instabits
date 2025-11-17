@@ -105,10 +105,14 @@ class Dashboard {
         const labelsMap = new Map();
 
         this.featuresData.forEach(feature => {
-            if (feature.badge && feature.badge.text) {
-                labelsMap.set(feature.badge.text, {
-                    text: feature.badge.text,
-                    color: feature.badge.color
+            if (feature.badges && Array.isArray(feature.badges)) {
+                feature.badges.forEach(badge => {
+                    if (badge && badge.text) {
+                        labelsMap.set(badge.text, {
+                            text: badge.text,
+                            color: badge.color
+                        });
+                    }
                 });
             }
         });
@@ -124,9 +128,13 @@ class Dashboard {
 
         // Count features for each label
         this.featuresData.forEach(feature => {
-            if (feature.badge && feature.badge.text) {
-                const count = labelCounts.get(feature.badge.text) || 0;
-                labelCounts.set(feature.badge.text, count + 1);
+            if (feature.badges && Array.isArray(feature.badges)) {
+                feature.badges.forEach(badge => {
+                    if (badge && badge.text) {
+                        const count = labelCounts.get(badge.text) || 0;
+                        labelCounts.set(badge.text, count + 1);
+                    }
+                });
             }
         });
 
@@ -150,7 +158,7 @@ class Dashboard {
         toggles.forEach(toggle => {
             const feature = toggle.dataset.feature;
             const featureConfig = this.featuresData.find(f => f.id === feature);
-            defaultStates[feature] = featureConfig?.defaultEnabled ?? true;
+            defaultStates[feature] = featureConfig?.control?.defaultState ?? true;
         });
 
         try {
@@ -280,9 +288,10 @@ class Dashboard {
             // Check filter match
             let filterMatches = true;
             if (this.selectedFilters.size > 0) {
-                const badge = card.querySelector('.badge');
-                const badgeText = badge ? badge.textContent.trim() : null;
-                filterMatches = badgeText && this.selectedFilters.has(badgeText);
+                const badges = card.querySelectorAll('.badge');
+                const badgeTexts = Array.from(badges).map(badge => badge.textContent.trim());
+                // Match if ANY badge matches the selected filters
+                filterMatches = badgeTexts.some(badgeText => this.selectedFilters.has(badgeText));
             }
 
             if (searchMatches && filterMatches) {
