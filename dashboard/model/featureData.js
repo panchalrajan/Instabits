@@ -375,6 +375,29 @@ const FEATURES_DATA = [
             icon: 'arrow'
         }
     },
+    {
+        id: 'hideExplore',
+        section: 'distraction',
+        name: 'Hide Explore',
+        keywords: ['hide', 'explore', 'search', 'discover', 'distraction', 'page'],
+        icon: {
+            name: 'search',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #a855f7, #9333ea)'
+        },
+        badges: [
+            { text: 'New', color: BADGE_COLORS.green }
+        ],
+        description: 'Hide Explore page links and block access to the Explore page',
+        control: {
+            showToggle: true,
+            defaultState: false,
+            disabled: false
+        },
+        configPage: {
+            show: false
+        }
+    },
 ];
 
 // Export for use in other files

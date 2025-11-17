@@ -70,6 +70,7 @@
         "src/features/distraction/hideReels.js",
         "src/features/distraction/grayscaleMode.js",
         "src/features/distraction/hideStories.js",
+        "src/features/distraction/hideExplore.js",
         "src/contentScript.js"
       ],
       "run_at": "document_end"
