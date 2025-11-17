@@ -68,6 +68,7 @@
         "src/features/distraction/hideSuggestedFollowers.js",
         "src/features/distraction/hideDirectMessage.js",
         "src/features/distraction/hideReels.js",
+        "src/features/distraction/grayscaleMode.js",
         "src/contentScript.js"
       ],
       "run_at": "document_end"

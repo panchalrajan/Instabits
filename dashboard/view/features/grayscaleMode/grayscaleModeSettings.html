@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grayscale Mode Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../../../tooltip.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <script src="../../../../src/core/utils/StorageService.js"></script>
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../baseFiles/BaseSettingsPage.js"></script>
+    <script src="../baseFiles/SettingsHelpers.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <!-- Important Notice Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Important Notice</h2>
+
+                <div class="info-box warning">
+                    <div class="info-icon" id="warningIcon"></div>
+                    <div class="info-content">
+                        <p class="settings-option-description">
+                            Some UI elements and SVG graphics may not be grayscaled when this feature is enabled.
+                            This is a known issue and will be addressed in a future version.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="grayscaleModeSettings.js"></script>
+</body>
+</html>

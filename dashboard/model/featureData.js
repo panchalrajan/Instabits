@@ -323,6 +323,32 @@ const FEATURES_DATA = [
             icon: 'arrow'
         }
     },
+    {
+        id: 'grayscaleMode',
+        section: 'distraction',
+        name: 'Grayscale Mode',
+        keywords: ['grayscale', 'gray', 'black', 'white', 'monochrome', 'color', 'filter', 'visual', 'distraction', 'focus'],
+        icon: {
+            name: 'filter',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #64748b, #475569)'
+        },
+        badges: [
+            { text: 'New', color: BADGE_COLORS.green }
+        ],
+        description: 'Convert all media to grayscale for reduced visual distraction and mindful browsing',
+        control: {
+            showToggle: true,
+            defaultState: false,
+            disabled: false
+        },
+        configPage: {
+            show: true,
+            text: 'Info',
+            page: 'grayscaleModeSettings',
+            icon: 'arrow'
+        }
+    },
 ];
 
 // Export for use in other files
