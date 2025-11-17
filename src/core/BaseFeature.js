@@ -40,7 +40,7 @@ class BaseFeature {
    * @returns {boolean}
    */
   isReelsFeed() {
-    return window.location.pathname.includes('/reels/');
+    return navigationTracker.isReelsFeed();
   }
 
   /**
@@ -48,7 +48,15 @@ class BaseFeature {
    * @returns {boolean}
    */
   isSingleReel() {
-    return window.location.pathname.includes('/reel/');
+    return navigationTracker.isSingleReel();
+  }
+
+  /**
+   * Check if current page is any reel page (feed or single)
+   * @returns {boolean}
+   */
+  isReelsPage() {
+    return navigationTracker.isReelsPage();
   }
 
   /**

@@ -48,6 +48,7 @@
       ],
       "js": [
         "src/core/utils/StorageService.js",
+        "src/core/utils/NavigationTracker.js",
         "src/core/BaseFeature.js",
         "src/core/VideoObserver.js",
         "src/core/VideoControlsManager.js",

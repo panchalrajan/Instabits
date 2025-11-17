@@ -56,8 +56,7 @@ class VideoControlsManager {
     container.className = 'insta-video-controls-container';
 
     // Check if reels view
-    const isReelsFeed = window.location.pathname.includes('/reels/');
-    if (isReelsFeed) {
+    if (navigationTracker.isReelsFeed()) {
       container.classList.add('reels-view');
     }
 

@@ -37,6 +37,11 @@
   async function init() {
     try {
       // Check if required dependencies are loaded
+      if (typeof navigationTracker === 'undefined') {
+        console.error('[InstaBits] NavigationTracker not available');
+        return;
+      }
+
       if (typeof featureManager === 'undefined') {
         console.error('[InstaBits] FeatureManager not available');
         return;
@@ -46,6 +51,9 @@
         console.error('[InstaBits] VideoObserver not available');
         return;
       }
+
+      // Start navigation tracking
+      navigationTracker.start();
 
       // Register all features
       const registered = registerFeatures();
@@ -76,6 +84,10 @@
   // Cleanup on page unload
   window.addEventListener('beforeunload', () => {
     try {
+      if (typeof navigationTracker !== 'undefined' && navigationTracker.stop) {
+        navigationTracker.stop();
+      }
+
       if (typeof featureManager !== 'undefined' && featureManager.cleanup) {
         featureManager.cleanup();
       }

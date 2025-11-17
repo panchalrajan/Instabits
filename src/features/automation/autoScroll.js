@@ -6,6 +6,7 @@ class AutoScroll {
     this.observedVideos = new Set();
     this.intersectionObserver = null;
     this.mutationObserver = null;
+    this.navigationUnsubscribe = null;
     this.init();
   }
 
@@ -21,6 +22,30 @@ class AutoScroll {
 
     // Watch for new videos being added to DOM
     this.setupMutationObserver();
+
+    // Listen for navigation changes to reinitialize on reels pages
+    this.setupNavigationListener();
+  }
+
+  setupNavigationListener() {
+    this.navigationUnsubscribe = navigationTracker.onNavigate((newState, previousState) => {
+      // Reinitialize observers when navigating to/from reels pages
+      const wasReelsPage = previousState.pathname.includes('/reels/');
+      const isReelsPage = newState.pathname.includes('/reels/');
+
+      if (!wasReelsPage && isReelsPage) {
+        // Navigated to reels page - set up observers
+        this.setupMutationObserver();
+        this.observeAllVideos();
+      } else if (wasReelsPage && !isReelsPage) {
+        // Navigated away from reels page - clean up observers
+        if (this.mutationObserver) {
+          this.mutationObserver.disconnect();
+          this.mutationObserver = null;
+        }
+        this.observedVideos.clear();
+      }
+    });
   }
 
   setupIntersectionObserver() {
@@ -90,7 +115,7 @@ class AutoScroll {
   }
 
   isReelsPage() {
-    return window.location.pathname.includes('/reels/');
+    return navigationTracker.isReelsPage();
   }
 
   endVideoEvent() {
@@ -116,6 +141,12 @@ class AutoScroll {
   }
 
   cleanup() {
+    // Unsubscribe from navigation changes
+    if (this.navigationUnsubscribe) {
+      this.navigationUnsubscribe();
+      this.navigationUnsubscribe = null;
+    }
+
     // Disconnect IntersectionObserver
     if (this.intersectionObserver) {
       this.intersectionObserver.disconnect();

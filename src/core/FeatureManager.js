@@ -23,6 +23,7 @@ class FeatureManager {
     this.isInitialized = false;
     this.isPanicMode = false;
     this.savedFeatureStates = new Map(); // Store feature states when panic mode is enabled
+    this.navigationUnsubscribe = null;
   }
 
   /**
@@ -120,7 +121,34 @@ class FeatureManager {
       this.videoObserver.start();
     }
 
+    // Set up navigation listener to reprocess videos on page changes
+    this.setupNavigationListener();
+
     this.isInitialized = true;
+  }
+
+  /**
+   * Set up navigation listener to handle SPA navigation
+   */
+  setupNavigationListener() {
+    this.navigationUnsubscribe = navigationTracker.onNavigate((newState, previousState) => {
+      console.log(`[FeatureManager] Navigation detected: ${previousState.pathname} -> ${newState.pathname}`);
+
+      // Don't do anything if panic mode is enabled
+      if (this.isPanicMode) {
+        return;
+      }
+
+      // Reprocess existing videos for all active features
+      // This ensures features work correctly after navigation
+      if (this.videoObserver) {
+        // Clear the VideoObserver cache so it reprocesses all videos
+        this.videoObserver.clearCache();
+
+        // Force immediate processing of all videos
+        this.videoObserver.processExistingVideos();
+      }
+    });
   }
 
   /**
@@ -283,6 +311,12 @@ class FeatureManager {
    * Cleanup all features
    */
   cleanup() {
+    // Unsubscribe from navigation changes
+    if (this.navigationUnsubscribe) {
+      this.navigationUnsubscribe();
+      this.navigationUnsubscribe = null;
+    }
+
     // Disable all features
     const featureIds = Array.from(this.activeFeatures.keys());
     featureIds.forEach(id => {
