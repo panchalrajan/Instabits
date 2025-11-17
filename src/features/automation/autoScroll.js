@@ -34,9 +34,15 @@ class AutoScroll {
       const isReelsPage = newState.pathname.includes('/reels/');
 
       if (!wasReelsPage && isReelsPage) {
-        // Navigated to reels page - set up observers
+        // Navigated to reels page - wait for Instagram's SPA to load videos
+        // Clear existing observed videos
+        this.observedVideos.clear();
+
+        // Set up mutation observer first to catch videos as they're added
         this.setupMutationObserver();
-        this.observeAllVideos();
+
+        // Wait for videos to load, then observe them
+        this.waitForVideosAndObserve();
       } else if (wasReelsPage && !isReelsPage) {
         // Navigated away from reels page - clean up observers
         if (this.mutationObserver) {
@@ -46,6 +52,38 @@ class AutoScroll {
         this.observedVideos.clear();
       }
     });
+  }
+
+  /**
+   * Wait for videos to appear in DOM after navigation, then observe them
+   * Uses polling with timeout to handle Instagram's SPA loading
+   */
+  waitForVideosAndObserve() {
+    let attempts = 0;
+    const maxAttempts = 20; // Try for up to 2 seconds
+    const interval = 100; // Check every 100ms
+
+    const tryObserve = () => {
+      const videos = document.querySelectorAll(this.VIDEOS_LIST_SELECTOR);
+
+      if (videos.length > 0) {
+        // Videos found, observe them
+        this.observeAllVideos();
+        return;
+      }
+
+      attempts++;
+      if (attempts < maxAttempts) {
+        // Keep trying
+        setTimeout(tryObserve, interval);
+      } else {
+        // Give up after max attempts
+        console.log('[AutoScroll] Timed out waiting for videos after navigation');
+      }
+    };
+
+    // Start trying immediately
+    tryObserve();
   }
 
   setupIntersectionObserver() {
@@ -71,6 +109,12 @@ class AutoScroll {
   setupMutationObserver() {
     if (!this.isReelsPage()) return;
 
+    // Disconnect existing observer if any
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect();
+    }
+
+    // Create new observer
     this.mutationObserver = new MutationObserver(() => {
       this.observeAllVideos();
     });
