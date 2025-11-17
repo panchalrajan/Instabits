@@ -297,6 +297,32 @@ const FEATURES_DATA = [
             icon: 'arrow'
         }
     },
+    {
+        id: 'hideReels',
+        section: 'distraction',
+        name: 'Hide Reels',
+        keywords: ['hide', 'reels', 'shorts', 'video', 'distraction', 'profile', 'tab'],
+        icon: {
+            name: 'film-off',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #f97316, #ea580c)'
+        },
+        badges: [
+            { text: 'New', color: BADGE_COLORS.green }
+        ],
+        description: 'Hide Reels navigation links and configure reels page access and profile reel tab',
+        control: {
+            showToggle: true,
+            defaultState: false,
+            disabled: false
+        },
+        configPage: {
+            show: true,
+            text: 'Configure',
+            page: 'hideReelsSettings',
+            icon: 'arrow'
+        }
+    },
 ];
 
 // Export for use in other files

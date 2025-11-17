@@ -172,6 +172,12 @@ IconLibrary.icons = {
         <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
     </svg>`,
 
+    'film-off': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <rect x="2" y="6" width="20" height="12" rx="2" stroke-width="2"/>
+        <path d="M2 6l6 6M8 6l-6 6M16 6l6 6M22 6l-6 6" stroke-width="2" stroke-linecap="round"/>
+        <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+
     // ========== TIPS & INFO ICONS ==========
     'check': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
