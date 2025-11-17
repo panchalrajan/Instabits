@@ -167,6 +167,11 @@ IconLibrary.icons = {
         <path d="M18 8l5 5M23 8l-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`,
 
+    'message-circle-off': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="2" y1="2" x2="22" y2="22" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+
     // ========== TIPS & INFO ICONS ==========
     'check': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

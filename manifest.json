@@ -38,6 +38,7 @@
         "https://*.instagram.com/*"
       ],
       "css": [
+        "src/core/css/blockedScreen.css",
         "src/features/css/videoControls.css",
         "src/features/css/videoDuration.css",
         "src/features/css/videoSeekbar.css",
@@ -48,6 +49,7 @@
       ],
       "js": [
         "src/core/utils/StorageService.js",
+        "src/core/components/BlockedScreen.js",
         "src/core/BaseFeature.js",
         "src/core/VideoObserver.js",
         "src/core/VideoControlsManager.js",
@@ -64,6 +66,7 @@
         "src/features/video/fullScreen.js",
         "src/features/distraction/disableDoubleTapLike.js",
         "src/features/distraction/hideSuggestedFollowers.js",
+        "src/features/distraction/hideDirectMessage.js",
         "src/contentScript.js"
       ],
       "run_at": "document_end"

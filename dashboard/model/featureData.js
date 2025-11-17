@@ -271,6 +271,32 @@ const FEATURES_DATA = [
             show: false
         }
     },
+    {
+        id: 'hideDirectMessage',
+        section: 'distraction',
+        name: 'Hide Direct Message',
+        keywords: ['hide', 'direct', 'message', 'dm', 'inbox', 'chat', 'distraction', 'floating', 'button'],
+        icon: {
+            name: 'message-circle-off',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)'
+        },
+        badges: [
+            { text: 'New', color: BADGE_COLORS.green }
+        ],
+        description: 'Hide Direct Message links and configure inbox access, floating button, and profile messaging',
+        control: {
+            showToggle: true,
+            defaultState: false,
+            disabled: false
+        },
+        configPage: {
+            show: true,
+            text: 'Configure',
+            page: 'hideDirectMessageSettings',
+            icon: 'arrow'
+        }
+    },
 ];
 
 // Export for use in other files

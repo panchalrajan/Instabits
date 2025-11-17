@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hide Direct Message Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../../../tooltip.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <script src="../../../../src/core/utils/StorageService.js"></script>
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../baseFiles/BaseSettingsPage.js"></script>
+    <script src="../baseFiles/SettingsHelpers.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <!-- Configuration Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Hide Direct Message Configuration</h2>
+                <p class="settings-section-description">Customize how Direct Messages are hidden on Instagram</p>
+
+                <!-- Sub-features toggles -->
+                <div class="settings-options">
+                    <!-- Disable Inbox Page -->
+                    <div class="settings-option">
+                        <div class="settings-option-content">
+                            <div class="settings-option-header">
+                                <h3 class="settings-option-title">Disable Inbox Page</h3>
+                                <label class="toggle">
+                                    <input type="checkbox" id="disableInboxPage" data-setting="disableInboxPage">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="settings-option-description">When enabled, accessing /direct will show a blocked screen instead of the inbox. You'll be redirected to the homepage.</p>
+                        </div>
+                    </div>
+
+                    <!-- Hide Floating Button -->
+                    <div class="settings-option">
+                        <div class="settings-option-content">
+                            <div class="settings-option-header">
+                                <h3 class="settings-option-title">Hide Floating Button</h3>
+                                <label class="toggle">
+                                    <input type="checkbox" id="hideFloatingButton" data-setting="hideFloatingButton">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="settings-option-description">Hide the floating chat button that appears on Instagram pages.</p>
+                        </div>
+                    </div>
+
+                    <!-- Disable Message to Profile -->
+                    <div class="settings-option">
+                        <div class="settings-option-content">
+                            <div class="settings-option-header">
+                                <h3 class="settings-option-title">Disable Message to Profile</h3>
+                                <label class="toggle">
+                                    <input type="checkbox" id="disableMessageToProfile" data-setting="disableMessageToProfile">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="settings-option-description">Disable the "Message" button on user profiles to prevent sending direct messages.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">How It Works</h2>
+
+                <div class="info-box">
+                    <div class="info-icon" id="infoIcon"></div>
+                    <div class="info-content">
+                        <h3 class="info-title">About Hide Direct Message</h3>
+                        <ul class="info-list">
+                            <li>Direct message links in navigation are always hidden when the feature is enabled</li>
+                            <li>All sub-features work dynamically without requiring a page refresh</li>
+                            <li>Settings sync across all open Instagram tabs automatically</li>
+                            <li>When the main feature is disabled, all sub-features are also disabled</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div id="tipsContainer"></div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="hideDirectMessageSettings.js"></script>
+</body>
+</html>

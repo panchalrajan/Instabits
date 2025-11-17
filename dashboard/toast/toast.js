@@ -51,6 +51,14 @@ class Toast {
         // Generate toast HTML
         this.toast.innerHTML = this.getToastHTML(title, message, type);
 
+        // Attach close button event listener
+        const closeButton = this.toast.querySelector('.toast-close');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                this.hide();
+            });
+        }
+
         // Show toast with animation
         requestAnimationFrame(() => {
             this.toast.classList.add('show');
@@ -94,7 +102,7 @@ class Toast {
                     <div class="toast-title">${title}</div>
                     <div class="toast-message">${message}</div>
                 </div>
-                <button class="toast-close" onclick="this.closest('.toast').classList.remove('show')">
+                <button class="toast-close">
                     ${IconLibrary.get('toast-close')}
                 </button>
             </div>
