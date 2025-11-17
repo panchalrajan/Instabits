@@ -12,6 +12,8 @@ class StorageService {
     this.storage = storageAPI;
     this.cache = new Map();
     this.cacheTimeout = 5000; // 5 seconds cache
+    this.changeCallbacks = new Set(); // Track all change listeners
+    this.storageChangeListener = null; // Single storage listener
   }
 
   /**
@@ -304,22 +306,51 @@ class StorageService {
    * @param {Function} callback - Callback function(changes, areaName)
    */
   addChangeListener(callback) {
-    chrome.storage.onChanged.addListener((changes, areaName) => {
-      try {
-        // Update cache for changed keys
-        Object.entries(changes).forEach(([key, { newValue }]) => {
-          if (newValue !== undefined) {
-            this.setCache(key, newValue);
-          } else {
-            this.cache.delete(key);
-          }
-        });
+    // Add callback to set
+    this.changeCallbacks.add(callback);
 
-        callback(changes, areaName);
-      } catch (error) {
-        console.error('Error in storage change listener:', error);
-      }
-    });
+    // Register storage listener only once
+    if (!this.storageChangeListener) {
+      this.storageChangeListener = (changes, areaName) => {
+        try {
+          // Update cache for changed keys
+          Object.entries(changes).forEach(([key, { newValue }]) => {
+            if (newValue !== undefined) {
+              this.setCache(key, newValue);
+            } else {
+              this.cache.delete(key);
+            }
+          });
+
+          // Call all registered callbacks
+          this.changeCallbacks.forEach(cb => {
+            try {
+              cb(changes, areaName);
+            } catch (error) {
+              console.error('Error in storage change callback:', error);
+            }
+          });
+        } catch (error) {
+          console.error('Error in storage change listener:', error);
+        }
+      };
+
+      chrome.storage.onChanged.addListener(this.storageChangeListener);
+    }
+  }
+
+  /**
+   * Remove a storage change listener
+   * @param {Function} callback - The callback function to remove
+   */
+  removeChangeListener(callback) {
+    this.changeCallbacks.delete(callback);
+
+    // If no more callbacks, remove the storage listener
+    if (this.changeCallbacks.size === 0 && this.storageChangeListener) {
+      chrome.storage.onChanged.removeListener(this.storageChangeListener);
+      this.storageChangeListener = null;
+    }
   }
 }
 

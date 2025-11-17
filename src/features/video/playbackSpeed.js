@@ -6,6 +6,7 @@ class PlaybackSpeed extends BaseFeature {
     this.speedOptions = [...this.allSpeedOptions]; // Default: all speeds enabled
     this.currentSpeed = 1.0;
     this.allVideos = new Set();
+    this.messageListener = null; // Store listener reference for cleanup
   }
 
   async initialize() {
@@ -35,7 +36,13 @@ class PlaybackSpeed extends BaseFeature {
   }
 
   setupMessageListener() {
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    // Prevent duplicate listener registration
+    if (this.messageListener) {
+      return;
+    }
+
+    // Store listener reference for cleanup
+    this.messageListener = (message, sender, sendResponse) => {
       try {
         if (message.type === 'updatePlaybackSpeeds') {
           // Handle the speed data from settings page
@@ -49,7 +56,9 @@ class PlaybackSpeed extends BaseFeature {
       } catch (error) {
         console.error('Error in playbackSpeed message listener:', error);
       }
-    });
+    };
+
+    chrome.runtime.onMessage.addListener(this.messageListener);
   }
 
   refreshAllOverlays() {
@@ -357,5 +366,11 @@ class PlaybackSpeed extends BaseFeature {
         // Ignore errors for videos that don't support playbackRate
       }
     });
+
+    // Remove message listener to prevent memory leaks
+    if (this.messageListener) {
+      chrome.runtime.onMessage.removeListener(this.messageListener);
+      this.messageListener = null;
+    }
   }
 }
