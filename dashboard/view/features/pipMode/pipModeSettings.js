@@ -27,6 +27,12 @@ class PIPModeSettings extends BaseSettingsPage {
     }
 
     async init() {
+        // Inject info icon
+        const infoIconElement = document.getElementById('infoIcon');
+        if (infoIconElement) {
+            infoIconElement.innerHTML = IconLibrary.get('info');
+        }
+
         // Render header
         this.renderHeader({
             title: 'PIP Mode Settings',
