@@ -63,6 +63,7 @@
         "src/features/video/zenMode.js",
         "src/features/video/fullScreen.js",
         "src/features/distraction/disableDoubleTapLike.js",
+        "src/features/distraction/hideSuggestedFollowers.js",
         "src/contentScript.js"
       ],
       "run_at": "document_end"

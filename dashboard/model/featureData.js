@@ -248,6 +248,29 @@ const FEATURES_DATA = [
             show: false
         }
     },
+    {
+        id: 'hideSuggestedFollowers',
+        section: 'distraction',
+        name: 'Hide Suggested Followers',
+        keywords: ['hide', 'suggested', 'followers', 'suggestions', 'recommendations', 'clean', 'minimal'],
+        icon: {
+            name: 'user-x',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #f59e0b, #d97706)'
+        },
+        badges: [
+            { text: 'New', color: BADGE_COLORS.green }
+        ],
+        description: 'Hide the "Suggested for you" section on Instagram home page for distraction-free browsing',
+        control: {
+            showToggle: true,
+            defaultState: false,
+            disabled: false
+        },
+        configPage: {
+            show: false
+        }
+    },
 ];
 
 // Export for use in other files

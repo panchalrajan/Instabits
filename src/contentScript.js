@@ -24,7 +24,8 @@
         .register('zenMode', ZenMode, { useVideoObserver: true, priority: 4, defaultEnabled: true })
         .register('backgroundPlay', BackgroundPlay, { useVideoObserver: false, priority: 3, defaultEnabled: true })
         .register('autoScroll', AutoScroll, { useVideoObserver: false, priority: 2, defaultEnabled: true })
-        .register('disableDoubleTapLike', DisableDoubleTapLike, { useVideoObserver: false, priority: 1, defaultEnabled: false });
+        .register('disableDoubleTapLike', DisableDoubleTapLike, { useVideoObserver: false, priority: 1, defaultEnabled: false })
+        .register('hideSuggestedFollowers', HideSuggestedFollowers, { useVideoObserver: false, priority: 0, defaultEnabled: false });
       return true;
     } catch (error) {
       console.error('[InstaBits] Error registering features:', error);
