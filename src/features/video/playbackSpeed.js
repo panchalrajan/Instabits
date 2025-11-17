@@ -36,14 +36,18 @@ class PlaybackSpeed extends BaseFeature {
 
   setupMessageListener() {
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.type === 'updatePlaybackSpeeds') {
-        // Handle the speed data from settings page
-        const speeds = message.enabledPlaybackSpeeds || message.speeds;
-        if (speeds && Array.isArray(speeds)) {
-          this.speedOptions = speeds;
-          // Refresh all overlays with new speed options
-          this.refreshAllOverlays();
+      try {
+        if (message.type === 'updatePlaybackSpeeds') {
+          // Handle the speed data from settings page
+          const speeds = message.enabledPlaybackSpeeds || message.speeds;
+          if (speeds && Array.isArray(speeds)) {
+            this.speedOptions = speeds;
+            // Refresh all overlays with new speed options
+            this.refreshAllOverlays();
+          }
         }
+      } catch (error) {
+        console.error('Error in playbackSpeed message listener:', error);
       }
     });
   }

@@ -20,9 +20,13 @@ class VideoSeekbar extends BaseFeature {
   setupMessageListener() {
     // Listen for color updates from settings page
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.type === 'updateSeekbarColor') {
-        this.progressColor = message.seekbarProgressColor;
-        this.injectColorStyles();
+      try {
+        if (message.type === 'updateSeekbarColor') {
+          this.progressColor = message.seekbarProgressColor;
+          this.injectColorStyles();
+        }
+      } catch (error) {
+        console.error('Error in videoSeekbar message listener:', error);
       }
     });
   }

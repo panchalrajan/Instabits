@@ -305,16 +305,20 @@ class StorageService {
    */
   addChangeListener(callback) {
     chrome.storage.onChanged.addListener((changes, areaName) => {
-      // Update cache for changed keys
-      Object.entries(changes).forEach(([key, { newValue }]) => {
-        if (newValue !== undefined) {
-          this.setCache(key, newValue);
-        } else {
-          this.cache.delete(key);
-        }
-      });
+      try {
+        // Update cache for changed keys
+        Object.entries(changes).forEach(([key, { newValue }]) => {
+          if (newValue !== undefined) {
+            this.setCache(key, newValue);
+          } else {
+            this.cache.delete(key);
+          }
+        });
 
-      callback(changes, areaName);
+        callback(changes, areaName);
+      } catch (error) {
+        console.error('Error in storage change listener:', error);
+      }
     });
   }
 }
