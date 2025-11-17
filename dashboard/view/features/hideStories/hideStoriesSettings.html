@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hide Stories Settings - InstaBits</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../../toast/toast.css">
+    <link rel="stylesheet" href="../../../tooltip.css">
+    <link rel="stylesheet" href="../settingsCommon.css">
+    <script src="../../../../src/core/utils/StorageService.js"></script>
+    <script src="../../../components/icons.js"></script>
+    <script src="../../../components/components.js"></script>
+    <script src="../baseFiles/BaseSettingsPage.js"></script>
+    <script src="../baseFiles/SettingsHelpers.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be injected -->
+        <div id="headerContainer"></div>
+
+        <main class="main settings-main">
+            <!-- Configuration Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">Hide Stories Configuration</h2>
+                <p class="settings-section-description">Customize how Stories are hidden on Instagram</p>
+
+                <!-- Sub-features toggles -->
+                <div class="settings-options">
+                    <!-- Disable Stories Page -->
+                    <div class="settings-option">
+                        <div class="settings-option-content">
+                            <div class="settings-option-header">
+                                <h3 class="settings-option-title">Disable Stories Page</h3>
+                                <label class="toggle">
+                                    <input type="checkbox" id="disableStoriesPage" data-setting="disableStoriesPage">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="settings-option-description">When enabled, accessing /stories will show a blocked screen instead. You'll be redirected to the homepage.</p>
+                        </div>
+                    </div>
+
+                    <!-- Hide all Profile Stories -->
+                    <div class="settings-option">
+                        <div class="settings-option-content">
+                            <div class="settings-option-header">
+                                <h3 class="settings-option-title">Hide all Profile Stories</h3>
+                                <label class="toggle">
+                                    <input type="checkbox" id="hideProfileStories" data-setting="hideProfileStories">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="settings-option-description">Hide story rings around profile pictures across Instagram. Clicking on profile pictures will still work, but story viewing will be disabled.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Information Section -->
+            <div class="settings-section">
+                <h2 class="settings-section-title">How It Works</h2>
+
+                <div class="info-box">
+                    <div class="info-icon" id="infoIcon"></div>
+                    <div class="info-content">
+                        <h3 class="info-title">About Hide Stories</h3>
+                        <ul class="info-list">
+                            <li>Story tray is always hidden when the feature is enabled</li>
+                            <li>All settings work dynamically without requiring a page refresh</li>
+                            <li>Settings sync across all open Instagram tabs automatically</li>
+                            <li>When the main feature is disabled, all sub-features are also disabled</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="../../../toast/toast.js"></script>
+    <script src="hideStoriesSettings.js"></script>
+</body>
+</html>

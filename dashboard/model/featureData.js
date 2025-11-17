@@ -349,6 +349,32 @@ const FEATURES_DATA = [
             icon: 'arrow'
         }
     },
+    {
+        id: 'hideStories',
+        section: 'distraction',
+        name: 'Hide Stories',
+        keywords: ['hide', 'stories', 'story', 'tray', 'distraction', 'circle', 'feed'],
+        icon: {
+            name: 'stories',
+            color: '#ffffff',
+            background: 'linear-gradient(135deg, #14b8a6, #0d9488)'
+        },
+        badges: [
+            { text: 'New', color: BADGE_COLORS.green }
+        ],
+        description: 'Hide Stories tray from homepage and configure stories page access',
+        control: {
+            showToggle: true,
+            defaultState: false,
+            disabled: false
+        },
+        configPage: {
+            show: true,
+            text: 'Configure',
+            page: 'hideStoriesSettings',
+            icon: 'arrow'
+        }
+    },
 ];
 
 // Export for use in other files

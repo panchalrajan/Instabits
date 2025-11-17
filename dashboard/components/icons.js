@@ -196,5 +196,11 @@ IconLibrary.icons = {
     'info': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
         <path d="M12 16V12M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+
+    'stories': `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="12" r="10" stroke-width="2"/>
+        <circle cx="12" cy="12" r="7" stroke-width="2"/>
+        <circle cx="12" cy="12" r="3" fill="currentColor"/>
     </svg>`
 };
