@@ -114,8 +114,12 @@ class Dashboard {
   }
 
   private renderFeatureCard(feature: FeatureData): string {
-    const badgeHtml = feature.badge
-      ? `<span class="badge" style="background-color: ${feature.badge.color}; color: white;">${feature.badge.text}</span>`
+    const badgesHtml = feature.badges && feature.badges.length > 0
+      ? `<div class="feature-badges">
+           ${feature.badges.map(badge =>
+             `<span class="badge" style="background-color: ${badge.color}; color: white;">${badge.text}</span>`
+           ).join('')}
+         </div>`
       : '';
 
     const toggleHtml = feature.toggleable !== false
@@ -143,10 +147,8 @@ class Dashboard {
             ${toggleHtml}
           </div>
           <p class="feature-description">${feature.description}</p>
+          ${badgesHtml}
           <div class="feature-footer">
-            <div class="feature-footer-left">
-              ${badgeHtml}
-            </div>
             ${configHtml}
           </div>
         </div>
@@ -260,6 +262,14 @@ class Dashboard {
         type: 'info',
       });
     });
+
+    document.querySelector('[data-action="settings"]')?.addEventListener('click', () => {
+      this.showToast({
+        title: 'Settings',
+        message: 'Settings page coming soon!',
+        type: 'info',
+      });
+    });
   }
 
   private handleSearch(): void {
@@ -281,7 +291,9 @@ class Dashboard {
       // Check filter match
       let matchesFilter = true;
       if (this.activeFilters.size > 0 && feature) {
-        matchesFilter = feature.badge ? this.activeFilters.has(feature.badge.text) : false;
+        matchesFilter = feature.badges
+          ? feature.badges.some(badge => this.activeFilters.has(badge.text))
+          : false;
       }
 
       // Show/hide card

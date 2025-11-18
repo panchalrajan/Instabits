@@ -52,7 +52,7 @@ export const FEATURES_DATA: FeatureData[] = [
     id: 'backgroundPlay',
     name: 'Background Play',
     icon: { name: 'play', background: 'linear-gradient(135deg, #a8edea, #fed6e3)' },
-    badge: { text: 'Experimental', color: '#f59e0b' },
+    badges: [{ text: 'Experimental', color: '#f59e0b' }],
     description: 'Keep videos playing when switching tabs.',
     category: 'video',
   },

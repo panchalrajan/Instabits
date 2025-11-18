@@ -7,7 +7,7 @@ export interface FeatureData {
   name: string;
   searchName?: string;
   icon: IconConfig;
-  badge?: BadgeConfig;
+  badges?: BadgeConfig[];
   description: string;
   category: 'video' | 'automation';
   configButton?: ConfigButtonConfig;

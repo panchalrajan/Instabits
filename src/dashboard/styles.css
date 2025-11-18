@@ -314,7 +314,7 @@ body {
     display: flex;
     gap: 16px;
     transition: all 0.2s;
-    min-height: 160px;
+    height: 100%;
 }
 
 .feature-card:hover {
@@ -344,6 +344,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    height: 100%;
 }
 
 .feature-header {
@@ -427,25 +428,28 @@ body {
     font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.5;
-    flex-grow: 1;
     margin-bottom: 12px;
 }
 
-/* Feature Footer - Badge and Configure button */
+/* Feature Badges - Below description */
+.feature-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-grow: 1;
+    align-items: flex-start;
+}
+
+/* Feature Footer - Configure button at bottom */
 .feature-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     gap: 12px;
     padding-top: 12px;
     border-top: 1px solid var(--border);
-}
-
-.feature-footer-left {
-    flex-shrink: 0;
-    min-height: 18px;
-    display: flex;
-    align-items: center;
+    margin-top: auto;
 }
 
 /* Feature Link - Right aligned in footer */
@@ -459,6 +463,7 @@ body {
     text-decoration: none;
     transition: all 0.2s;
     flex-shrink: 0;
+    margin-left: auto;
 }
 
 .feature-link:hover {
