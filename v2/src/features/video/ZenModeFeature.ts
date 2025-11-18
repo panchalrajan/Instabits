@@ -55,8 +55,8 @@ export class ZenModeFeature extends BaseFeature {
   }
 
   protected onProcessVideo(
-    video: HTMLVideoElement,
-    state: VideoFeatureState
+    _video: HTMLVideoElement,
+    _state: VideoFeatureState
   ): void {
     // Zen mode works globally, no per-video processing needed
   }

@@ -61,8 +61,8 @@ export class BackgroundPlayFeature extends BaseFeature {
   }
 
   protected onProcessVideo(
-    video: HTMLVideoElement,
-    state: VideoFeatureState
+    _video: HTMLVideoElement,
+    _state: VideoFeatureState
   ): void {
     // Background play works globally, no per-video processing needed
   }
