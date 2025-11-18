@@ -28,11 +28,40 @@ const FEATURES: Omit<FeatureInfo, 'enabled'>[] = [
     description: 'Control video playback speed (0.25x - 3x)',
   },
   {
+    id: 'pipMode',
+    name: 'Picture-in-Picture',
+    description: 'Watch videos in a floating window',
+  },
+  {
+    id: 'videoDuration',
+    name: 'Video Duration',
+    description: 'Display current time and total duration',
+  },
+  {
+    id: 'videoSeekbar',
+    name: 'Video Seekbar',
+    description: 'Interactive progress bar for seeking',
+  },
+  {
     id: 'volumeControl',
     name: 'Volume Control',
     description: 'Control video volume with a slider',
   },
-  // Add more features as they are implemented
+  {
+    id: 'zenMode',
+    name: 'Zen Mode',
+    description: 'Hide UI overlays for distraction-free viewing',
+  },
+  {
+    id: 'backgroundPlay',
+    name: 'Background Play',
+    description: 'Continue playback when tab is hidden',
+  },
+  {
+    id: 'autoScroll',
+    name: 'Auto Scroll',
+    description: 'Automatically scroll to next reel when current ends',
+  },
 ];
 
 class Dashboard {
@@ -84,6 +113,17 @@ class Dashboard {
       const card = this.createFeatureCard(feature);
       container.appendChild(card);
     });
+
+    // Update stats
+    this.updateStats();
+  }
+
+  private updateStats(): void {
+    const enabledCount = this.features.filter((f) => f.enabled).length;
+    const enabledEl = document.getElementById('enabledFeatures');
+    if (enabledEl) {
+      enabledEl.textContent = String(enabledCount);
+    }
   }
 
   private createFeatureCard(feature: FeatureInfo): HTMLDivElement {

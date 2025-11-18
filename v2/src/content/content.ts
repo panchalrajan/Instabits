@@ -16,9 +16,15 @@ import { FeatureManager } from '@core/FeatureManager';
 import { LogLevel } from '@app-types';
 
 // Feature factories
-import { createPlaybackSpeedFeature } from '@features/video/PlaybackSpeedFeature';
-import { createVolumeControlFeature } from '@features/video/VolumeControlFeature';
 import { createFullscreenFeature } from '@features/video/FullscreenFeature';
+import { createPlaybackSpeedFeature } from '@features/video/PlaybackSpeedFeature';
+import { createPiPModeFeature } from '@features/video/PiPModeFeature';
+import { createVideoDurationFeature } from '@features/video/VideoDurationFeature';
+import { createSeekbarFeature } from '@features/video/SeekbarFeature';
+import { createVolumeControlFeature } from '@features/video/VolumeControlFeature';
+import { createZenModeFeature } from '@features/video/ZenModeFeature';
+import { createBackgroundPlayFeature } from '@features/video/BackgroundPlayFeature';
+import { createAutoScrollFeature } from '@features/automation/AutoScrollFeature';
 
 /**
  * Initialize the extension
@@ -62,23 +68,30 @@ async function initialize(): Promise<void> {
 
     featureManager.setVideoObserver(videoObserver);
 
-    // 4. Register features
+    // 4. Register features (in priority order)
     const features = [
-      createFullscreenFeature,
-      createPlaybackSpeedFeature,
-      createVolumeControlFeature,
-      // Add more features here...
+      createFullscreenFeature,           // Priority 10
+      createPlaybackSpeedFeature,        // Priority 9
+      createPiPModeFeature,              // Priority 8
+      createVideoDurationFeature,        // Priority 7
+      createSeekbarFeature,              // Priority 6
+      createVolumeControlFeature,        // Priority 5 (changed from 8)
+      createZenModeFeature,              // Priority 4
+      createBackgroundPlayFeature,       // Priority 3
+      createAutoScrollFeature,           // Priority 2
     ];
 
     features.forEach((factory) => {
-      const feature = factory({ logger, storage, errorHandler });
+      const feature = factory({ logger, storage, errorHandler});
+      const useVideoObserver = feature.id !== 'zenMode' && feature.id !== 'backgroundPlay';
+
       featureManager.register(
         {
           id: feature.id,
           name: feature.name,
           description: feature.description,
           priority: feature.priority,
-          useVideoObserver: true,
+          useVideoObserver,
         },
         () => feature
       );
