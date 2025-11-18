@@ -47,13 +47,10 @@ export abstract class BaseFeature implements IFeature {
     try {
       this.logger.info(`Initializing feature: ${this.name}`);
 
-      // Load enabled state from storage
+      // Load enabled state from storage (default to enabled)
       const storageKey = getFeatureStorageKey(this.id);
       const storedState = await this.storage.get<boolean>(storageKey);
-
-      if (storedState !== null) {
-        this.enabled = storedState;
-      }
+      this.enabled = storedState ?? true;
 
       // Call lifecycle hook
       await this.onInitialize();
