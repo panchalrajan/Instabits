@@ -23,7 +23,8 @@
     "default_title": "InstaBits Settings"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "permissions": [
     "storage",
@@ -41,6 +42,17 @@
         "content/main.js"
       ],
       "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "chunks/*.js",
+        "features/*.js"
+      ],
+      "matches": [
+        "https://*.instagram.com/*"
+      ]
     }
   ]
 }

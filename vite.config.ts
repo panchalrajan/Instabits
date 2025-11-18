@@ -22,13 +22,11 @@ export default defineConfig({
     emptyOutDir: true,
     minify: 'terser',
     sourcemap: false,
+    target: 'esnext',
     rollupOptions: {
       input: {
         // Background service worker
         background: resolve(__dirname, 'src/background/service-worker.ts'),
-
-        // Content script entry point
-        content: resolve(__dirname, 'src/content/main.ts'),
 
         // Dashboard
         dashboard: resolve(__dirname, 'src/dashboard/index.html'),
@@ -45,6 +43,7 @@ export default defineConfig({
         'features/auto-scroll': resolve(__dirname, 'src/features/automation/auto-scroll/index.ts'),
       },
       output: {
+        format: 'es',
         entryFileNames: (chunkInfo) => {
           // Background service worker
           if (chunkInfo.name === 'background') {
@@ -64,7 +63,10 @@ export default defineConfig({
           }
           return '[name].js';
         },
-        chunkFileNames: 'chunks/[name]-[hash].js',
+        chunkFileNames: (chunkInfo) => {
+          // Put chunks in the same directory as the content script for easier loading
+          return 'chunks/[name]-[hash].js';
+        },
         assetFileNames: (assetInfo) => {
           // CSS files
           if (assetInfo.name?.endsWith('.css')) {
@@ -75,18 +77,24 @@ export default defineConfig({
           }
           return 'assets/[name][extname]';
         },
-        manualChunks: {
-          // Core services (shared across features)
-          'core-services': [
-            './src/core/services/StorageService.ts',
-            './src/core/services/MessageService.ts',
-            './src/core/services/Logger.ts'
-          ],
+        manualChunks: (id) => {
+          // Don't create separate chunks for content script dependencies
+          // Bundle everything together for content scripts
+          if (id.includes('src/content/')) {
+            return undefined;
+          }
+
+          // Core services (shared across background and features)
+          if (id.includes('src/core/services/')) {
+            return 'core-services';
+          }
+
           // Feature system (shared across features)
-          'feature-system': [
-            './src/core/feature-system/BaseFeature.ts',
-            './src/core/feature-system/FeatureManager.ts'
-          ]
+          if (id.includes('src/core/feature-system/') ||
+              id.includes('src/core/observers/') ||
+              id.includes('src/core/managers/')) {
+            return 'feature-system';
+          }
         }
       }
     },
