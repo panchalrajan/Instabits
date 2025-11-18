@@ -10,13 +10,16 @@ export const FEATURES_DATA: FeatureData[] = [
     id: 'playbackSpeed',
     name: 'Playback Speed',
     icon: { name: 'speed', background: 'linear-gradient(135deg, #667eea, #764ba2)' },
+    badges: [{ text: 'New', color: '#10b981' }],
     description: 'Control video playback speed with customizable speed options.',
     category: 'video',
+    configButton: { text: 'Configure', icon: 'arrow', page: 'speed-settings' },
   },
   {
     id: 'volumeSlider',
     name: 'Volume Control',
     icon: { name: 'volume', background: 'linear-gradient(135deg, #f093fb, #f5576c)' },
+    badges: [{ text: 'Beta', color: '#3b82f6' }],
     description: 'Custom volume slider with independent volume and mute states.',
     category: 'video',
   },
@@ -69,8 +72,10 @@ export const FEATURES_DATA: FeatureData[] = [
     id: 'autoScroll',
     name: 'Auto Scroll: Reels',
     icon: { name: 'scroll', background: 'linear-gradient(135deg, #ffecd2, #fcb69f)' },
+    badges: [{ text: 'New', color: '#10b981' }],
     description: 'Automatically scroll to the next reel when video ends.',
     category: 'automation',
+    configButton: { text: 'Configure', icon: 'arrow', page: 'autoscroll-settings' },
   },
 ];
 

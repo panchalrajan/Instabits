@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && npm run build:main && npm run build:content && npm run postbuild",
     "build:main": "vite build",
     "build:content": "vite build --config vite.config.content.ts",
-    "postbuild": "mv dist/src/dashboard/index.html dist/dashboard/index.html 2>/dev/null && rmdir dist/src/dashboard 2>/dev/null && rmdir dist/src 2>/dev/null && sed -i 's|../../dashboard/|./|g' dist/dashboard/index.html || true",
+    "postbuild": "mv dist/src/dashboard/index.html dist/dashboard/index.html 2>/dev/null && rmdir dist/src/dashboard 2>/dev/null && rmdir dist/src 2>/dev/null && sed -i.bak 's|../../dashboard/|./|g' dist/dashboard/index.html && rm -f dist/dashboard/index.html.bak || true",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
