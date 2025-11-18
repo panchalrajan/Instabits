@@ -1,0 +1,26 @@
+{
+  "name": "instabits",
+  "version": "2.0.0",
+  "description": "Modern Chrome Extension for Instagram with enhanced video controls and automation features",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "tsc --noEmit && vite build && npm run postbuild",
+    "postbuild": "mv dist/src/dashboard/index.html dist/dashboard/index.html && rmdir dist/src/dashboard && rmdir dist/src || true",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "terser": "^5.44.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11",
+    "vite-plugin-static-copy": "^1.0.5"
+  },
+  "private": true
+}

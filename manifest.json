@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "INSTABITS",
-  "version": "1.0.0",
-  "description": "Missing pieces for Instagram.",
+  "version": "2.0.0",
+  "description": "Missing pieces for Instagram - Rebuilt with modern architecture",
   "author": "Rajan Panchal",
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
@@ -37,32 +37,8 @@
       "matches": [
         "https://*.instagram.com/*"
       ],
-      "css": [
-        "src/features/css/videoControls.css",
-        "src/features/css/videoDuration.css",
-        "src/features/css/videoSeekbar.css",
-        "src/features/css/volumeSlider.css",
-        "src/features/css/playbackSpeed.css",
-        "src/features/css/pipMode.css",
-        "src/features/css/fullScreen.css"
-      ],
       "js": [
-        "src/core/utils/StorageService.js",
-        "src/core/BaseFeature.js",
-        "src/core/VideoObserver.js",
-        "src/core/VideoControlsManager.js",
-        "src/core/FeatureManager.js",
-        "src/core/utils/utils.js",
-        "src/features/video/videoDuration.js",
-        "src/features/video/videoSeekbar.js",
-        "src/features/video/volumeSlider.js",
-        "src/features/video/playbackSpeed.js",
-        "src/features/video/pipMode.js",
-        "src/features/video/backgroundPlay.js",
-        "src/features/automation/autoScroll.js",
-        "src/features/video/zenMode.js",
-        "src/features/video/fullScreen.js",
-        "src/contentScript.js"
+        "content/main.js"
       ],
       "run_at": "document_end"
     }
