@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InstaBits Settings</title>
+  <title>InstaBits Dashboard</title>
   <style>
     :root {
       --primary: #6366f1;
@@ -13,6 +13,9 @@
       --border: #e2e8f0;
       --bg: #f8fafc;
       --card-bg: #ffffff;
+      --badge-new: #10b981;
+      --badge-beta: #f59e0b;
+      --badge-experimental: #ec4899;
     }
 
     * {
@@ -36,9 +39,15 @@
 
     /* Header */
     .header {
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      padding: 24px 32px;
+      color: white;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -47,100 +56,286 @@
     .header-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
     }
 
     .app-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 24px;
+      font-size: 32px;
       font-weight: 700;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     }
 
     .header-text h1 {
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 2px;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .header-text p {
-      font-size: 13px;
-      color: var(--text-secondary);
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 12px;
+    }
+
+    .header-btn {
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .header-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
     }
 
     /* Main Content */
     .main {
       flex: 1;
-      padding: 32px;
-      max-width: 1200px;
+      padding: 40px 32px;
+      max-width: 1400px;
       width: 100%;
       margin: 0 auto;
     }
 
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
       margin-bottom: 16px;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .section-count {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
     }
 
     /* Feature Cards Grid */
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
     }
 
     .feature-card {
-      background: var(--card-bg);
+      background: white;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      transition: all 0.2s;
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
     }
 
     .feature-card:hover {
-      border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+      border-color: transparent;
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
     }
 
     .feature-header {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
-    .feature-card h3 {
-      font-size: 16px;
-      font-weight: 600;
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .feature-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       margin-bottom: 4px;
+    }
+
+    .feature-title {
+      font-size: 18px;
+      font-weight: 600;
       color: var(--text-primary);
+    }
+
+    .feature-badge {
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: white;
+    }
+
+    .badge-new {
+      background: var(--badge-new);
+    }
+
+    .badge-beta {
+      background: var(--badge-beta);
+    }
+
+    .badge-experimental {
+      background: var(--badge-experimental);
     }
 
     .feature-description {
       font-size: 14px;
       color: var(--text-secondary);
-      line-height: 1.5;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .feature-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .config-btn {
+      padding: 8px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .config-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
     }
 
     /* Toggle Switch */
     .toggle {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 24px;
+      width: 52px;
+      height: 28px;
       flex-shrink: 0;
     }
 
@@ -157,53 +352,56 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #cbd5e1;
+      background: #cbd5e1;
       transition: 0.3s;
-      border-radius: 24px;
+      border-radius: 28px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .toggle-slider:before {
       position: absolute;
       content: "";
-      height: 18px;
-      width: 18px;
+      height: 22px;
+      width: 22px;
       left: 3px;
       bottom: 3px;
-      background-color: white;
+      background: white;
       transition: 0.3s;
       border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .toggle input:checked + .toggle-slider {
-      background-color: var(--primary);
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
     }
 
     .toggle input:checked + .toggle-slider:before {
-      transform: translateX(20px);
+      transform: translateX(24px);
     }
 
     /* Toast Notifications */
     .toast {
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      bottom: 32px;
+      right: 32px;
       background: white;
       color: var(--text-primary);
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
       border-left: 4px solid var(--primary);
       opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.3s, transform 0.3s;
+      transform: translateX(100px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 10000;
       font-size: 14px;
       font-weight: 500;
+      max-width: 400px;
     }
 
     .toast.show {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0);
     }
 
     .toast-error {
@@ -212,68 +410,140 @@
       color: #991b1b;
     }
 
-    .stats {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 24px;
-      display: flex;
-      gap: 32px;
+    .toast-success {
+      border-left-color: #10b981;
     }
 
-    .stat-item {
-      flex: 1;
+    /* Search Bar */
+    .search-bar {
+      margin-bottom: 32px;
+      position: relative;
     }
 
-    .stat-value {
-      font-size: 32px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 4px;
+    .search-input {
+      width: 100%;
+      padding: 16px 24px 16px 56px;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      font-size: 16px;
+      background: white;
+      transition: all 0.2s;
     }
 
-    .stat-label {
-      font-size: 14px;
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
       color: var(--text-secondary);
     }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .feature-card {
+      animation: fadeIn 0.4s ease-out backwards;
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.05s; }
+    .feature-card:nth-child(2) { animation-delay: 0.1s; }
+    .feature-card:nth-child(3) { animation-delay: 0.15s; }
+    .feature-card:nth-child(4) { animation-delay: 0.2s; }
+    .feature-card:nth-child(5) { animation-delay: 0.25s; }
+    .feature-card:nth-child(6) { animation-delay: 0.3s; }
+    .feature-card:nth-child(7) { animation-delay: 0.35s; }
+    .feature-card:nth-child(8) { animation-delay: 0.4s; }
+    .feature-card:nth-child(9) { animation-delay: 0.45s; }
   </style>
 </head>
 <body>
   <div class="container">
     <!-- Header -->
     <header class="header">
-      <div class="header-left">
-        <div class="app-icon">IB</div>
-        <div class="header-text">
-          <h1>InstaBits</h1>
-          <p>Instagram Enhancement Suite</p>
+      <div class="header-content">
+        <div class="header-left">
+          <div class="app-icon">⚡</div>
+          <div class="header-text">
+            <h1>InstaBits Dashboard</h1>
+            <p>Supercharge your Instagram experience with 9 powerful features</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="header-btn" onclick="location.reload()">🔄 Refresh</button>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
     <main class="main">
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search features..."
+          id="searchInput"
+        />
+      </div>
+
       <!-- Stats -->
       <div class="stats">
-        <div class="stat-item">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">📦</div>
           <div class="stat-value" id="totalFeatures">9</div>
           <div class="stat-label">Total Features</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">✨</div>
           <div class="stat-value" id="enabledFeatures">9</div>
-          <div class="stat-label">Enabled</div>
+          <div class="stat-label">Active Features</div>
         </div>
-        <div class="stat-item">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🎨</div>
           <div class="stat-value">v2.0</div>
           <div class="stat-label">Version</div>
         </div>
       </div>
 
-      <!-- Features Section -->
-      <div class="section-title">Available Features</div>
-      <div class="features-grid" id="features-container">
-        <!-- Features will be rendered here by dashboard.js -->
+      <!-- Video Features Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">🎥</div>
+          <h2 class="section-title">Video Controls</h2>
+          <span class="section-count" id="videoCount">(7 features)</span>
+        </div>
+        <div class="features-grid" id="video-features">
+          <!-- Video features will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Automation Features Section -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">⚙️</div>
+          <h2 class="section-title">Automation</h2>
+          <span class="section-count" id="autoCount">(1 feature)</span>
+        </div>
+        <div class="features-grid" id="automation-features">
+          <!-- Automation features will be rendered here -->
+        </div>
       </div>
     </main>
   </div>

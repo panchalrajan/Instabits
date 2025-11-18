@@ -1,6 +1,6 @@
 /**
  * Dashboard Script
- * Settings and feature management UI
+ * Beautiful, colorful settings and feature management UI
  */
 
 import type { IStorage } from '@app-types';
@@ -13,54 +13,91 @@ interface FeatureInfo {
   id: string;
   name: string;
   description: string;
+  icon: string;
+  gradient: string;
+  badge?: {
+    text: string;
+    class: string;
+  };
+  section: 'video' | 'automation';
   enabled: boolean;
 }
 
-const FEATURES: Omit<FeatureInfo, 'enabled'>[] = [
+const FEATURE_CONFIG: Omit<FeatureInfo, 'enabled'>[] = [
   {
     id: 'fullscreen',
     name: 'Fullscreen',
-    description: 'Quick fullscreen button for videos',
+    description: 'Quick fullscreen button for videos with beautiful animations',
+    icon: '⛶',
+    gradient: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+    badge: { text: 'NEW', class: 'badge-new' },
+    section: 'video',
   },
   {
     id: 'playbackSpeed',
     name: 'Playback Speed',
-    description: 'Control video playback speed (0.25x - 3x)',
+    description: 'Control video playback speed from 0.25x to 3x with precision',
+    icon: '⚡',
+    gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+    section: 'video',
   },
   {
     id: 'pipMode',
     name: 'Picture-in-Picture',
-    description: 'Watch videos in a floating window',
+    description: 'Watch videos in a floating window while browsing',
+    icon: '📺',
+    gradient: 'linear-gradient(135deg, #ec4899, #db2777)',
+    badge: { text: 'BETA', class: 'badge-beta' },
+    section: 'video',
   },
   {
     id: 'videoDuration',
     name: 'Video Duration',
-    description: 'Display current time and total duration',
+    description: 'Display current time and total duration overlay',
+    icon: '⏱️',
+    gradient: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+    section: 'video',
   },
   {
     id: 'videoSeekbar',
     name: 'Video Seekbar',
-    description: 'Interactive progress bar for seeking',
+    description: 'Interactive progress bar with click-to-seek functionality',
+    icon: '━',
+    gradient: 'linear-gradient(135deg, #f59e0b, #d97706)',
+    section: 'video',
   },
   {
     id: 'volumeControl',
     name: 'Volume Control',
-    description: 'Control video volume with a slider',
+    description: 'Control video volume with an intuitive slider',
+    icon: '🔊',
+    gradient: 'linear-gradient(135deg, #10b981, #059669)',
+    section: 'video',
   },
   {
     id: 'zenMode',
     name: 'Zen Mode',
-    description: 'Hide UI overlays for distraction-free viewing',
+    description: 'Hide UI overlays for distraction-free viewing experience',
+    icon: '🧘',
+    gradient: 'linear-gradient(135deg, #a855f7, #9333ea)',
+    badge: { text: 'EXPERIMENTAL', class: 'badge-experimental' },
+    section: 'video',
   },
   {
     id: 'backgroundPlay',
     name: 'Background Play',
-    description: 'Continue playback when tab is hidden',
+    description: 'Continue playback when tab is hidden or minimized',
+    icon: '🎵',
+    gradient: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+    section: 'video',
   },
   {
     id: 'autoScroll',
     name: 'Auto Scroll',
     description: 'Automatically scroll to next reel when current ends',
+    icon: '🔄',
+    gradient: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+    section: 'automation',
   },
 ];
 
@@ -94,28 +131,57 @@ class Dashboard {
   }
 
   private async loadFeatures(): Promise<void> {
-    const keys = FEATURES.map((f) => getFeatureStorageKey(f.id));
+    const keys = FEATURE_CONFIG.map((f) => getFeatureStorageKey(f.id));
     const states = await this.storage.get<boolean>(keys);
 
-    this.features = FEATURES.map((feature) => ({
+    this.features = FEATURE_CONFIG.map((feature) => ({
       ...feature,
       enabled: states[getFeatureStorageKey(feature.id)] ?? true,
     }));
   }
 
   private render(): void {
-    const container = document.getElementById('features-container');
+    this.renderVideoFeatures();
+    this.renderAutomationFeatures();
+    this.updateStats();
+  }
+
+  private renderVideoFeatures(): void {
+    const container = document.getElementById('video-features');
     if (!container) return;
 
+    const videoFeatures = this.features.filter((f) => f.section === 'video');
     container.innerHTML = '';
 
-    this.features.forEach((feature) => {
+    videoFeatures.forEach((feature) => {
       const card = this.createFeatureCard(feature);
       container.appendChild(card);
     });
 
-    // Update stats
-    this.updateStats();
+    // Update section count
+    const countEl = document.getElementById('videoCount');
+    if (countEl) {
+      countEl.textContent = `(${videoFeatures.length} features)`;
+    }
+  }
+
+  private renderAutomationFeatures(): void {
+    const container = document.getElementById('automation-features');
+    if (!container) return;
+
+    const autoFeatures = this.features.filter((f) => f.section === 'automation');
+    container.innerHTML = '';
+
+    autoFeatures.forEach((feature) => {
+      const card = this.createFeatureCard(feature);
+      container.appendChild(card);
+    });
+
+    // Update section count
+    const countEl = document.getElementById('autoCount');
+    if (countEl) {
+      countEl.textContent = `(${autoFeatures.length} feature)`;
+    }
   }
 
   private updateStats(): void {
@@ -124,21 +190,44 @@ class Dashboard {
     if (enabledEl) {
       enabledEl.textContent = String(enabledCount);
     }
+
+    const totalEl = document.getElementById('totalFeatures');
+    if (totalEl) {
+      totalEl.textContent = String(this.features.length);
+    }
   }
 
   private createFeatureCard(feature: FeatureInfo): HTMLDivElement {
     const card = document.createElement('div');
     card.className = 'feature-card';
+    card.style.setProperty('--gradient', feature.gradient);
+
+    const badgeHtml = feature.badge
+      ? `<span class="feature-badge ${feature.badge.class}">${feature.badge.text}</span>`
+      : '';
 
     card.innerHTML = `
       <div class="feature-header">
-        <h3>${feature.name}</h3>
+        <div class="feature-icon" style="background: ${feature.gradient};">
+          ${feature.icon}
+        </div>
+        <div class="feature-info">
+          <div class="feature-title-row">
+            <h3 class="feature-title">${feature.name}</h3>
+            ${badgeHtml}
+          </div>
+          <p class="feature-description">${feature.description}</p>
+        </div>
+      </div>
+      <div class="feature-footer">
+        <button class="config-btn" data-feature-id="${feature.id}">
+          ⚙️ Configure
+        </button>
         <label class="toggle">
           <input type="checkbox" ${feature.enabled ? 'checked' : ''} data-feature-id="${feature.id}">
           <span class="toggle-slider"></span>
         </label>
       </div>
-      <p class="feature-description">${feature.description}</p>
     `;
 
     return card;
@@ -156,6 +245,27 @@ class Dashboard {
       }
     });
 
+    // Config buttons
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('config-btn') || target.closest('.config-btn')) {
+        const btn = target.classList.contains('config-btn') ? target : target.closest('.config-btn');
+        const featureId = btn?.getAttribute('data-feature-id');
+        if (featureId) {
+          this.openConfig(featureId);
+        }
+      }
+    });
+
+    // Search
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = (e.target as HTMLInputElement).value.toLowerCase();
+        this.filterFeatures(query);
+      });
+    }
+
     // Listen to storage changes from other tabs
     this.storage.onChanged((changes) => {
       Object.keys(changes).forEach((key) => {
@@ -163,6 +273,20 @@ class Dashboard {
           this.loadFeatures().then(() => this.render());
         }
       });
+    });
+  }
+
+  private filterFeatures(query: string): void {
+    const cards = document.querySelectorAll('.feature-card');
+    cards.forEach((card) => {
+      const title = card.querySelector('.feature-title')?.textContent?.toLowerCase() || '';
+      const description = card.querySelector('.feature-description')?.textContent?.toLowerCase() || '';
+
+      if (title.includes(query) || description.includes(query)) {
+        (card as HTMLElement).style.display = '';
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
     });
   }
 
@@ -179,8 +303,12 @@ class Dashboard {
         feature.enabled = enabled;
       }
 
+      // Update stats
+      this.updateStats();
+
       this.showToast(
-        `${feature?.name || id} ${enabled ? 'enabled' : 'disabled'}`
+        `${feature?.name || id} ${enabled ? 'enabled' : 'disabled'}`,
+        'success'
       );
     } catch (error) {
       this.logger.error('Error toggling feature', error as Error);
@@ -188,9 +316,18 @@ class Dashboard {
     }
   }
 
+  private openConfig(id: string): void {
+    const feature = this.features.find((f) => f.id === id);
+    if (feature) {
+      this.showToast(`Configuration for ${feature.name} coming soon!`, 'success');
+      this.logger.info(`Opening config for: ${id}`);
+      // TODO: Implement feature-specific configuration panels
+    }
+  }
+
   private showToast(message: string, type: 'success' | 'error' = 'success'): void {
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
+    toast.className = `toast ${type === 'success' ? 'toast-success' : 'toast-error'}`;
     toast.textContent = message;
 
     document.body.appendChild(toast);
@@ -201,7 +338,7 @@ class Dashboard {
 
     setTimeout(() => {
       toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
+      setTimeout(() => toast.remove(), 400);
     }, 2000);
   }
 }
